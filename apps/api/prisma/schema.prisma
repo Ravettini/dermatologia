@@ -1,0 +1,208 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum BookingStatus {
+  NEW
+  CONTACT_PENDING
+  CONTACTED
+  PENDING_CONFIRMATION
+  CONFIRMED
+  RESCHEDULED
+  CANCELED
+  CLOSED
+}
+
+enum SlotStatus {
+  AVAILABLE
+  PENDING
+  CONFIRMED
+  BLOCKED
+}
+
+enum LeadSource {
+  WEB_FORM
+  BOOKING_WIDGET
+  CHATBOT
+  WHATSAPP
+  MANUAL
+}
+
+model AdminUser {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  auditLogs    AuditLog[]
+  leadNotes    LeadNote[]
+}
+
+model Professional {
+  id                   String               @id @default(cuid())
+  name                 String
+  specialty            String
+  specialtyTreatmentId String?
+  specialtyTreatment   Treatment?           @relation("ProfessionalSpecialty", fields: [specialtyTreatmentId], references: [id], onDelete: SetNull)
+  bio                  String?
+  imageUrl             String?
+  active               Boolean              @default(true)
+  sortOrder            Int                  @default(0)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  deletedAt            DateTime?
+  slots                AvailabilitySlot[]
+  bookings             BookingRequest[]
+
+  @@index([specialtyTreatmentId])
+}
+
+model Treatment {
+  id                String               @id @default(cuid())
+  name              String
+  slug              String               @unique
+  description       String
+  durationMinutes   Int                  @default(30)
+  category          String
+  active            Boolean              @default(true)
+  requiresPriorEval Boolean              @default(false)
+  sortOrder         Int                  @default(0)
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  deletedAt         DateTime?
+  bookingRequests           BookingRequest[]
+  availabilitySlots         AvailabilitySlot[]   @relation("TreatmentSlots")
+  professionalSpecialtyRefs Professional[]       @relation("ProfessionalSpecialty")
+}
+
+model AvailabilitySlot {
+  id               String            @id @default(cuid())
+  professionalId   String
+  professional     Professional      @relation(fields: [professionalId], references: [id])
+  treatmentId      String
+  treatment        Treatment         @relation("TreatmentSlots", fields: [treatmentId], references: [id])
+  startsAt         DateTime
+  endsAt           DateTime
+  status           SlotStatus        @default(AVAILABLE)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  bookingRequests  BookingRequest[]
+
+  @@index([startsAt])
+  @@index([professionalId, startsAt])
+}
+
+model ContactLead {
+  id                  String              @id @default(cuid())
+  name                String
+  phone               String?
+  email               String?
+  source              LeadSource
+  lastInteractionAt   DateTime            @default(now())
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  deletedAt           DateTime?
+  notes               LeadNote[]
+  bookings            BookingRequest[]
+  chatConversations   ChatConversation[]
+}
+
+model LeadNote {
+  id        String      @id @default(cuid())
+  contactId String
+  contact   ContactLead @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  body      String
+  adminId   String?
+  admin     AdminUser?  @relation(fields: [adminId], references: [id])
+  createdAt DateTime    @default(now())
+}
+
+model BookingRequest {
+  id                   String             @id @default(cuid())
+  contactLeadId        String
+  contactLead          ContactLead        @relation(fields: [contactLeadId], references: [id])
+  treatmentId          String
+  treatment            Treatment          @relation(fields: [treatmentId], references: [id])
+  professionalId       String?
+  professional         Professional?      @relation(fields: [professionalId], references: [id])
+  availabilitySlotId   String?
+  availabilitySlot     AvailabilitySlot?  @relation(fields: [availabilitySlotId], references: [id])
+  status               BookingStatus      @default(PENDING_CONFIRMATION)
+  source               LeadSource
+  patientMessage       String?
+  consentAccepted      Boolean            @default(false)
+  internalNotes        String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model ChatConversation {
+  id            String        @id @default(cuid())
+  visitorId     String        @unique
+  contactLeadId String?
+  contactLead   ContactLead?  @relation(fields: [contactLeadId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  messages      ChatMessage[]
+}
+
+model ChatMessage {
+  id             String           @id @default(cuid())
+  conversationId String
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String
+  content        String
+  createdAt      DateTime         @default(now())
+
+  @@index([conversationId])
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
+model FAQItem {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String
+  author    String
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String     @id @default(cuid())
+  adminId   String?
+  admin     AdminUser? @relation(fields: [adminId], references: [id])
+  action    String
+  entity    String
+  entityId  String?
+  metadata  String?    @db.Text
+  createdAt DateTime   @default(now())
+
+  @@index([createdAt])
+}

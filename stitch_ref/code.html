@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dermaclinic | Centro de Dermatología de Alta Gama</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#ece0d7",
+                      "inverse-on-surface": "#f2f1ec",
+                      "on-primary-fixed-variant": "#474747",
+                      "surface-variant": "#e4e2dd",
+                      "inverse-surface": "#30312e",
+                      "outline": "#83746c",
+                      "surface-dim": "#dbdad5",
+                      "on-tertiary-fixed-variant": "#4d453f",
+                      "primary-container": "#aeadac",
+                      "surface": "#fbf9f4",
+                      "on-background": "#1b1c19",
+                      "error-container": "#ffdad6",
+                      "primary": "#5f5e5e",
+                      "secondary-container": "#ffcaa8",
+                      "on-secondary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "surface-tint": "#5f5e5e",
+                      "secondary-fixed-dim": "#efbc9b",
+                      "tertiary": "#655d56",
+                      "on-primary": "#ffffff",
+                      "secondary-fixed": "#ffdcc6",
+                      "on-primary-container": "#414141",
+                      "error": "#ba1a1a",
+                      "on-secondary-container": "#7a5338",
+                      "on-surface-variant": "#50443d",
+                      "on-error": "#ffffff",
+                      "primary-fixed": "#e4e2e1",
+                      "on-tertiary-container": "#473f39",
+                      "on-tertiary-fixed": "#201b15",
+                      "surface-bright": "#fbf9f4",
+                      "surface-container": "#f0eee9",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-fixed-dim": "#d0c4bc",
+                      "on-secondary-fixed-variant": "#623e25",
+                      "outline-variant": "#d5c3ba",
+                      "background": "#fbf9f4",
+                      "surface-container-highest": "#e4e2dd",
+                      "surface-container-high": "#eae8e3",
+                      "tertiary-container": "#b6aba3",
+                      "primary-fixed-dim": "#c8c6c6",
+                      "on-surface": "#1b1c19",
+                      "secondary": "#7d563b",
+                      "on-secondary-fixed": "#2f1402",
+                      "on-primary-fixed": "#1b1c1c",
+                      "inverse-primary": "#c8c6c6",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-low": "#f5f3ee"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "fontFamily": {
+                      "headline": ["Newsreader", "serif"],
+                      "body": ["Manrope", "sans-serif"],
+                      "label": ["Manrope", "sans-serif"]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .editorial-grid { display: grid; grid-template-columns: repeat(12, 1fr); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- Header Section -->
+<nav class="fixed top-0 w-full z-50 bg-[#fbf9f4]/80 dark:bg-[#1b1c19]/80 backdrop-blur-md flex justify-between items-center px-6 md:px-12 py-6 w-full max-w-full">
+<div class="font-serif text-2xl tracking-tighter text-[#1b1c19] dark:text-[#fbf9f4] font-headline">Dermaclinic</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-[#1b1c19] dark:text-white border-b border-[#7d563b] pb-1 font-label text-sm tracking-tight transition-colors duration-300" href="#inicio">Inicio</a>
+<a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#7d563b] font-label text-sm tracking-tight transition-colors duration-300" href="#tratamientos">Tratamientos</a>
+<a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#7d563b] font-label text-sm tracking-tight transition-colors duration-300" href="#dermatologia">Dermatología</a>
+<a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#7d563b] font-label text-sm tracking-tight transition-colors duration-300" href="#equipo">Equipo</a>
+<a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#7d563b] font-label text-sm tracking-tight transition-colors duration-300" href="#faq">FAQ</a>
+<a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#7d563b] font-label text-sm tracking-tight transition-colors duration-300" href="#contacto">Contacto</a>
+</div>
+<button class="bg-on-primary-container text-surface px-6 py-2 text-xs uppercase tracking-widest font-label hover:opacity-90 transition-opacity">Pedir turno</button>
+</nav>
+<!-- Hero Section -->
+<section class="pt-32 pb-20 px-6 md:px-12 min-h-screen flex items-center" id="inicio">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center w-full">
+<div class="max-w-2xl">
+<span class="text-secondary font-label text-xs uppercase tracking-[0.3em] mb-6 block">Cuidado experto para tu piel</span>
+<h1 class="font-headline text-5xl md:text-7xl leading-[1.1] mb-8 text-on-surface">Dermatología clínica y estética con una mirada profesional y personalizada</h1>
+<p class="text-on-surface-variant text-lg md:text-xl leading-relaxed mb-10 font-body opacity-80">
+                    Tratamientos pensados para cuidar, mejorar y acompañar la salud y belleza de tu piel, combinando evidencia científica con una estética natural y equilibrada.
+                </p>
+<div class="flex flex-wrap gap-6">
+<button class="bg-on-primary-container text-surface px-8 py-4 text-sm font-label uppercase tracking-widest hover:opacity-90 transition-all">Pedir turno</button>
+<button class="border-b border-on-surface-variant text-on-surface-variant px-2 py-4 text-sm font-label uppercase tracking-widest hover:text-secondary transition-all">Ver tratamientos</button>
+</div>
+</div>
+<div class="relative h-[600px] md:h-[800px] overflow-hidden">
+<img class="w-full h-full object-cover grayscale-[20%]" data-alt="Editorial portrait of a woman with glowing natural skin in soft studio lighting against a neutral minimal background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgVJXAjPV79yyHsezLlvM8ALw8EpNEwGsfY7zusDnboo8I7GvM-sZvhQxC0jwsylRfjQtS_r19F5bOcb3idcFttejh4XDn5MO_ZIe-pAnGiT33AIIp4TzicAa4pD51x4GgFlER_-c5DZ-s0fUdXLLaN7usBHWNGQ0EHnB7smocy7coYrpYVOUDn1W4JEclo_dTd38xsU6zqCchOXUu5fuGOfDT4Pjxrce9KdW1k_sjLdk8Y5X00EEm2o3ukZvsgGOUbv8Cs0cnoagu"/>
+<div class="absolute inset-0 bg-secondary/5 mix-blend-multiply"></div>
+</div>
+</div>
+</section>
+<!-- Services Section -->
+<section class="py-24 px-6 md:px-12 bg-surface-container-low" id="tratamientos">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-px bg-outline-variant/10">
+<div class="bg-surface-container-low p-12 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-secondary text-3xl mb-6" data-icon="face">face</span>
+<h3 class="font-headline text-2xl mb-4">Tratamientos faciales</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">Procedimientos diseñados para restaurar la luminosidad y salud del rostro.</p>
+<span class="text-xs font-label uppercase tracking-tighter underline underline-offset-8 decoration-secondary/30">Descubrir</span>
+</div>
+<div class="bg-surface-container-low p-12 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-secondary text-3xl mb-6" data-icon="body_fat">body_fat</span>
+<h3 class="font-headline text-2xl mb-4">Tratamientos corporales</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">Tecnología avanzada para remodelación y tonificación corporal no invasiva.</p>
+<span class="text-xs font-label uppercase tracking-tighter underline underline-offset-8 decoration-secondary/30">Descubrir</span>
+</div>
+<div class="bg-surface-container-low p-12 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-secondary text-3xl mb-6" data-icon="medical_services">medical_services</span>
+<h3 class="font-headline text-2xl mb-4">Depilación médica</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">Soprano Titanium para resultados definitivos con el máximo confort.</p>
+<span class="text-xs font-label uppercase tracking-tighter underline underline-offset-8 decoration-secondary/30">Descubrir</span>
+</div>
+<div class="bg-surface-container-low p-12 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-secondary text-3xl mb-6" data-icon="stethoscope">stethoscope</span>
+<h3 class="font-headline text-2xl mb-4">Dermatología clínica</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">Diagnóstico y tratamiento de patologías de la piel, pelo y uñas.</p>
+<span class="text-xs font-label uppercase tracking-tighter underline underline-offset-8 decoration-secondary/30">Descubrir</span>
+</div>
+</div>
+</section>
+<!-- Value Prop / Editorial Grid -->
+<section class="py-32 px-6 md:px-12 bg-surface overflow-hidden">
+<div class="max-w-4xl mb-24">
+<h2 class="font-headline text-4xl md:text-6xl text-secondary leading-tight italic">
+                La excelencia médica se encuentra con el arte del cuidado.
+            </h2>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+<div class="aspect-[3/4] md:translate-y-12">
+<img class="w-full h-full object-cover" data-alt="Close-up of high-end clinical skin care product texture with minimalist white packaging and soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp_pqkQLNW866nnMhVijcxPPBTxTYpBap46efqrVuyINM8Xnu5JkOqZuMQRRhqZR__GxpKFOTR7CiaL1PZStFxBB14izudFb4yKRMtUuUO1JfDIGh0xiFPHN0Qz68mMv-Td3F5akv_4rZUdMPH0txox4DtbU3-OOGF0xHBB-eXUjKQX887YwHXkQbhskNj_9ONrXoPRGMNiyIB9ahthUVtThNXXtxKpgT_E6L-iotPWCTIlJZO0X-8DQ6xC20WPW57ta9nJN6HSEhZ"/>
+</div>
+<div class="aspect-[3/4]">
+<img class="w-full h-full object-cover" data-alt="Modern clinical examination room with architectural lighting and high-tech medical equipment in soft tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBe509qi6Q9WiXURLhWsoaNkFj9aWcd-sGlBYC_L4iCZ7NASWPkd-jTXhkyUUPY55iwLaRX-oU3yq0PzB-hc3WxwLRBSFmgobaPA7BIe1t7c6KdQikDQCqbUmF66LyvoXJHbk9l5O1lInZiSpqZJnWaxpRHdiHzOw7GyF5XH7nw_fjxBLn3LX0NMHh8WZ_NBzjYE8AcaMvJ5BsEL4r60-ii8L0NAw4Fwc0t6KZ1-7iE0ASxB1jhpQzUsn8oll0B-IwipIwk6J6pGhIK"/>
+</div>
+<div class="aspect-[3/4] md:translate-y-24">
+<img class="w-full h-full object-cover" data-alt="Abstract macro shot of water ripples on a clean surface reflecting neutral beige tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlYXRmngE1Fmgt4m21KVMn1vfu97gPXstKxPLz-UeEbwIUSELkoDajcCylVej5jiQvvnB66FgKX_pB6oGi_d0PALuAnJBlnKC31_Z5482Q8-CoPaVyvvI7yp22oZn5QZiEgdgL1XGtZ6lyhvSSrZvCh_uXhDEWAswiIPvvI4yN4bDVuxyJBtaaxVCtpr-nZJsUPOEMsnVp4MHmQNfR7aa4Y0Xnzrk9mABPkZr5ZPkEUy7bQedtmrfYb1qu0oHNYrkQjKsMaVdGO1Qy"/>
+</div>
+<div class="aspect-[3/4] md:translate-y-6">
+<img class="w-full h-full object-cover" data-alt="Professional dermatologist wearing a white coat analyzing a sample with focused professional attention" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADCh0CqgsalPpOHjHCr1h9HgJH3i3P1ag8gZG8NSjKPG78AGVDuPPWn99yYS2Uo-0FekM4pgC_wNOjUfw26hnp5FxRM8pSzDJ_SjE85L4ui7VyCzKY5DcHVK7HK3Bf1VLBWTSGf1U-4MrIrbAoJrIbmEOkWVMAQ-yFyySO-cy1Xj_mVS35LetN3BgvzJo0Z6sfL-iljToRiZmk2EKhXtW44yN2SwSY3LotH4RjQIWvWieli0L1A40RShIHbK4HAmJ_0SOFPtzDgmfr"/>
+</div>
+</div>
+</section>
+<!-- Why Choose Us -->
+<section class="py-32 px-6 md:px-12 bg-surface-container">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-20">
+<div class="flex flex-col gap-6">
+<span class="font-headline text-5xl text-secondary/30">01.</span>
+<h4 class="font-headline text-2xl">Profesionales de la salud</h4>
+<p class="text-on-surface-variant font-body leading-relaxed">Médicos especialistas dedicados exclusivamente a la dermatología avanzada y estética responsable.</p>
+</div>
+<div class="flex flex-col gap-6">
+<span class="font-headline text-5xl text-secondary/30">02.</span>
+<h4 class="font-headline text-2xl">Atención personalizada</h4>
+<p class="text-on-surface-variant font-body leading-relaxed">Entendemos que cada piel es única. Diseñamos planes a medida según tus objetivos y necesidades médicas.</p>
+</div>
+<div class="flex flex-col gap-6">
+<span class="font-headline text-5xl text-secondary/30">03.</span>
+<h4 class="font-headline text-2xl">Tecnología especializada</h4>
+<p class="text-on-surface-variant font-body leading-relaxed">Equipamiento de última generación con aprobación internacional para garantizar seguridad y eficacia.</p>
+</div>
+</div>
+</section>
+<!-- Intermediate Band -->
+<section class="grid grid-cols-1 md:grid-cols-2 bg-tertiary-fixed h-[600px]">
+<div class="flex flex-col justify-center px-12 md:px-24">
+<h2 class="font-headline text-4xl md:text-5xl mb-8">Evolucioná el cuidado de tu piel.</h2>
+<button class="bg-on-primary-container text-surface px-12 py-5 text-sm font-label uppercase tracking-widest w-fit hover:bg-on-surface transition-colors">Agendar consulta</button>
+</div>
+<div class="hidden md:block">
+<img class="w-full h-full object-cover" data-alt="Dermatologist hands applying clinical cream to a patient with professional precision and care" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApY73RTj_UM83QyEiDXTOG4PJxMHoAO0M_So0N4BlWkbEx4mHRVSKfWBH3MmPHxD9trIuvzUCHBJm5SQubcYHZxqI7Agz7xS1oYPqUJCZlyZYRoefNj_nQLLMS4VZyR-M3vOdTBNMCCDio7BCL-m5Tv4oD9XYO8FsgrsGCSWjaj57LhU5n4WJbciqwi2LVejxmXR7PkiKExjlmUBeNbK1eoRlDoPr_Rw-R-R6F-CvWjhuY8YQq3DiWBQOyCL5L5sV7YdQ_Wvxz4BL1"/>
+</div>
+</section>
+<!-- Treatment Details -->
+<section class="py-32 px-6 md:px-12 bg-surface">
+<div class="mb-20 text-center">
+<span class="text-secondary font-label text-xs uppercase tracking-[0.3em] mb-4 block">Nuestra Experiencia</span>
+<h2 class="font-headline text-4xl md:text-5xl">Especialidades Destacadas</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<div class="p-10 border border-outline-variant/30 flex justify-between items-start group hover:bg-surface-container-low transition-colors duration-500">
+<div>
+<h5 class="font-headline text-2xl mb-2">Limpieza facial profunda</h5>
+<p class="text-on-surface-variant text-sm max-w-xs">Remoción de impurezas y nutrición intensa para un cutis renovado.</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 group-hover:opacity-100 transition-opacity" data-icon="arrow_outward">arrow_outward</span>
+</div>
+<div class="p-10 border border-outline-variant/30 flex justify-between items-start group hover:bg-surface-container-low transition-colors duration-500">
+<div>
+<h5 class="font-headline text-2xl mb-2">Peelings médicos</h5>
+<p class="text-on-surface-variant text-sm max-w-xs">Renovación celular profunda para tratar manchas y texturas irregulares.</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 group-hover:opacity-100 transition-opacity" data-icon="arrow_outward">arrow_outward</span>
+</div>
+<div class="p-10 border border-outline-variant/30 flex justify-between items-start group hover:bg-surface-container-low transition-colors duration-500">
+<div>
+<h5 class="font-headline text-2xl mb-2">Control de acné</h5>
+<p class="text-on-surface-variant text-sm max-w-xs">Protocolos médicos integrales para tratar brotes y secuelas.</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 group-hover:opacity-100 transition-opacity" data-icon="arrow_outward">arrow_outward</span>
+</div>
+<div class="p-10 border border-outline-variant/30 flex justify-between items-start group hover:bg-surface-container-low transition-colors duration-500">
+<div>
+<h5 class="font-headline text-2xl mb-2">Rejuvenecimiento</h5>
+<p class="text-on-surface-variant text-sm max-w-xs">Bioestimuladores y toxina para una expresión fresca y natural.</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 group-hover:opacity-100 transition-opacity" data-icon="arrow_outward">arrow_outward</span>
+</div>
+</div>
+</section>
+<!-- Team Section -->
+<section class="py-32 px-6 md:px-12 bg-surface-container-low" id="equipo">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="space-y-6">
+<div class="aspect-[4/5] overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a female medical professional in a lab coat with a warm, expert smile in a bright clinical setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR5aiYZFRxuSxT7FTiqyQgLYVX1ssOXvFS0s8jGuP0ZvG5JnexGxEJejAnFgexfvdvOw7LU_vD-gjwlJILyzE0dtgL_I1b1kF60GT5Y8G0sKPSWSssWB6IaLqNOoggkxXF3BwTV6O9kT8i6wSszg15zPI5E0UOzph232LtqmvgmtRivCEQvlsmL6JthTONrlChcYFPiGj-IQ6npiWQP5GJHW14c7U2STqS99b2pyYatjcy0p3qA1o7mhl1i7PV_sna84ac2fURZd3K"/>
+</div>
+<div>
+<h4 class="font-headline text-2xl">Dra. Martina Rossi</h4>
+<p class="text-secondary font-label text-xs uppercase tracking-widest mt-1">Directora Médica &amp; Estética</p>
+</div>
+</div>
+<div class="space-y-6">
+<div class="aspect-[4/5] overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a female doctor in scrubs with clinical equipment in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2M9P_2JwwHOnmCHanQ1a4TIEnqwlpxI3Q_SS8bmvFrJhUXh_ZB66YjqVgZfu3pfDMQlxRh8XRlnf6nqG68WdOuJ_N3_pKzJ6UDP_5mYgVpi82uAZONak4pNiw9arqKtI3B3KhwgvKd3pVo5CdlmZPsw3MoC6gbOVzByKettd6fRQJ4GSpddKeidKlDz6Yv2nrW8jaDXUTh1GEXKNu8h-jzV4bDc_yGgP9xdd9fqwTtgtMnPYqLFd6_Ucl09EV9hZH542a4ogxA7HR"/>
+</div>
+<div>
+<h4 class="font-headline text-2xl">Dra. Sofía Mendez</h4>
+<p class="text-secondary font-label text-xs uppercase tracking-widest mt-1">Dermatología Clínica</p>
+</div>
+</div>
+<div class="space-y-6">
+<div class="aspect-[4/5] overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a male dermatologist in professional medical attire in a clean minimalist office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwjBvfD0ijK_lYM7Ex7-sA9YE-AmSYv9V5SYrPNaYKk7dnB28RNnGLrPSh3ObGRhXmdj1roHjQDjcthMnHm1IJWVtGQI_OvGmWZif8GiY7irB2gP2NZ6TD5y0gIX31TOrdytWDmUTtf_iXuC0lDKRWVAJe6H88wTZoOjEt6hrRZkzXt8iX_ObAjh076UeeN4hklEX-rLeDoeYFqMvzbQyydkiNs7eGuvhD6wHjimgPYT4rrYd2KOBxwiSa1SzA1Ndg8K6Tp6f60QUr"/>
+</div>
+<div>
+<h4 class="font-headline text-2xl">Dr. Lucas Ferreira</h4>
+<p class="text-secondary font-label text-xs uppercase tracking-widest mt-1">Cirugía Dermatológica</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Testimonials -->
+<section class="py-32 px-6 md:px-12 bg-on-primary-container text-surface">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+<div class="flex flex-col justify-between h-full">
+<span class="material-symbols-outlined text-4xl text-secondary" data-icon="format_quote" data-weight="fill">format_quote</span>
+<p class="font-headline text-2xl leading-relaxed my-8 italic">"La atención de la Dra. Martina es impecable. Me sentí contenida y los resultados en mi piel fueron naturales y rápidos."</p>
+<span class="font-label text-xs uppercase tracking-widest opacity-60">— Elena G., Paciente</span>
+</div>
+<div class="flex flex-col justify-between h-full">
+<span class="material-symbols-outlined text-4xl text-secondary" data-icon="format_quote" data-weight="fill">format_quote</span>
+<p class="font-headline text-2xl leading-relaxed my-8 italic">"Excelente clínica. El equipamiento es de primer nivel y todo el equipo es súper profesional y amable."</p>
+<span class="font-label text-xs uppercase tracking-widest opacity-60">— Julián M., Paciente</span>
+</div>
+<div class="flex flex-col justify-between h-full">
+<span class="material-symbols-outlined text-4xl text-secondary" data-icon="format_quote" data-weight="fill">format_quote</span>
+<p class="font-headline text-2xl leading-relaxed my-8 italic">"Buscaba un enfoque médico serio para mi rosácea y lo encontré aquí. Mi piel nunca se vio mejor."</p>
+<span class="font-label text-xs uppercase tracking-widest opacity-60">— Clara P., Paciente</span>
+</div>
+</div>
+</section>
+<!-- FAQ Accordion -->
+<section class="py-32 px-6 md:px-12 bg-surface" id="faq">
+<div class="max-w-3xl mx-auto">
+<h2 class="font-headline text-4xl mb-16 text-center">Preguntas Frecuentes</h2>
+<div class="space-y-2">
+<details class="group border-b border-outline-variant/30 py-6" open="">
+<summary class="flex justify-between items-center cursor-pointer list-none font-headline text-xl">
+                        ¿Cómo pido mi primer turno?
+                        <span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant font-body leading-relaxed">Podés agendar tu turno directamente desde nuestro botón de reserva online, vía WhatsApp o llamando a nuestra recepción durante el horario comercial.</p>
+</details>
+<details class="group border-b border-outline-variant/30 py-6">
+<summary class="flex justify-between items-center cursor-pointer list-none font-headline text-xl">
+                        ¿Trabajan con prepagas u obras sociales?
+                        <span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant font-body leading-relaxed">Trabajamos con planes seleccionados de las principales prestadoras. Te sugerimos consultar por tu plan específico al momento de contactarnos.</p>
+</details>
+<details class="group border-b border-outline-variant/30 py-6">
+<summary class="flex justify-between items-center cursor-pointer list-none font-headline text-xl">
+                        ¿Qué debo llevar a la primera consulta?
+                        <span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+</summary>
+<p class="mt-4 text-on-surface-variant font-body leading-relaxed">Recomendamos traer estudios previos si los tenés y una lista de los productos que usás actualmente en tu rutina diaria.</p>
+</details>
+</div>
+</div>
+</section>
+<!-- Contact Section -->
+<section class="py-32 px-6 md:px-12 bg-surface-container-high" id="contacto">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-24">
+<div>
+<h2 class="font-headline text-4xl md:text-5xl mb-12">Estamos para acompañarte.</h2>
+<div class="space-y-10">
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-secondary" data-icon="location_on">location_on</span>
+<div>
+<h6 class="font-label text-xs uppercase tracking-widest mb-1">Ubicación</h6>
+<p class="font-body">Av. Libertador 2450, Piso 8, CABA</p>
+</div>
+</div>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-secondary" data-icon="phone">phone</span>
+<div>
+<h6 class="font-label text-xs uppercase tracking-widest mb-1">Teléfono</h6>
+<p class="font-body">+54 11 4821-0000</p>
+</div>
+</div>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-secondary" data-icon="schedule">schedule</span>
+<div>
+<h6 class="font-label text-xs uppercase tracking-widest mb-1">Horarios</h6>
+<p class="font-body">Lunes a Viernes de 09:00 a 20:00 hs</p>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface p-12 shadow-sm">
+<form class="space-y-8">
+<div class="relative">
+<input class="w-full bg-transparent border-0 border-b border-outline-variant py-4 focus:ring-0 focus:border-secondary placeholder:text-on-surface-variant/40" placeholder="Nombre completo" type="text"/>
+</div>
+<div class="relative">
+<input class="w-full bg-transparent border-0 border-b border-outline-variant py-4 focus:ring-0 focus:border-secondary placeholder:text-on-surface-variant/40" placeholder="Correo electrónico" type="email"/>
+</div>
+<div class="relative">
+<textarea class="w-full bg-transparent border-0 border-b border-outline-variant py-4 focus:ring-0 focus:border-secondary placeholder:text-on-surface-variant/40" placeholder="Mensaje o consulta" rows="4"></textarea>
+</div>
+<button class="w-full bg-on-primary-container text-surface py-5 text-sm font-label uppercase tracking-widest">Enviar mensaje</button>
+</form>
+</div>
+</div>
+</section>
+<!-- Map Section -->
+<section class="h-[400px] w-full bg-surface-container-highest overflow-hidden">
+<div class="w-full h-full grayscale" data-location="Buenos Aires" style="">
+<img class="w-full h-full object-cover" data-alt="Modern minimalist map view showing an urban clinic location in high-contrast charcoal and white tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkg3wtM0Y7dfLxHzL98WA266bQq71trAgLQLb8vX2gg28IWvep8BlesPzCLb6SHcqJICyeaIiMVivYfxulAQ3wpL_EGhBQ3sDDX8ih9dbcZwO-KfzyOadR6JfvvbNF5fT36hVJv3dx9hdwbB8NiZVK8Pz9Z3Hb2VqmECa5pzguclDsItU79MUbQmvpSh9m8HMAxYJcJloY8u3SQS2_lrIKoH_4ZSvFAqMOSJM1i1XVLeoSEsNdLq9UJC6nBsy-c220C9eM1qTq9Jby"/>
+</div>
+</section>
+<!-- Chatbot Bubble -->
+<div class="fixed bottom-8 right-8 z-[60]">
+<button class="bg-on-primary-container text-surface p-4 rounded-full shadow-xl flex items-center gap-3 group">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-500 font-label text-xs uppercase tracking-widest">¿Tenés dudas? Te ayudamos</span>
+</button>
+</div>
+<!-- Final CTA -->
+<section class="py-32 px-6 text-center bg-surface">
+<h2 class="font-headline text-5xl md:text-6xl mb-10">Cuidá tu piel. Pedí tu turno.</h2>
+<button class="bg-on-primary-container text-surface px-16 py-6 text-sm font-label uppercase tracking-widest hover:bg-on-surface transition-colors">Agendar ahora</button>
+</section>
+<!-- Footer Section -->
+<footer class="bg-[#e4e2dd] dark:bg-[#121212] w-full border-t border-[#1b1c19]/5">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 px-12 py-20 w-full text-[#1b1c19] dark:text-[#fbf9f4] font-body text-sm tracking-wide">
+<div class="col-span-1 md:col-span-1">
+<div class="font-serif text-xl italic mb-6">Dermaclinic</div>
+<p class="opacity-70 leading-relaxed max-w-xs">Excelencia médica y calidez humana dedicada a la salud integral de tu piel.</p>
+</div>
+<div>
+<h6 class="font-label text-xs uppercase tracking-[0.2em] mb-6 opacity-40">Navegación</h6>
+<ul class="space-y-4">
+<li><a class="opacity-70 hover:opacity-100 transition-opacity" href="#">Inicio</a></li>
+<li><a class="opacity-70 hover:opacity-100 transition-opacity" href="#">Tratamientos</a></li>
+<li><a class="opacity-70 hover:opacity-100 transition-opacity" href="#">Nuestra Clínica</a></li>
+<li><a class="opacity-70 hover:opacity-100 transition-opacity" href="#">Blog Médico</a></li>
+</ul>
+</div>
+<div>
+<h6 class="font-label text-xs uppercase tracking-[0.2em] mb-6 opacity-40">Contacto</h6>
+<ul class="space-y-4">
+<li class="opacity-70">Av. Libertador 2450, CABA</li>
+<li class="opacity-70">info@dermaclinic.com</li>
+<li class="opacity-70">+54 11 4821 0000</li>
+<li class="flex gap-4 mt-6">
+<span class="material-symbols-outlined text-sm" data-icon="share">share</span>
+<span class="material-symbols-outlined text-sm" data-icon="photo_camera">photo_camera</span>
+</li>
+</ul>
+</div>
+<div>
+<h6 class="font-label text-xs uppercase tracking-[0.2em] mb-6 opacity-40">Newsletter</h6>
+<div class="flex border-b border-on-surface/20 pb-2">
+<input class="bg-transparent border-0 focus:ring-0 text-sm w-full" placeholder="Tu email" type="email"/>
+<button class="material-symbols-outlined text-secondary" data-icon="arrow_forward">arrow_forward</button>
+</div>
+</div>
+</div>
+<div class="px-12 py-8 border-t border-on-surface/5 flex flex-col md:flex-row justify-between items-center gap-6 opacity-60 text-[10px] uppercase tracking-widest">
+<p>© 2024 Dermaclinic Editorial Center. All rights reserved. Medical License #82910.</p>
+<div class="flex gap-8">
+<a class="underline decoration-[#7d563b] underline-offset-4" href="#">Privacidad</a>
+<a class="hover:opacity-100 transition-opacity" href="#">Términos de Servicio</a>
+<a class="hover:opacity-100 transition-opacity" href="#">Aviso Legal</a>
+<a class="hover:opacity-100 transition-opacity" href="#">Configuración de Cookies</a>
+</div>
+</div>
+</footer>
+</body></html>

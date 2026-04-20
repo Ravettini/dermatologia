@@ -138,7 +138,7 @@ export function BookingSection() {
   });
 
   return (
-    <section id="reservar" className="scroll-mt-28 bg-surface-container-low px-6 py-24 md:px-12">
+    <section id="reservar" className="scroll-mt-32 bg-surface-container-low px-4 py-16 sm:px-6 md:scroll-mt-28 md:px-12 md:py-24">
       <div className="mx-auto max-w-5xl">
         <span className="mb-4 block font-label text-xs uppercase tracking-[0.3em] text-secondary">Reservá tu consulta</span>
         <h2 className="mb-4 font-headline text-4xl md:text-5xl">Solicitá tu turno</h2>
@@ -223,7 +223,7 @@ export function BookingSection() {
             </div>
           </div>
 
-          <div className="space-y-6 bg-surface-container-lowest p-8 shadow-soft">
+          <div className="space-y-6 bg-surface-container-lowest p-5 shadow-soft sm:p-6 md:p-8">
             <div>
               <input
                 className="w-full border-0 border-b border-outline-variant bg-transparent py-3 placeholder:text-on-surface-variant/40 focus:border-secondary focus:ring-0"

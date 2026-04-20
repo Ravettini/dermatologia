@@ -503,10 +503,24 @@ router.delete("/availability/:id", async (req, res) => {
 
 router.get("/leads", async (_req, res) => {
   try {
-    const leads = await prisma.contactLead.findMany({
+    const rows = await prisma.contactLead.findMany({
       orderBy: { updatedAt: "desc" },
       take: 300,
-      include: { _count: { select: { bookings: true } } },
+      include: {
+        _count: { select: { bookings: true } },
+        chatConversations: {
+          select: { id: true },
+          orderBy: { updatedAt: "desc" },
+          take: 1,
+        },
+      },
+    });
+    const leads = rows.map((l) => {
+      const { chatConversations, ...rest } = l;
+      return {
+        ...rest,
+        chatConversationId: chatConversations[0]?.id ?? null,
+      };
     });
     res.json({ leads });
   } catch (e) {
@@ -670,6 +684,23 @@ router.patch("/professionals/:id", async (req, res) => {
   }
 });
 
+router.delete("/professionals/:id", async (req, res) => {
+  try {
+    const existing = await prisma.professional.findFirst({
+      where: { id: req.params.id, deletedAt: null },
+    });
+    if (!existing) throw new AppError(404, "Profesional no encontrado.");
+    await prisma.professional.update({
+      where: { id: req.params.id },
+      data: { deletedAt: new Date(), active: false },
+    });
+    res.json({ ok: true });
+  } catch (e) {
+    const { status, message } = friendlyError(e);
+    res.status(status).json({ error: message });
+  }
+});
+
 router.get("/treatments", async (_req, res) => {
   try {
     const treatments = await prisma.treatment.findMany({
@@ -720,11 +751,41 @@ router.patch("/treatments/:id", async (req, res) => {
       })
       .safeParse(req.body);
     if (!body.success) throw new AppError(400, "Datos inválidos");
+    const existing = await prisma.treatment.findFirst({
+      where: { id: req.params.id, deletedAt: null },
+    });
+    if (!existing) throw new AppError(404, "Tratamiento no encontrado.");
+
     const t = await prisma.treatment.update({
       where: { id: req.params.id },
       data: body.data,
     });
     res.json({ treatment: t });
+  } catch (e) {
+    const { status, message } = friendlyError(e);
+    res.status(status).json({ error: message });
+  }
+});
+
+router.delete("/treatments/:id", async (req, res) => {
+  try {
+    const existing = await prisma.treatment.findFirst({
+      where: { id: req.params.id, deletedAt: null },
+    });
+    if (!existing) throw new AppError(404, "Tratamiento no encontrado.");
+
+    await prisma.$transaction([
+      prisma.professional.updateMany({
+        where: { specialtyTreatmentId: req.params.id },
+        data: { specialtyTreatmentId: null },
+      }),
+      prisma.treatment.update({
+        where: { id: req.params.id },
+        data: { deletedAt: new Date(), active: false },
+      }),
+    ]);
+
+    res.json({ ok: true });
   } catch (e) {
     const { status, message } = friendlyError(e);
     res.status(status).json({ error: message });

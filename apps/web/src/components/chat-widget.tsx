@@ -100,9 +100,9 @@ export function ChatWidget({
 
   return (
     <>
-      <div className="fixed bottom-8 right-8 z-[60] flex flex-col items-end gap-3">
+      <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(0.75rem,env(safe-area-inset-right))] z-[60] flex w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] flex-col items-stretch gap-2 sm:bottom-8 sm:right-8 sm:w-auto sm:max-w-none sm:items-end sm:gap-3">
         {open && (
-          <div className="flex h-[min(560px,80vh)] w-[min(380px,92vw)] flex-col overflow-hidden rounded-xl border border-outline-variant/40 bg-surface-container-lowest/95 shadow-soft backdrop-blur">
+          <div className="flex h-[min(520px,calc(100dvh-7rem))] w-full max-w-[min(380px,100%)] flex-col overflow-hidden rounded-xl border border-outline-variant/40 bg-surface-container-lowest/95 shadow-soft backdrop-blur sm:h-[min(560px,80vh)] sm:max-w-[min(380px,92vw)]">
             <div className="flex items-center justify-between border-b border-outline-variant/30 bg-surface-container-high px-4 py-3">
               <div>
                 <p className="font-headline text-lg">{siteName}</p>
@@ -142,28 +142,28 @@ export function ChatWidget({
               )}
               <div ref={endRef} />
             </div>
-            <div className="border-t border-outline-variant/30 bg-surface-container-lowest px-3 py-3">
-              <div className="mb-2 flex flex-wrap gap-2">
+            <div className="border-t border-outline-variant/30 bg-surface-container-lowest px-2 py-2 sm:px-3 sm:py-3">
+              <div className="mb-2 flex flex-wrap gap-1.5 sm:gap-2">
                 <Link
                   href="/#reservar"
-                  className="rounded-full border border-outline-variant/50 px-3 py-1 text-[11px] uppercase tracking-wide text-on-surface"
+                  className="rounded-full border border-outline-variant/50 px-2.5 py-1 text-[10px] uppercase tracking-wide text-on-surface sm:px-3 sm:text-[11px]"
                 >
-                  Reservar consulta
+                  Reservar
                 </Link>
                 <a
                   href={waHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-full border border-secondary/40 px-3 py-1 text-[11px] uppercase tracking-wide text-secondary"
+                  className="rounded-full border border-secondary/40 px-2.5 py-1 text-[10px] uppercase tracking-wide text-secondary sm:px-3 sm:text-[11px]"
                 >
                   WhatsApp
                 </a>
                 <button
                   type="button"
                   onClick={() => setShowLead((s) => !s)}
-                  className="rounded-full border border-outline-variant/50 px-3 py-1 text-[11px] uppercase tracking-wide"
+                  className="rounded-full border border-outline-variant/50 px-2.5 py-1 text-[10px] uppercase tracking-wide sm:px-3 sm:text-[11px]"
                 >
-                  Dejar mis datos
+                  Mis datos
                 </button>
               </div>
               {showLead && (
@@ -196,10 +196,10 @@ export function ChatWidget({
                 </div>
               )}
               {error && <p className="mb-2 text-xs text-red-700">{error}</p>}
-              <div className="flex gap-2">
+              <div className="flex min-h-0 gap-1.5 sm:gap-2">
                 <input
-                  className="flex-1 rounded-lg border border-outline-variant/40 bg-transparent px-3 py-2 text-sm outline-none focus:border-secondary"
-                  placeholder="Escribí tu mensaje…"
+                  className="min-w-0 flex-1 rounded-lg border border-outline-variant/40 bg-transparent px-2.5 py-2 text-[13px] outline-none focus:border-secondary sm:px-3 sm:text-sm"
+                  placeholder="Mensaje…"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => {
@@ -212,7 +212,7 @@ export function ChatWidget({
                 <button
                   type="button"
                   onClick={() => void send()}
-                  className="rounded-lg bg-on-primary-container px-3 py-2 font-label text-xs uppercase tracking-widest text-surface"
+                  className="shrink-0 rounded-lg bg-on-primary-container px-2.5 py-2 font-label text-[10px] uppercase tracking-widest text-surface sm:px-3 sm:text-xs"
                 >
                   Enviar
                 </button>
@@ -223,9 +223,10 @@ export function ChatWidget({
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="flex items-center gap-3 rounded-full bg-on-primary-container px-4 py-3 text-surface shadow-soft transition hover:opacity-95"
+          className="ml-auto flex h-12 w-12 items-center justify-center rounded-full bg-on-primary-container text-surface shadow-soft transition hover:opacity-95 sm:h-auto sm:w-auto sm:gap-3 sm:px-4 sm:py-3"
+          aria-label={open ? "Cerrar chat" : "Abrir chat"}
         >
-          <span className="material-symbols-outlined">chat_bubble</span>
+          <span className="material-symbols-outlined text-[26px] sm:text-2xl">chat_bubble</span>
           <span className="hidden font-label text-xs uppercase tracking-widest sm:inline">¿Dudas?</span>
         </button>
       </div>

@@ -112,6 +112,8 @@ router.get("/availability", async (req, res) => {
       where: {
         status: SlotStatus.AVAILABLE,
         startsAt: { gte: from, lte: to },
+        professional: { deletedAt: null },
+        treatment: { deletedAt: null },
         ...(treatmentId ? { treatmentId } : {}),
         ...(professionalId ? { professionalId } : {}),
       },

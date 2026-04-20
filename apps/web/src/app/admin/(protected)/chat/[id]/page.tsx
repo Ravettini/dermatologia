@@ -18,8 +18,8 @@ export default function AdminChatDetailPage() {
   }, [params.id]);
 
   return (
-    <div>
-      <h1 className="mb-6 font-headline text-3xl">Conversación</h1>
+    <div className="min-w-0">
+      <h1 className="mb-6 font-headline text-2xl sm:text-3xl">Conversación</h1>
       <div className="space-y-3">
         {messages.map((m) => (
           <div key={m.id} className={`rounded border border-outline-variant/30 p-3 text-sm ${m.role === "user" ? "bg-surface-container-high" : ""}`}>

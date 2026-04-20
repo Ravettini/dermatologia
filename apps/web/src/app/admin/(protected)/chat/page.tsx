@@ -22,8 +22,8 @@ export default function AdminChatPage() {
   }, []);
 
   return (
-    <div>
-      <h1 className="mb-6 font-headline text-3xl">Conversaciones (chatbot)</h1>
+    <div className="min-w-0">
+      <h1 className="mb-6 font-headline text-2xl sm:text-3xl">Conversaciones (chatbot)</h1>
       <ul className="space-y-3 text-sm">
         {rows.map((c) => (
           <li key={c.id} className="border border-outline-variant/30 p-4">

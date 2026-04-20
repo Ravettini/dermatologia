@@ -6,6 +6,34 @@ import { ContactForm } from "@/components/contact-form";
 type FAQ = { id: string; question: string; answer: string };
 type Testimonial = { id: string; quote: string; author: string };
 
+const FALLBACK_MAP_EMBED_URL = "https://www.google.com/maps?q=-34.6037345,-58.3815704&z=14&output=embed";
+
+function resolveMapEmbedSrc(rawValue: string): string {
+  const v = rawValue.trim();
+  if (!v) return FALLBACK_MAP_EMBED_URL;
+
+  // Compatibilidad: si venía una imagen vieja en este campo, usamos fallback real de Maps.
+  if (/googleusercontent|\.png$|\.jpe?g$|\.webp$|\.gif$/i.test(v)) {
+    return FALLBACK_MAP_EMBED_URL;
+  }
+
+  if (/google\.[^/]+\/maps\/embed/i.test(v) || /output=embed/i.test(v)) {
+    return v;
+  }
+
+  if (/^https?:\/\//i.test(v) && /google\.[^/]+\/maps/i.test(v)) {
+    try {
+      const u = new URL(v);
+      const q = u.searchParams.get("q") || u.searchParams.get("query");
+      if (q) return `https://www.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
+    } catch {
+      return FALLBACK_MAP_EMBED_URL;
+    }
+  }
+
+  return `https://www.google.com/maps?q=${encodeURIComponent(v)}&output=embed`;
+}
+
 export function HomeLanding({
   site,
   faqs,
@@ -19,58 +47,65 @@ export function HomeLanding({
   const phone = site["contact.phone"] ?? "+54 11 4821-0000";
   const email = site["contact.email"] ?? "info@dermaclinic.com";
   const hours = site["contact.hours"] ?? "Lunes a viernes de 09:00 a 20:00";
-  const mapUrl = site["contact.mapImageUrl"] ?? "";
+  const mapEmbedSrc = resolveMapEmbedSrc(site["contact.mapImageUrl"] ?? "");
   const disclaimer = site["legal.disclaimer"] ?? "";
 
   return (
-    <main>
-      <section className="flex min-h-screen items-center px-6 pb-20 pt-32 md:px-12" id="inicio">
-        <div className="grid w-full grid-cols-1 items-center gap-16 md:grid-cols-2">
-          <div className="max-w-2xl">
-            <span className="mb-6 block font-label text-xs uppercase tracking-[0.3em] text-secondary">
+    <main className="w-full min-w-0 max-w-[100vw] overflow-x-hidden">
+      <section
+        className="flex w-full max-w-[100vw] flex-col justify-center overflow-x-hidden px-4 pb-12 pt-[calc(7.25rem+env(safe-area-inset-top,0px))] sm:px-6 sm:pb-14 sm:pt-32 md:px-10 md:pb-16 md:pt-32 lg:h-[100svh] lg:min-h-0 lg:max-h-[100svh] lg:overflow-hidden lg:box-border lg:py-5 lg:pb-5 lg:pt-24 xl:px-12"
+        id="inicio"
+      >
+        <div className="mx-auto grid min-h-0 w-full max-w-[1400px] grid-cols-1 items-center gap-10 sm:gap-12 md:gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.14fr)] lg:items-stretch lg:gap-6 xl:gap-10 2xl:gap-12">
+          <div className="flex min-h-0 min-w-0 max-w-2xl flex-col justify-center">
+            <span className="mb-4 block font-label text-[10px] uppercase tracking-[0.28em] text-secondary sm:mb-5 sm:text-xs sm:tracking-[0.3em]">
               Cuidado experto para tu piel
             </span>
-            <h1 className="mb-8 font-headline text-5xl leading-[1.1] text-on-surface md:text-7xl">
+            <h1 className="mb-5 font-headline text-[clamp(1.85rem,5.5vw,2.75rem)] leading-[1.12] text-on-surface sm:mb-6 sm:text-5xl md:text-6xl lg:mb-4 lg:text-[clamp(1.75rem,2.75vw,2.85rem)] xl:text-[clamp(2rem,3vw,3.25rem)] 2xl:text-5xl">
               Dermatología clínica y estética con una mirada profesional y personalizada
             </h1>
-            <p className="mb-10 font-body text-lg leading-relaxed text-on-surface-variant opacity-80 md:text-xl">
+            <p className="mb-8 font-body text-base leading-relaxed text-on-surface-variant opacity-80 sm:mb-9 sm:text-lg md:text-xl lg:mb-6 lg:max-w-xl lg:text-[clamp(0.95rem,1.25vw,1.1rem)] xl:text-lg">
               Tratamientos pensados para cuidar, mejorar y acompañar la salud y belleza de tu piel, combinando
               evidencia científica con una estética natural y equilibrada.
             </p>
-            <div className="flex flex-wrap gap-6">
+            <div className="flex flex-wrap gap-4 sm:gap-6">
               <Link
                 href="/#reservar"
-                className="bg-on-primary-container px-8 py-4 font-label text-sm uppercase tracking-widest text-surface transition-all hover:opacity-90"
+                className="bg-on-primary-container px-6 py-3 font-label text-xs uppercase tracking-widest text-surface transition-all hover:opacity-90 sm:px-8 sm:py-4 sm:text-sm"
               >
                 Pedir turno
               </Link>
               <Link
                 href="/#tratamientos"
-                className="border-b border-on-surface-variant px-2 py-4 font-label text-sm uppercase tracking-widest text-on-surface-variant transition-all hover:text-secondary"
+                className="border-b border-on-surface-variant px-1 py-3 font-label text-xs uppercase tracking-widest text-on-surface-variant transition-all hover:text-secondary sm:px-2 sm:py-4 sm:text-sm"
               >
                 Ver tratamientos
               </Link>
             </div>
             {disclaimer && (
-              <p className="mt-8 max-w-xl text-xs leading-relaxed text-on-surface-variant">{disclaimer}</p>
+              <p className="mt-6 max-w-xl text-[11px] leading-relaxed text-on-surface-variant sm:mt-8 sm:text-xs lg:mt-5">
+                {disclaimer}
+              </p>
             )}
           </div>
-          <div className="relative h-[600px] overflow-hidden md:h-[800px]">
-            <Image
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgVJXAjPV79yyHsezLlvM8ALw8EpNEwGsfY7zusDnboo8I7GvM-sZvhQxC0jwsylRfjQtS_r19F5bOcb3idcFttejh4XDn5MO_ZIe-pAnGiT33AIIp4TzicAa4pD51x4GgFlER_-c5DZ-s0fUdXLLaN7usBHWNGQ0EHnB7smocy7coYrpYVOUDn1W4JEclo_dTd38xsU6zqCchOXUu5fuGOfDT4Pjxrce9KdW1k_sjLdk8Y5X00EEm2o3ukZvsgGOUbv8Cs0cnoagu"
-              alt="Retrato editorial con piel luminosa y luz suave"
-              fill
-              className="object-cover grayscale-[20%]"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority
-            />
-            <div className="absolute inset-0 bg-secondary/5 mix-blend-multiply" />
+          <div className="flex min-h-[280px] w-full items-center justify-center bg-surface sm:min-h-[320px] lg:min-h-0 lg:h-full lg:max-h-full">
+            <div className="relative aspect-[3/4] w-full max-w-[min(100%,420px)] sm:max-w-[min(100%,480px)] lg:h-[min(720px,calc(100svh-10rem))] lg:w-auto lg:max-w-[min(520px,42vw)]">
+              <Image
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgVJXAjPV79yyHsezLlvM8ALw8EpNEwGsfY7zusDnboo8I7GvM-sZvhQxC0jwsylRfjQtS_r19F5bOcb3idcFttejh4XDn5MO_ZIe-pAnGiT33AIIp4TzicAa4pD51x4GgFlER_-c5DZ-s0fUdXLLaN7usBHWNGQ0EHnB7smocy7coYrpYVOUDn1W4JEclo_dTd38xsU6zqCchOXUu5fuGOfDT4Pjxrce9KdW1k_sjLdk8Y5X00EEm2o3ukZvsgGOUbv8Cs0cnoagu"
+                alt="Retrato editorial con piel luminosa y luz suave"
+                fill
+                className="object-contain object-center grayscale-[20%]"
+                sizes="(max-width: 1024px) 90vw, 42vw"
+                priority
+              />
+              <div className="pointer-events-none absolute inset-0 bg-secondary/5 mix-blend-multiply" />
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-surface-container-low px-6 py-24 md:px-12" id="tratamientos">
-        <div className="grid grid-cols-1 gap-px bg-outline-variant/10 md:grid-cols-4">
+      <section className="bg-surface-container-low px-4 py-14 sm:px-6 sm:py-16 md:px-10 md:py-20 lg:px-12 lg:py-24" id="tratamientos">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-px bg-outline-variant/10 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
               icon: "face",
@@ -93,7 +128,10 @@ export function HomeLanding({
               text: "Evaluación y acompañamiento de patologías de la piel, pelo y uñas.",
             },
           ].map((c) => (
-            <div key={c.title} className="bg-surface-container-low p-12 transition-colors hover:bg-surface-container-high">
+            <div
+              key={c.title}
+              className="bg-surface-container-low p-6 transition-colors hover:bg-surface-container-high sm:p-8 md:p-10 lg:p-12"
+            >
               <span className="material-symbols-outlined mb-6 block text-3xl text-secondary">{c.icon}</span>
               <h3 className="mb-4 font-headline text-2xl">{c.title}</h3>
               <p className="mb-6 text-sm leading-relaxed text-on-surface-variant">{c.text}</p>
@@ -105,13 +143,13 @@ export function HomeLanding({
         </div>
       </section>
 
-      <section className="overflow-hidden bg-surface px-6 py-32 md:px-12" id="dermatologia">
-        <div className="mb-24 max-w-4xl">
-          <h2 className="font-headline text-4xl italic leading-tight text-secondary md:text-6xl">
+      <section className="overflow-hidden bg-surface px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32" id="dermatologia">
+        <div className="mx-auto mb-16 max-w-4xl sm:mb-20 md:mb-24">
+          <h2 className="font-headline text-3xl italic leading-tight text-secondary sm:text-4xl md:text-5xl lg:text-6xl">
             La excelencia médica se encuentra con el arte del cuidado.
           </h2>
         </div>
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4 md:gap-8">
           {[
             "https://lh3.googleusercontent.com/aida-public/AB6AXuCp_pqkQLNW866nnMhVijcxPPBTxTYpBap46efqrVuyINM8Xnu5JkOqZuMQRRhqZR__GxpKFOTR7CiaL1PZStFxBB14izudFb4yKRMtUuUO1JfDIGh0xiFPHN0Qz68mMv-Td3F5akv_4rZUdMPH0txox4DtbU3-OOGF0xHBB-eXUjKQX887YwHXkQbhskNj_9ONrXoPRGMNiyIB9ahthUVtThNXXtxKpgT_E6L-iotPWCTIlJZO0X-8DQ6xC20WPW57ta9nJN6HSEhZ",
             "https://lh3.googleusercontent.com/aida-public/AB6AXuBe509qi6Q9WiXURLhWsoaNkFj9aWcd-sGlBYC_L4iCZ7NASWPkd-jTXhkyUUPY55iwLaRX-oU3yq0PzB-hc3WxwLRBSFmgobaPA7BIe1t7c6KdQikDQCqbUmF66LyvoXJHbk9l5O1lInZiSpqZJnWaxpRHdiHzOw7GyF5XH7nw_fjxBLn3LX0NMHh8WZ_NBzjYE8AcaMvJ5BsEL4r60-ii8L0NAw4Fwc0t6KZ1-7iE0ASxB1jhpQzUsn8oll0B-IwipIwk6J6pGhIK",
@@ -127,8 +165,8 @@ export function HomeLanding({
         </div>
       </section>
 
-      <section className="bg-surface-container px-6 py-32 md:px-12">
-        <div className="grid grid-cols-1 gap-20 md:grid-cols-3">
+      <section className="bg-surface-container px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-12 md:grid-cols-3 md:gap-16 lg:gap-20">
           {[
             {
               n: "01.",
@@ -156,7 +194,7 @@ export function HomeLanding({
       </section>
 
       <section className="grid h-auto grid-cols-1 bg-tertiary-fixed md:grid-cols-2 md:h-[600px]">
-        <div className="flex flex-col justify-center px-12 py-16 md:px-24">
+        <div className="flex flex-col justify-center px-4 py-12 sm:px-10 sm:py-16 md:px-16 lg:px-24">
           <h2 className="mb-8 font-headline text-4xl md:text-5xl">Evolucioná el cuidado de tu piel.</h2>
           <Link
             href="/#reservar"
@@ -176,12 +214,12 @@ export function HomeLanding({
         </div>
       </section>
 
-      <section className="bg-surface px-6 py-32 md:px-12">
-        <div className="mb-20 text-center">
+      <section className="bg-surface px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32">
+        <div className="mx-auto mb-14 max-w-[1600px] text-center sm:mb-16 md:mb-20">
           <span className="mb-4 block font-label text-xs uppercase tracking-[0.3em] text-secondary">Nuestra experiencia</span>
           <h2 className="font-headline text-4xl md:text-5xl">Especialidades destacadas</h2>
         </div>
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
           {[
             {
               title: "Limpieza facial profunda",
@@ -193,7 +231,7 @@ export function HomeLanding({
           ].map((t) => (
             <div
               key={t.title}
-              className="group flex items-start justify-between border border-outline-variant/30 p-10 transition-colors duration-500 hover:bg-surface-container-low"
+              className="group flex items-start justify-between border border-outline-variant/30 p-5 transition-colors duration-500 hover:bg-surface-container-low sm:p-8 md:p-10"
             >
               <div>
                 <h5 className="mb-2 font-headline text-2xl">{t.title}</h5>
@@ -207,8 +245,8 @@ export function HomeLanding({
         </div>
       </section>
 
-      <section className="bg-surface-container-low px-6 py-32 md:px-12" id="equipo">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
+      <section className="bg-surface-container-low px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32" id="equipo">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-10 md:grid-cols-3 md:gap-12">
           {[
             {
               name: "Dra. Martina Rossi",
@@ -239,8 +277,8 @@ export function HomeLanding({
         </div>
       </section>
 
-      <section className="bg-on-primary-container px-6 py-32 text-surface md:px-12">
-        <div className="grid grid-cols-1 gap-16 md:grid-cols-3">
+      <section className="bg-on-primary-container px-4 py-16 text-surface sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-12 md:grid-cols-3 md:gap-16">
           {testimonials.map((t) => (
             <div key={t.id} className="flex h-full flex-col justify-between">
               <span className="material-symbols-outlined text-4xl text-secondary">format_quote</span>
@@ -251,8 +289,8 @@ export function HomeLanding({
         </div>
       </section>
 
-      <section className="bg-surface px-6 py-32 md:px-12" id="faq">
-        <div className="mx-auto max-w-3xl">
+      <section className="bg-surface px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32" id="faq">
+        <div className="mx-auto w-full max-w-3xl">
           <h2 className="mb-16 text-center font-headline text-4xl">Preguntas frecuentes</h2>
           <div className="space-y-2">
             {faqs.map((f, idx) => (
@@ -270,8 +308,8 @@ export function HomeLanding({
 
       <BookingSection />
 
-      <section className="bg-surface-container-high px-6 py-32 md:px-12" id="contacto">
-        <div className="grid grid-cols-1 gap-24 md:grid-cols-2">
+      <section className="bg-surface-container-high px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32" id="contacto">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-16 md:grid-cols-2 md:gap-20 lg:gap-24">
           <div>
             <h2 className="mb-12 font-headline text-4xl md:text-5xl">Estamos para acompañarte.</h2>
             <div className="space-y-10">
@@ -298,30 +336,31 @@ export function HomeLanding({
               </div>
             </div>
           </div>
-          <div className="bg-surface p-12 shadow-sm">
+          <div className="bg-surface p-6 shadow-sm sm:p-8 md:p-10 lg:p-12">
             <h3 className="mb-6 font-headline text-2xl">Dejanos tus datos</h3>
             <ContactForm />
           </div>
         </div>
       </section>
 
-      <section className="h-[400px] w-full overflow-hidden bg-surface-container-highest">
-        {mapUrl ? (
-          <div className="relative h-full w-full grayscale">
-            <Image src={mapUrl} alt="Mapa ilustrativo de ubicación" fill className="object-cover" sizes="100vw" />
-          </div>
-        ) : (
-          <div className="flex h-full items-center justify-center text-sm text-on-surface-variant">
-            Mapa no configurado (administración)
-          </div>
-        )}
+      <section className="h-[280px] w-full overflow-hidden bg-surface-container-highest sm:h-[340px] md:h-[400px]">
+        <iframe
+          title="Mapa de ubicación"
+          src={mapEmbedSrc}
+          className="h-full w-full grayscale"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          allowFullScreen
+        />
       </section>
 
-      <section className="bg-surface px-6 py-32 text-center">
-        <h2 className="mb-10 font-headline text-5xl md:text-6xl">Cuidá tu piel. Pedí tu turno.</h2>
+      <section className="bg-surface px-4 py-16 text-center sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32">
+        <h2 className="mb-8 font-headline text-3xl sm:mb-10 sm:text-4xl md:text-5xl lg:text-6xl">
+          Cuidá tu piel. Pedí tu turno.
+        </h2>
         <Link
           href="/#reservar"
-          className="inline-block bg-on-primary-container px-16 py-6 font-label text-sm uppercase tracking-widest text-surface transition-colors hover:bg-on-surface"
+          className="inline-block max-w-[calc(100vw-2rem)] bg-on-primary-container px-8 py-5 font-label text-xs uppercase tracking-widest text-surface transition-colors hover:bg-on-surface sm:px-12 sm:py-6 sm:text-sm md:px-16"
         >
           Agendar ahora
         </Link>

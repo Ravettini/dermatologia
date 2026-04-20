@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0,0"
         />
       </head>
-      <body className={`${newsreader.variable} ${manrope.variable} font-body`}>{children}</body>
+      <body className={`${newsreader.variable} ${manrope.variable} min-w-0 overflow-x-hidden font-body`}>{children}</body>
     </html>
   );
 }

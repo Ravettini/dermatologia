@@ -34,15 +34,85 @@ function stripLeadingEnglishChecklist(s: string): string {
   let prev = "";
   // Palabras hasta ?, luego Yes/No/Sí + punto (con o sin espacio antes del texto útil)
   const chunk = /^([\w\s/,'-]+?)\?\s*(?:Yes|No|Si|Sí)\.\s*/i;
+  /** p.ej. Rioplatense? Yes ("Disculpame"). — sin punto inmediato después de Yes */
+  const chunkLoose =
+    /^(?:Rioplatense|Brief|Professional|Tone|Goal|Context)\s*\?\s*(?:Yes|No|Si|Sí)\s*(?:\([^)]*\)(?:\s*,\s*\([^)]*\))*\s*)?\.?\s*/i;
   while (prev !== t) {
     prev = t;
     t = t.replace(chunk, "").trim();
+    t = t.replace(chunkLoose, "").trim();
     t = t.replace(/^\*+\s*/, "").trim();
   }
   return t;
 }
 
+/** Líneas sueltas de “verificación de tono” que filtran modelos */
+function stripInternalToneChecklistLines(s: string): string {
+  const lines = s.split("\n");
+  const kept = lines.filter((line) => {
+    const L = line.trim();
+    if (/^Rioplatense\?\s*(Yes|No|Si|Sí)\b/i.test(L)) return false;
+    if (/^Brief\?\s*(Yes|No|Si|Sí)\b/i.test(L)) return false;
+    if (/^Professional\/?\s*\w*\s*\?\s*(Yes|No|Si|Sí)\b/i.test(L)) return false;
+    return true;
+  });
+  return kept.join("\n").trim();
+}
+
 const norm = (x: string) => x.replace(/\s+/g, " ").trim();
+
+/** Gemini a veces usa “ ” en lugar de " — sin esto no detectamos duplicados pegados con comilla */
+function normalizeAiQuotes(s: string): string {
+  return s
+    .replace(/\uFEFF/g, "")
+    .replace(/[\u201c\u201d\u201e\u00ab\u00bb\u201a\u2039\u203a\u2018\u2019]/g, '"');
+}
+
+/**
+ * Mismo párrafo pegado dos veces sin comilla (o con longitudes casi iguales)
+ */
+function stripExactAdjacentDuplicate(s: string): string {
+  const t = s.trim();
+  if (t.length < 50) return s;
+  const mid = Math.floor(t.length / 2);
+  for (let d = 0; d <= 160; d++) {
+    for (const i of [mid + d, mid - d]) {
+      if (i < 20 || i > t.length - 20) continue;
+      const L = norm(t.slice(0, i));
+      const R = norm(t.slice(i));
+      if (L.length < 18 || R.length < 18) continue;
+      if (L === R) return t.slice(0, i).trimEnd();
+    }
+  }
+  return s;
+}
+
+function dedupeStrayQuotesAndRepeat(s: string): string {
+  return stripExactAdjacentDuplicate(stripDuplicateAfterStrayQuote(s));
+}
+
+/**
+ * Modelos tipo: Alternative: "Para sacar un turno…"Para sacar un turno… (texto duplicado)
+ */
+function stripAlternativeQuotedDuplicate(s: string): string {
+  const pos = s.search(/Alternative:\s*"/i);
+  if (pos < 0) return s;
+  const sub = s.slice(pos);
+  const open = sub.indexOf('"');
+  const close = sub.indexOf('"', open + 1);
+  if (open < 0 || close < 0) return s;
+  const inner = sub.slice(open + 1, close);
+  const rest = sub.slice(close + 1).trim();
+  const nIn = norm(inner);
+  const nRest = norm(rest);
+  if (nIn.length < 12) return s;
+  let out: string;
+  if (!rest) out = inner.trim();
+  else if (nIn === nRest || nRest.startsWith(nIn.slice(0, Math.min(80, nIn.length)))) out = rest;
+  else out = inner.trim();
+  const prefix = s.slice(0, pos).trimEnd();
+  return prefix ? `${prefix}\n${out}`.trim() : out;
+}
 
 /**
  * "…coordinarlo."Hola. Podés…" (mismo párrafo dos veces) → una sola vez, sin comilla suelta.
@@ -56,6 +126,12 @@ function stripDuplicateAfterStrayQuote(s: string): string {
     if (after.length < 20) {
       idx++;
       continue;
+    }
+
+    const nb = norm(before);
+    const na = norm(after);
+    if (nb.length > 12 && na.length > 12 && nb === na) {
+      return before.trimEnd();
     }
 
     const holaBefore = before.indexOf("Hola.");
@@ -162,36 +238,38 @@ function stripTrailingStrayQuotes(s: string): string {
 }
 
 export function sanitizeChatModelOutput(raw: string): string {
-  let s = raw.replace(/\r\n/g, "\n").trim();
+  let s = normalizeAiQuotes(raw.replace(/\r\n/g, "\n").trim());
   if (!s) return s;
 
+  s = stripAlternativeQuotedDuplicate(s);
   s = stripLeadingEnglishChecklist(s);
+  s = stripInternalToneChecklistLines(s);
 
   const contaminated =
-    /\*|user\s+says|persona:|draft\s*\d|context:|tone:|goal:|action:/i.test(s) ||
+    /\*|user\s+says|persona:|draft\s*\d|context:|tone:|goal:|action:|alternative:/i.test(s) ||
     /rioplatense\?/i.test(s);
 
   if (contaminated) {
     const glued = extractAfterYesHolaGlue(s);
     if (glued) {
-      s = normalizeOut(stripLeadingEnglishChecklist(stripDuplicateAfterStrayQuote(glued)));
+      s = normalizeOut(stripLeadingEnglishChecklist(dedupeStrayQuotesAndRepeat(glued)));
       return stripTrailingStrayQuotes(s);
     }
 
     const fromStars = extractFromAsteriskFragments(s);
     if (fromStars) {
-      s = normalizeOut(stripLeadingEnglishChecklist(stripDuplicateAfterStrayQuote(fromStars)));
+      s = normalizeOut(stripLeadingEnglishChecklist(dedupeStrayQuotesAndRepeat(fromStars)));
       return stripTrailingStrayQuotes(s);
     }
 
     const lastHola = extractLastAssistantHola(s);
     if (lastHola) {
-      s = normalizeOut(stripLeadingEnglishChecklist(stripDuplicateAfterStrayQuote(lastHola)));
+      s = normalizeOut(stripLeadingEnglishChecklist(dedupeStrayQuotesAndRepeat(lastHola)));
       return stripTrailingStrayQuotes(s);
     }
   }
 
-  s = stripDuplicateAfterStrayQuote(s);
+  s = dedupeStrayQuotesAndRepeat(s);
   s = stripLeadingEnglishChecklist(s);
 
   // Líneas: quitar metadatos; en líneas con * intentar rescatar "Hola. …" al final
@@ -252,7 +330,8 @@ export function sanitizeChatModelOutput(raw: string): string {
     if (plain.length) s = plain[plain.length - 1];
   }
 
-  s = stripLeadingEnglishChecklist(stripDuplicateAfterStrayQuote(normalizeOut(s)));
+  s = stripAlternativeQuotedDuplicate(s);
+  s = stripInternalToneChecklistLines(stripLeadingEnglishChecklist(dedupeStrayQuotesAndRepeat(normalizeOut(s))));
   s = stripTrailingStrayQuotes(s);
 
   if (s.length < 2) return raw.trim();

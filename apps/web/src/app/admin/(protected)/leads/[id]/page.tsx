@@ -37,9 +37,9 @@ export default function AdminLeadDetailPage() {
   if (!lead) return <p className="text-sm text-on-surface-variant">Cargando…</p>;
 
   return (
-    <div>
-      <h1 className="mb-2 font-headline text-3xl">{lead.name}</h1>
-      <p className="mb-8 text-sm text-on-surface-variant">
+    <div className="min-w-0">
+      <h1 className="mb-2 break-words font-headline text-2xl sm:text-3xl">{lead.name}</h1>
+      <p className="mb-8 break-words text-sm text-on-surface-variant">
         {lead.email} · {lead.phone}
       </p>
 

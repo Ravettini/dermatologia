@@ -265,9 +265,9 @@ export default function AdminAvailabilityPage() {
   }
 
   return (
-    <div className="space-y-8" lang="es-AR">
+    <div className="min-w-0 space-y-8" lang="es-AR">
       <div>
-        <h1 className="font-headline text-3xl text-slate-900">Calendario y disponibilidad</h1>
+        <h1 className="font-headline text-2xl text-slate-900 sm:text-3xl">Calendario y disponibilidad</h1>
         <p className="mt-2 max-w-3xl text-sm text-slate-600">
           <strong className="text-emerald-800">Verde</strong> = libre en web · <strong className="text-amber-700">Ámbar</strong> = solicitud
           pendiente · <strong className="text-sky-800">Azul</strong> = turno ya confirmado ·{" "}
@@ -299,15 +299,17 @@ export default function AdminAvailabilityPage() {
           <span className="text-xs text-slate-500">{loading ? "Actualizando…" : `${slots.length} horarios en esta vista`}</span>
         </div>
 
-        <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase text-slate-500">
-          {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map((d) => (
-            <div key={d} className="py-2">
-              {d}
+        <div className="-mx-1 overflow-x-auto px-1 md:mx-0 md:overflow-visible md:px-0">
+          <div className="min-w-[520px]">
+            <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase text-slate-500">
+              {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map((d) => (
+                <div key={d} className="py-2">
+                  {d}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        <div className="grid grid-cols-7 gap-1">
+            <div className="grid grid-cols-7 gap-1">
           {days.map((day) => {
             const key = format(day, "yyyy-MM-dd");
             const inMonth = isSameMonth(day, viewMonth);
@@ -328,7 +330,7 @@ export default function AdminAvailabilityPage() {
                 key={key}
                 type="button"
                 onClick={() => setSelectedDay(day)}
-                className={`flex min-h-[88px] flex-col rounded-xl border p-2 text-left transition ${
+                className={`flex min-h-[72px] flex-col rounded-xl border p-1.5 text-left transition sm:min-h-[88px] sm:p-2 ${
                   inMonth ? "border-slate-200 bg-white hover:bg-slate-50" : "border-transparent bg-slate-50/60 text-slate-400"
                 } ${dayPast ? "opacity-60" : ""} ${isToday(day) ? "border-sky-300 bg-sky-50/50" : ""} ${selected}`}
               >
@@ -346,6 +348,8 @@ export default function AdminAvailabilityPage() {
               </button>
             );
           })}
+            </div>
+          </div>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-4 text-xs text-slate-600">

@@ -10,7 +10,19 @@ export async function downloadAdminExport(pathWithQuery: string): Promise<void> 
   const blob = await res.blob();
   const cd = res.headers.get("Content-Disposition");
   const nameMatch = cd?.match(/filename="([^"]+)"/);
-  const filename = nameMatch?.[1] ?? "export.csv";
+  const explicitFormat = (() => {
+    try {
+      const q = new URL(pathWithQuery, "http://local").searchParams.get("format");
+      return q === "xlsx" ? "xlsx" : q === "csv" ? "csv" : null;
+    } catch {
+      return null;
+    }
+  })();
+  const contentType = (res.headers.get("Content-Type") || "").toLowerCase();
+  const inferredExt =
+    explicitFormat ??
+    (contentType.includes("spreadsheetml") ? "xlsx" : contentType.includes("text/csv") ? "csv" : "csv");
+  const filename = nameMatch?.[1] ?? `export.${inferredExt}`;
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = filename;

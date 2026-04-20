@@ -30,6 +30,7 @@ export default function AdminSettingsPage() {
     "contact.phone",
     "contact.email",
     "contact.hours",
+    "contact.mapImageUrl",
     "legal.disclaimer",
     "chatbot.systemPrompt",
     "chatbot.welcomeMessage",
@@ -39,14 +40,14 @@ export default function AdminSettingsPage() {
   ];
 
   return (
-    <div>
-      <h1 className="mb-6 font-headline text-3xl">Configuración del sitio</h1>
+    <div className="min-w-0">
+      <h1 className="mb-6 font-headline text-2xl sm:text-3xl">Configuración del sitio</h1>
       <div className="max-w-3xl space-y-4">
         {keys.map((k) => (
           <label key={k} className="block text-sm">
             <div className="mb-1 text-xs uppercase tracking-widest text-on-surface-variant">{k}</div>
             <textarea
-              className="w-full border border-outline-variant/40 p-2"
+              className="min-w-0 w-full max-w-full border border-outline-variant/40 p-2"
               rows={k.includes("Prompt") || k.includes("disclaimer") ? 5 : 2}
               value={settings[k] ?? ""}
               onChange={(e) => update(k, e.target.value)}

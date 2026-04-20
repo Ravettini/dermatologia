@@ -71,22 +71,22 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="font-headline text-3xl text-slate-900">Dashboard</h1>
+    <div className="min-w-0 space-y-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="font-headline text-2xl text-slate-900 sm:text-3xl">Dashboard</h1>
           <p className="mt-2 text-sm text-slate-600">Resumen operativo del centro</p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex w-full min-w-0 flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap">
           <Link
             href="/admin/bookings"
-            className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-sky-700"
+            className="inline-flex justify-center rounded-lg bg-sky-600 px-4 py-2.5 text-center text-sm font-medium text-white shadow hover:bg-sky-700 sm:justify-start"
           >
             Ir a reservas
           </Link>
           <Link
             href="/admin/availability"
-            className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+            className="inline-flex justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-center text-sm font-medium text-slate-800 hover:bg-slate-50 sm:justify-start"
           >
             Calendario de turnos
           </Link>

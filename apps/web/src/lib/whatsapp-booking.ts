@@ -19,6 +19,14 @@ Horario solicitado: ${when}.
 Gracias.`;
 }
 
+/** Mensaje outbound desde CRM (recordatorio / coordinación de turno). */
+export function buildCrmLeadWhatsAppMessage(patientName: string, siteName: string): string {
+  const raw = patientName.trim();
+  const first = raw ? raw.split(/\s+/)[0] : "";
+  const greet = first ? `¡Hola! *${first}*` : "¡Hola!";
+  return `${greet}, nos comunicamos desde *${siteName}* para coordinar tu turno. ¿Seguís disponible para que lo agendemos? Si preferís otro horario, respondé por acá y lo vemos. Gracias.`;
+}
+
 /** Devuelve URL de wa.me o null si el teléfono es inválido. */
 export function phoneToWhatsAppUrl(phone: string, message: string): string | null {
   const digits = phone.replace(/\D/g, "");

@@ -30,9 +30,12 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface px-6">
-      <form onSubmit={onSubmit} className="w-full max-w-md border border-outline-variant/40 bg-surface-container-lowest p-10 shadow-soft">
-        <h1 className="mb-2 font-headline text-3xl">Panel administración</h1>
+    <main className="flex min-h-dvh items-center justify-center bg-surface px-4 py-8 pb-[max(2rem,env(safe-area-inset-bottom,0px))] pt-[max(2rem,env(safe-area-inset-top,0px))] sm:px-6">
+      <form
+        onSubmit={onSubmit}
+        className="w-full max-w-md border border-outline-variant/40 bg-surface-container-lowest p-6 shadow-soft sm:p-10"
+      >
+        <h1 className="mb-2 font-headline text-2xl sm:text-3xl">Panel administración</h1>
         <p className="mb-8 text-sm text-on-surface-variant">Acceso interno del centro</p>
         <label className="mb-2 block text-xs uppercase tracking-widest text-on-surface-variant">Email</label>
         <input

@@ -188,8 +188,7 @@ async function main() {
     "contact.phone": "+54 11 4821-0000",
     "contact.email": "info@dermaclinic.com",
     "contact.hours": "Lunes a viernes de 09:00 a 20:00",
-    "contact.mapImageUrl":
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBkg3wtM0Y7dfLxHzL98WA266bQq71trAgLQLb8vX2gg28IWvep8BlesPzCLb6SHcqJICyeaIiMVivYfxulAQ3wpL_EGhBQ3sDDX8ih9dbcZwO-KfzyOadR6JfvvbNF5fT36hVJv3dx9hdwbB8NiZVK8Pz9Z3Hb2VqmECa5pzguclDsItU79MUbQmvpSh9m8HMAxYJcJloY8u3SQS2_lrIKoH_4ZSvFAqMOSJM1i1XVLeoSEsNdLq9UJC6nBsy-c220C9eM1qTq9Jby",
+    "contact.mapImageUrl": "Obelisco, Buenos Aires",
     "legal.disclaimer":
       "La información del sitio es educativa y no reemplaza la consulta médica. Los resultados varían según cada persona.",
     "chatbot.systemPrompt": [

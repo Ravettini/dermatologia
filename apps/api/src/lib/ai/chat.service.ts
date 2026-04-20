@@ -39,9 +39,16 @@ export async function runChatCompletion(params: {
     "Mensajes breves; más detalle solo si el usuario lo pide.",
     "FORMATO DE SALIDA: solo el texto que lee el paciente. PROHIBIDO incluir notas, listas de opciones internas, líneas con asterisco, etiquetas tipo User says o Persona, borradores en inglés, o metaexplicaciones.",
     "No repitas la misma respuesta dos veces. No uses comillas dobles alrededor del mensaje ni pegues dos copias del mismo párrafo.",
+    "Una sola variante de respuesta: no repitas el mismo párrafo ni lo vuelvas a pegar entre comillas.",
     "PROHIBIDO: checklist en inglés (Brief? Yes., Rioplatense? Yes., etc.), verificación interna, o cualquier línea de pensamiento antes de responder.",
+    "PROHIBIDO escribir \"Alternative:\", \"Option A/B\", ni variantes entre comillas antes de la respuesta.",
+    "Nunca escribas verificaciones internas (Rioplatense?, Brief?, Yes/No, paréntesis con \"disculpame\"): eso no lo ve el paciente y está prohibido.",
+    "Si el pedido no tiene relación con dermatología, salud de la piel, turnos o el centro (recetas de cocina, temas generales, otros rubros), respondé en una o dos frases que no podés ayudar con eso y ofrecé orientación sobre turnos o contacto con el centro. No des recetas ni contenido fuera de alcance.",
     `Contacto humano si hace falta: ${cfg.humanHandoffHint}`,
   ].join("\n");
+
+  const OFF_TOPIC_FALLBACK =
+    "Disculpá, no puedo ayudarte con ese tema. Este asistente es solo para consultas sobre dermatología y turnos del centro. Si querés coordinar una consulta o tenés una duda sobre el centro, decime y te oriento.";
 
   const temperature = Number(process.env.AI_TEMPERATURE ?? "0.4");
 
@@ -52,7 +59,11 @@ export async function runChatCompletion(params: {
       userMessage: params.userMessage,
       temperature: Number.isFinite(temperature) ? temperature : 0.4,
     });
-    return sanitizeChatModelOutput(reply);
+    let out = sanitizeChatModelOutput(reply).trim();
+    if (!out || /^rioplatense\?/i.test(out) || /^brief\?/i.test(out)) {
+      out = OFF_TOPIC_FALLBACK;
+    }
+    return out;
   }
 
   throw new Error(`Proveedor AI no soportado: ${provider}`);

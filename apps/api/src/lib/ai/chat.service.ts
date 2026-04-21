@@ -1,6 +1,25 @@
 import { generateWithGoogleGenAI } from "./provider";
 import { sanitizeChatModelOutput } from "./chat-reply-sanitize";
 import { getChatbotConfig } from "../settings";
+import { prisma } from "../prisma";
+
+async function faqKnowledgeForPrompt(): Promise<string> {
+  const items = await prisma.fAQItem.findMany({
+    where: { active: true },
+    orderBy: { sortOrder: "asc" },
+    select: { question: true, answer: true },
+  });
+  if (items.length === 0) return "";
+  const block = items.map((i) => `P: ${i.question}\nR: ${i.answer}`).join("\n\n");
+  return [
+    "",
+    "Base de conocimiento — preguntas frecuentes del centro:",
+    "Cuando la consulta del usuario encaje con alguna de estas preguntas, respondé de forma alineada con la respuesta indicada (podés parafrasear en tono conversacional).",
+    "No inventes datos clínicos ni contradicciones respecto de este texto. Si no hay una respuesta clara aquí, no inventes: ofrecé consulta presencial o contacto con el equipo.",
+    "",
+    block,
+  ].join("\n");
+}
 
 /** Saludo suelto, sin pedido concreto: respuesta mínima sin “ofrecer” nada ni segunda pregunta. */
 function bareGreetingReply(userMessage: string): string | null {
@@ -28,8 +47,11 @@ export async function runChatCompletion(params: {
     return staticGreeting;
   }
 
+  const faqBlock = await faqKnowledgeForPrompt();
+
   const systemInstruction = [
     cfg.systemPrompt,
+    faqBlock,
     "",
     `Tono: ${cfg.tone}.`,
     "Respondé en español rioplatense.",

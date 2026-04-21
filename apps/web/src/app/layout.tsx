@@ -17,10 +17,20 @@ const manrope = Manrope({
   display: "swap",
 });
 
+const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "DERMATOLOGÍA TOD";
+
 export const metadata: Metadata = {
-  title: `${process.env.NEXT_PUBLIC_SITE_NAME || "Dermaclinic"} | Dermatología clínica y estética`,
+  title: {
+    default: `${siteName} | Dermatología clínica y estética`,
+    template: `%s | ${siteName}`,
+  },
   description:
     "Centro de dermatología premium: consultas, tratamientos y acompañamiento profesional para la salud de tu piel.",
+  icons: {
+    icon: [{ url: "/branding/logo-tod.png", type: "image/png", sizes: "any" }],
+    shortcut: "/branding/logo-tod.png",
+    apple: "/branding/logo-tod.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

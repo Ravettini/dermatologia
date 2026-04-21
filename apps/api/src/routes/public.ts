@@ -303,8 +303,14 @@ router.post("/chat", chatLimiter, async (req, res) => {
       },
     });
 
-    const history = conv.messages
+    const thread = await prisma.chatMessage.findMany({
+      where: { conversationId: conv.id },
+      orderBy: { createdAt: "asc" },
+    });
+    const beforeCurrent = thread.slice(0, -1);
+    const history = beforeCurrent
       .filter((m) => m.role === "user" || m.role === "model")
+      .slice(-24)
       .map((m) => ({
         role: m.role === "user" ? ("user" as const) : ("model" as const),
         text: m.content,

@@ -553,6 +553,7 @@ router.patch("/leads/:id", async (req, res) => {
         name: z.string().min(2).optional(),
         email: z.string().email().optional().nullable(),
         phone: z.string().optional().nullable(),
+        crmContacted: z.boolean().optional(),
       })
       .safeParse(req.body);
     if (!body.success) throw new AppError(400, "Datos inválidos");
@@ -562,6 +563,7 @@ router.patch("/leads/:id", async (req, res) => {
         name: body.data.name,
         email: body.data.email ?? undefined,
         phone: body.data.phone ?? undefined,
+        ...(body.data.crmContacted !== undefined ? { crmContacted: body.data.crmContacted } : {}),
         lastInteractionAt: new Date(),
       },
     });
@@ -829,10 +831,26 @@ router.get("/chat/conversations", async (_req, res) => {
       take: 100,
       include: {
         contactLead: { select: { id: true, name: true, email: true, phone: true } },
-        messages: { orderBy: { createdAt: "desc" }, take: 1 },
       },
     });
-    res.json({ conversations: list });
+    const ids = list.map((c) => c.id);
+    const lastMessages =
+      ids.length === 0
+        ? []
+        : await Promise.all(
+            ids.map((conversationId) =>
+              prisma.chatMessage.findFirst({
+                where: { conversationId },
+                orderBy: { createdAt: "desc" },
+                select: { content: true },
+              }),
+            ),
+          );
+    const conversations = list.map((c, i) => ({
+      ...c,
+      messages: lastMessages[i] ? [{ content: lastMessages[i]!.content }] : [],
+    }));
+    res.json({ conversations });
   } catch (e) {
     const { status, message } = friendlyError(e);
     res.status(status).json({ error: message });
@@ -841,15 +859,17 @@ router.get("/chat/conversations", async (_req, res) => {
 
 router.get("/chat/conversations/:id", async (req, res) => {
   try {
+    const id = req.params.id;
     const conv = await prisma.chatConversation.findUnique({
-      where: { id: req.params.id },
-      include: {
-        messages: { orderBy: { createdAt: "asc" } },
-        contactLead: true,
-      },
+      where: { id },
+      include: { contactLead: true },
     });
     if (!conv) throw new AppError(404, "No encontrado");
-    res.json({ conversation: conv });
+    const messages = await prisma.chatMessage.findMany({
+      where: { conversationId: id },
+      orderBy: { createdAt: "asc" },
+    });
+    res.json({ conversation: { ...conv, messages } });
   } catch (e) {
     const { status, message } = friendlyError(e);
     res.status(status).json({ error: message });
@@ -915,6 +935,7 @@ router.get("/export/:dataset", async (req, res) => {
         "email",
         "telefono",
         "origen",
+        "contactado",
         "ultima_interaccion",
         "creado",
         "reservas_relacionadas",
@@ -925,6 +946,7 @@ router.get("/export/:dataset", async (req, res) => {
         c.email ?? "",
         c.phone ?? "",
         c.source,
+        c.crmContacted ? "sí" : "no",
         c.lastInteractionAt.toISOString(),
         c.createdAt.toISOString(),
         String(c._count.bookings),

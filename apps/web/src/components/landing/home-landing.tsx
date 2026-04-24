@@ -2,8 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { BookingSection } from "@/components/booking-section";
 import { ContactForm } from "@/components/contact-form";
+import { FeaturedSpecialtiesSection } from "@/components/landing/featured-specialties-section";
 import { FaqSection } from "@/components/landing/faq-section";
 import { TeamSection } from "@/components/landing/team-section";
+import { TreatmentsSection } from "@/components/landing/treatments-section";
 
 type FAQ = { id: string; question: string; answer: string };
 type Testimonial = { id: string; quote: string; author: string };
@@ -14,8 +16,24 @@ type PublicProfessional = {
   bio: string | null;
   imageUrl: string | null;
 };
+type PublicTreatment = {
+  id: string;
+  name: string;
+  description: string;
+  durationMinutes: number;
+  category: string;
+  requiresPriorEval: boolean;
+};
 
-const FALLBACK_MAP_EMBED_URL = "https://www.google.com/maps?q=-34.6037345,-58.3815704&z=14&output=embed";
+const DEFAULT_MAP_NAME = "Dermatología TOD";
+const DEFAULT_MAP_COORDS = "-34.4853853304583,-58.594249209497896";
+const DEFAULT_MAP_EMBED_ZOOM = "18";
+
+function buildMapEmbedUrl(query: string, coords = DEFAULT_MAP_COORDS): string {
+  return `https://www.google.com/maps?q=${encodeURIComponent(query)}&ll=${coords}&z=${DEFAULT_MAP_EMBED_ZOOM}&output=embed`;
+}
+
+const FALLBACK_MAP_EMBED_URL = buildMapEmbedUrl(DEFAULT_MAP_NAME);
 
 function resolveMapEmbedSrc(rawValue: string): string {
   const v = rawValue.trim();
@@ -27,6 +45,8 @@ function resolveMapEmbedSrc(rawValue: string): string {
   }
 
   if (/google\.[^/]+\/maps\/embed/i.test(v) || /output=embed/i.test(v)) {
+    // Compatibilidad con fallback viejo: centro de CABA.
+    if (/-34\.6037345,-58\.3815704/.test(v)) return FALLBACK_MAP_EMBED_URL;
     return v;
   }
 
@@ -34,13 +54,19 @@ function resolveMapEmbedSrc(rawValue: string): string {
     try {
       const u = new URL(v);
       const q = u.searchParams.get("q") || u.searchParams.get("query");
-      if (q) return `https://www.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
+      if (q) return buildMapEmbedUrl(q);
     } catch {
       return FALLBACK_MAP_EMBED_URL;
     }
   }
 
-  return `https://www.google.com/maps?q=${encodeURIComponent(v)}&output=embed`;
+  // Si pasan solo coordenadas, priorizamos el lugar real (Dermatología TOD) y centramos en esas coords.
+  if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(v)) {
+    return buildMapEmbedUrl(DEFAULT_MAP_NAME, v.replace(/\s+/g, ""));
+  }
+
+  // Si pasan un texto cualquiera, lo buscamos pero centrando en la ubicación real de TOD.
+  return buildMapEmbedUrl(v);
 }
 
 export function HomeLanding({
@@ -48,11 +74,13 @@ export function HomeLanding({
   faqs,
   testimonials,
   professionals,
+  treatments,
 }: {
   site: Record<string, string>;
   faqs: FAQ[];
   testimonials: Testimonial[];
   professionals: PublicProfessional[];
+  treatments: PublicTreatment[];
 }) {
   const brand = site["site.name"] ?? "DERMATOLOGÍA TOD";
   const tagline = site["site.tagline"] ?? "Dermatología clínica y estética";
@@ -66,11 +94,11 @@ export function HomeLanding({
   return (
     <main className="w-full min-w-0 max-w-[100vw] overflow-x-hidden">
       <section
-        className="flex w-full max-w-[100vw] flex-col justify-center overflow-x-hidden px-4 pb-12 pt-[calc(7.25rem+env(safe-area-inset-top,0px))] sm:px-6 sm:pb-14 sm:pt-32 md:px-10 md:pb-16 md:pt-32 lg:h-[100svh] lg:min-h-0 lg:max-h-[100svh] lg:overflow-hidden lg:box-border lg:py-5 lg:pb-5 lg:pt-24 xl:px-12"
+        className="relative flex w-full max-w-[100vw] flex-col overflow-hidden bg-surface px-4 pb-0 pt-[calc(7.25rem+env(safe-area-inset-top,0px))] sm:px-6 sm:pt-28 md:px-10 md:pt-32 lg:min-h-[90svh] lg:pt-24 lg:pb-0 xl:px-12"
         id="inicio"
       >
-        <div className="mx-auto grid min-h-0 w-full max-w-[1400px] grid-cols-1 items-center gap-10 sm:gap-12 md:gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.14fr)] lg:items-stretch lg:gap-6 xl:gap-10 2xl:gap-12">
-          <div className="flex min-h-0 min-w-0 max-w-2xl flex-col justify-center">
+        <div className="mx-auto grid min-h-0 w-full max-w-[1600px] grid-cols-1 gap-8 sm:gap-10 md:gap-12 lg:min-h-[calc(90svh-6rem)] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-stretch lg:gap-0">
+          <div className="flex min-h-0 min-w-0 max-w-2xl flex-col justify-center pb-8 sm:pb-10 lg:pb-16 lg:pr-8 xl:pr-12">
             <span className="mb-4 block font-label text-[10px] uppercase tracking-[0.28em] text-secondary sm:mb-5 sm:text-xs sm:tracking-[0.3em]">
               {tagline}
             </span>
@@ -93,7 +121,7 @@ export function HomeLanding({
               </Link>
               <Link
                 href="/#tratamientos"
-                className="border-b border-on-surface-variant px-1 py-3 font-label text-xs uppercase tracking-widest text-on-surface-variant transition-all hover:text-secondary sm:px-2 sm:py-4 sm:text-sm"
+                className="border border-outline-variant px-6 py-3 font-label text-xs uppercase tracking-widest text-secondary transition-all hover:bg-surface-container-low sm:px-8 sm:py-4 sm:text-sm"
               >
                 Ver tratamientos
               </Link>
@@ -104,62 +132,27 @@ export function HomeLanding({
               </p>
             )}
           </div>
-          <div className="flex min-h-[280px] w-full items-center justify-center bg-surface sm:min-h-[320px] lg:min-h-0 lg:h-full lg:max-h-full">
-            <div className="relative aspect-[3/4] w-full max-w-[min(100%,420px)] sm:max-w-[min(100%,480px)] lg:h-[min(720px,calc(100svh-10rem))] lg:w-auto lg:max-w-[min(520px,42vw)]">
+          <div className="relative min-h-[380px] w-full overflow-hidden sm:min-h-[500px] lg:min-h-0 lg:h-full">
+            <div className="absolute inset-0">
               <Image
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgVJXAjPV79yyHsezLlvM8ALw8EpNEwGsfY7zusDnboo8I7GvM-sZvhQxC0jwsylRfjQtS_r19F5bOcb3idcFttejh4XDn5MO_ZIe-pAnGiT33AIIp4TzicAa4pD51x4GgFlER_-c5DZ-s0fUdXLLaN7usBHWNGQ0EHnB7smocy7coYrpYVOUDn1W4JEclo_dTd38xsU6zqCchOXUu5fuGOfDT4Pjxrce9KdW1k_sjLdk8Y5X00EEm2o3ukZvsgGOUbv8Cs0cnoagu"
+                src="/branding/imagen-hero.png"
                 alt="Retrato editorial con piel luminosa y luz suave"
                 fill
-                className="object-contain object-center grayscale-[20%]"
-                sizes="(max-width: 1024px) 90vw, 42vw"
+                className="object-contain object-right-bottom"
+                sizes="(max-width: 1024px) 100vw, 52vw"
                 priority
               />
-              <div className="pointer-events-none absolute inset-0 bg-secondary/5 mix-blend-multiply" />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-surface-container-low px-4 py-14 sm:px-6 sm:py-16 md:px-10 md:py-20 lg:px-12 lg:py-24" id="tratamientos">
-        <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-px bg-outline-variant/10 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            {
-              icon: "face",
-              title: "Tratamientos faciales",
-              text: "Procedimientos diseñados para restaurar la luminosidad y salud del rostro.",
-            },
-            {
-              icon: "body_fat",
-              title: "Tratamientos corporales",
-              text: "Tecnología avanzada para remodelación y tonificación corporal no invasiva.",
-            },
-            {
-              icon: "medical_services",
-              title: "Depilación médica",
-              text: "Láser médico para resultados con enfoque clínico y seguimiento personalizado.",
-            },
-            {
-              icon: "stethoscope",
-              title: "Dermatología clínica",
-              text: "Evaluación y acompañamiento de patologías de la piel, pelo y uñas.",
-            },
-          ].map((c) => (
-            <div
-              key={c.title}
-              className="bg-surface-container-low p-6 transition-colors hover:bg-surface-container-high sm:p-8 md:p-10 lg:p-12"
-            >
-              <span className="material-symbols-outlined mb-6 block text-3xl text-secondary">{c.icon}</span>
-              <h3 className="mb-4 font-headline text-2xl">{c.title}</h3>
-              <p className="mb-6 text-sm leading-relaxed text-on-surface-variant">{c.text}</p>
-              <span className="font-label text-xs uppercase tracking-tighter underline decoration-secondary/30 underline-offset-8">
-                Descubrir
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
+      <TreatmentsSection treatments={treatments} />
 
-      <section className="overflow-hidden bg-surface px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32" id="dermatologia">
+      <section
+        className="overflow-hidden bg-surface-container-lowest px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32"
+        id="dermatologia"
+      >
         <div className="mx-auto mb-16 max-w-4xl sm:mb-20 md:mb-24">
           <h2 className="font-headline text-3xl italic leading-tight text-secondary sm:text-4xl md:text-5xl lg:text-6xl">
             La excelencia médica se encuentra con el arte del cuidado.
@@ -167,10 +160,10 @@ export function HomeLanding({
         </div>
         <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4 md:gap-8">
           {[
-            "https://lh3.googleusercontent.com/aida-public/AB6AXuCp_pqkQLNW866nnMhVijcxPPBTxTYpBap46efqrVuyINM8Xnu5JkOqZuMQRRhqZR__GxpKFOTR7CiaL1PZStFxBB14izudFb4yKRMtUuUO1JfDIGh0xiFPHN0Qz68mMv-Td3F5akv_4rZUdMPH0txox4DtbU3-OOGF0xHBB-eXUjKQX887YwHXkQbhskNj_9ONrXoPRGMNiyIB9ahthUVtThNXXtxKpgT_E6L-iotPWCTIlJZO0X-8DQ6xC20WPW57ta9nJN6HSEhZ",
-            "https://lh3.googleusercontent.com/aida-public/AB6AXuBe509qi6Q9WiXURLhWsoaNkFj9aWcd-sGlBYC_L4iCZ7NASWPkd-jTXhkyUUPY55iwLaRX-oU3yq0PzB-hc3WxwLRBSFmgobaPA7BIe1t7c6KdQikDQCqbUmF66LyvoXJHbk9l5O1lInZiSpqZJnWaxpRHdiHzOw7GyF5XH7nw_fjxBLn3LX0NMHh8WZ_NBzjYE8AcaMvJ5BsEL4r60-ii8L0NAw4Fwc0t6KZ1-7iE0ASxB1jhpQzUsn8oll0B-IwipIwk6J6pGhIK",
-            "https://lh3.googleusercontent.com/aida-public/AB6AXuBlYXRmngE1Fmgt4m21KVMn1vfu97gPXstKxPLz-UeEbwIUSELkoDajcCylVej5jiQvvnB66FgKX_pB6oGi_d0PALuAnJBlnKC31_Z5482Q8-CoPaVyvvI7yp22oZn5QZiEgdgL1XGtZ6lyhvSSrZvCh_uXhDEWAswiIPvvI4yN4bDVuxyJBtaaxVCtpr-nZJsUPOEMsnVp4MHmQNfR7aa4Y0Xnzrk9mABPkZr5ZPkEUy7bQedtmrfYb1qu0oHNYrkQjKsMaVdGO1Qy",
-            "https://lh3.googleusercontent.com/aida-public/AB6AXuADCh0CqgsalPpOHjHCr1h9HgJH3i3P1ag8gZG8NSjKPG78AGVDuPPWn99yYS2Uo-0FekM4pgC_wNOjUfw26hnp5FxRM8pSzDJ_SjE85L4ui7VyCzKY5DcHVK7HK3Bf1VLBWTSGf1U-4MrIrbAoJrIbmEOkWVMAQ-yFyySO-cy1Xj_mVS35LetN3BgvzJo0Z6sfL-iljToRiZmk2EKhXtW44yN2SwSY3LotH4RjQIWvWieli0L1A40RShIHbK4HAmJ_0SOFPtzDgmfr",
+            "/fotos/foto1.jpeg",
+            "/fotos/foto2.jpeg",
+            "/fotos/foto3.jpeg",
+            "/fotos/foto4.jpeg",
           ].map((src, i) => (
             <div key={src} className={`aspect-[3/4] ${i % 2 === 0 ? "md:translate-y-12" : ""} ${i === 2 ? "md:translate-y-24" : ""} ${i === 3 ? "md:translate-y-6" : ""}`}>
               <div className="relative h-full w-full">
@@ -201,8 +194,8 @@ export function HomeLanding({
             },
           ].map((x) => (
             <div key={x.n} className="flex flex-col gap-6">
-              <span className="font-headline text-5xl text-secondary/30">{x.n}</span>
-              <h4 className="font-headline text-2xl">{x.t}</h4>
+              <span className="font-headline text-5xl text-secondary">{x.n}</span>
+              <h4 className="font-headline text-2xl text-secondary">{x.t}</h4>
               <p className="font-body leading-relaxed text-on-surface-variant">{x.p}</p>
             </div>
           ))}
@@ -221,7 +214,7 @@ export function HomeLanding({
         </div>
         <div className="relative hidden min-h-[320px] md:block">
           <Image
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuApY73RTj_UM83QyEiDXTOG4PJxMHoAO0M_So0N4BlWkbEx4mHRVSKfWBH3MmPHxD9trIuvzUCHBJm5SQubcYHZxqI7Agz7xS1oYPqUJCZlyZYRoefNj_nQLLMS4VZyR-M3vOdTBNMCCDio7BCL-m5Tv4oD9XYO8FsgrsGCSWjaj57LhU5n4WJbciqwi2LVejxmXR7PkiKExjlmUBeNbK1eoRlDoPr_Rw-R-R6F-CvWjhuY8YQq3DiWBQOyCL5L5sV7YdQ_Wvxz4BL1"
+            src="/fotos/foto-de-abajo.jpg"
             alt="Atención clínica"
             fill
             className="object-cover"
@@ -230,36 +223,7 @@ export function HomeLanding({
         </div>
       </section>
 
-      <section className="bg-surface px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32">
-        <div className="mx-auto mb-14 max-w-[1600px] text-center sm:mb-16 md:mb-20">
-          <span className="mb-4 block font-label text-xs uppercase tracking-[0.3em] text-secondary">Nuestra experiencia</span>
-          <h2 className="font-headline text-4xl md:text-5xl">Especialidades destacadas</h2>
-        </div>
-        <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
-          {[
-            {
-              title: "Limpieza facial profunda",
-              text: "Remoción de impurezas y nutrición intensa para un cutis renovado.",
-            },
-            { title: "Peelings médicos", text: "Renovación celular guiada para manchas y texturas irregulares." },
-            { title: "Control de acné", text: "Protocolos médicos integrales para brotes y secuelas." },
-            { title: "Rejuvenecimiento", text: "Enfoques combinados para una expresión fresca y natural." },
-          ].map((t) => (
-            <div
-              key={t.title}
-              className="group flex items-start justify-between border border-outline-variant/30 p-5 transition-colors duration-500 hover:bg-surface-container-low sm:p-8 md:p-10"
-            >
-              <div>
-                <h5 className="mb-2 font-headline text-2xl">{t.title}</h5>
-                <p className="max-w-xs text-sm text-on-surface-variant">{t.text}</p>
-              </div>
-              <span className="material-symbols-outlined text-secondary opacity-0 transition-opacity group-hover:opacity-100">
-                arrow_outward
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
+      <FeaturedSpecialtiesSection treatments={treatments} />
 
       <TeamSection professionals={professionals} />
 
@@ -282,7 +246,7 @@ export function HomeLanding({
       <BookingSection />
 
       <section
-        className="bg-surface-container-high px-4 py-10 sm:px-6 sm:py-12 md:px-10 md:py-14 lg:px-12 lg:py-16"
+        className="bg-surface-container px-4 py-10 sm:px-6 sm:py-12 md:px-10 md:py-14 lg:px-12 lg:py-16"
         id="contacto"
       >
         <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-8 md:grid-cols-2 md:items-start md:gap-10 lg:gap-12">
@@ -326,18 +290,18 @@ export function HomeLanding({
               </div>
             </div>
           </div>
-          <div className="bg-surface p-5 shadow-sm sm:p-6 md:p-8">
+          <div className="bg-surface-container-lowest p-5 shadow-sm sm:p-6 md:p-8">
             <h3 className="mb-4 font-headline text-xl md:text-2xl">Dejanos tus datos</h3>
             <ContactForm />
           </div>
         </div>
       </section>
 
-      <section className="h-[280px] w-full overflow-hidden bg-surface-container-highest sm:h-[340px] md:h-[400px]">
+      <section className="h-[280px] w-full overflow-hidden bg-surface-container sm:h-[340px] md:h-[400px]">
         <iframe
           title="Mapa de ubicación"
           src={mapEmbedSrc}
-          className="h-full w-full grayscale"
+          className="h-full w-full"
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           allowFullScreen

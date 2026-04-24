@@ -1,4 +1,4 @@
-import { PrismaClient, BookingStatus, LeadSource, SlotStatus } from "@prisma/client";
+import { PrismaClient, SlotStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -330,16 +330,18 @@ async function main() {
   const quotes = [
     {
       quote:
-        "La atención fue impecable. Me sentí acompañada y los resultados se notaron de forma natural.",
-      author: "Elena G.",
+        "Excelente experiencia en Dermatología TOD. Me atendí con la especialista Cintia, y la verdad que su atención fue impecable. Es muy profesional, dedicada y te explica cada paso del tratamiento con mucha claridad. Me sentí muy cómoda y en buenas manos desde el primer momento. Sin dudas volvería y lo recomiendo al 100%.",
+      author: "Jorgelina Acosta",
     },
     {
-      quote: "Excelente clínica: equipamiento y equipo humano de primer nivel.",
-      author: "Julián M.",
+      quote:
+        "La verdad que me atendieron genial. El nuevo consultorio es espectacular. La Dra. Olguín me dio un tratamiento para el acné que la verdad me cambió la vida. Súper recomendable.",
+      author: "Emma Polini",
     },
     {
-      quote: "Buscaba un enfoque médico serio para mi rosácea y lo encontré aquí.",
-      author: "Clara P.",
+      quote:
+        "Es un placer ir a TOD, desde llegar a un lugar impecable, la atención desde que entrás hasta que salís. El nivle de profesionalismo es impresionante. Confianza ciega en todos los tratamientos que proponen.",
+      author: "Sofia Maqueda",
     },
   ];
   for (let i = 0; i < quotes.length; i++) {
@@ -356,7 +358,7 @@ async function main() {
     "contact.whatsapp": "5491126992405",
     "contact.email": "Dermatologiatod@gmail.com",
     "contact.hours": "Lunes a viernes de 9 a 19 hs.",
-    "contact.mapImageUrl": "Camino Boulogne Bancalari 3350, Victoria, Argentina",
+    "contact.mapImageUrl": "Dermatología TOD",
     "legal.disclaimer":
       "La información del sitio es educativa y no reemplaza la consulta médica. Los resultados varían según cada persona.",
     "chatbot.systemPrompt": [
@@ -364,13 +366,14 @@ async function main() {
       "Tono profesional, cálido y sobrio, en español rioplatense.",
       "No des diagnósticos ni recomiendes medicación. Ante síntomas o dudas clínicas, sugerí consulta presencial.",
       "Orientá sobre servicios, turnos y dudas generales. Si quiere reservar, indicá la sección de reservas o contacto.",
+      "Si vas a solicitar datos de contacto, pedí explícitamente: para qué cosa quiere el turno (motivo, consulta o tratamiento), y nombre, apellido, mail y número de teléfono.",
       "Respondé solo lo que corresponda al mensaje del usuario, sin textos largos de bienvenida ni repetir el mismo discurso en cada turno.",
     ].join(" "),
     "chatbot.welcomeMessage":
       "Hola, soy el asistente virtual de DERMATOLOGÍA TOD. ¿En qué puedo orientarte hoy?",
     "chatbot.tone": "profesional, cercano, sobrio",
     "chatbot.humanHandoffHint":
-      "Podés escribirnos por WhatsApp o dejar tus datos en la sección de contacto.",
+      "Podés escribirnos por WhatsApp o dejar para qué cosa querés el turno y tus datos (nombre, apellido, mail y número de teléfono) en la sección de contacto.",
     "chatbot.fallbackMessage":
       "No puedo completar la respuesta en este momento. Te recomiendo contactar al centro o solicitar turno desde la web.",
   };
@@ -386,77 +389,115 @@ async function main() {
   await prisma.bookingRequest.deleteMany();
   await prisma.availabilitySlot.deleteMany();
 
-  // Slots próximos 14 días, mañana y tarde
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-  for (let d = 1; d <= 14; d++) {
-    const day = new Date(start);
-    day.setDate(day.getDate() + d);
-    if (day.getDay() === 0 || day.getDay() === 6) continue;
+  const bySlug = Object.fromEntries(treatments.map((tr) => [tr.slug, tr])) as Record<
+    string,
+    (typeof treatments)[number]
+  >;
 
-    const pro = pros[d % pros.length];
-    const tr = treatments[d % treatments.length];
-
-    const morning = new Date(day);
-    morning.setHours(10, 0, 0, 0);
-    const morningEnd = new Date(morning);
-    morningEnd.setMinutes(morning.getMinutes() + tr.durationMinutes);
-
-    const afternoon = new Date(day);
-    afternoon.setHours(16, 30, 0, 0);
-    const afternoonEnd = new Date(afternoon);
-    afternoonEnd.setMinutes(afternoon.getMinutes() + tr.durationMinutes);
-
-    await prisma.availabilitySlot.create({
-      data: {
-        professionalId: pro.id,
-        treatmentId: tr.id,
-        startsAt: morning,
-        endsAt: morningEnd,
-        status: SlotStatus.AVAILABLE,
-      },
-    });
-    await prisma.availabilitySlot.create({
-      data: {
-        professionalId: pro.id,
-        treatmentId: tr.id,
-        startsAt: afternoon,
-        endsAt: afternoonEnd,
-        status: SlotStatus.AVAILABLE,
-      },
-    });
+  await prisma.professional.updateMany({ data: { specialtyTreatmentId: null } });
+  const specialtyLinks: { id: string; slug: string }[] = [
+    { id: "seed-tod-ortiz", slug: "depilacion-medica" },
+    { id: "seed-tod-kraft", slug: "limpieza-facial-profunda" },
+    { id: "seed-tod-pardo", slug: "consulta-dermatologica" },
+    { id: "seed-tod-kahn", slug: "consulta-dermatologica" },
+    { id: "seed-tod-olguin", slug: "rejuvenecimiento" },
+    { id: "seed-tod-tezanos", slug: "peelings-medicos" },
+    { id: "seed-tod-deane", slug: "rejuvenecimiento" },
+    { id: "seed-tod-gigirey", slug: "control-de-acne" },
+  ];
+  for (const { id, slug } of specialtyLinks) {
+    const tr = bySlug[slug];
+    if (tr) {
+      await prisma.professional.update({ where: { id }, data: { specialtyTreatmentId: tr.id } });
+    }
   }
 
-  const demoLead = await prisma.contactLead.create({
-    data: {
-      name: "Paciente Demo",
-      email: "demo@example.com",
-      phone: "+54 11 6000-0000",
-      source: LeadSource.WEB_FORM,
+  /** Agenda simulada: L–V, 4 semanas, varios profesionales y tratamientos (como agenda real). */
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const now = Date.now();
+
+  type Block = { hour: number; minute: number; slug: string };
+  const weeklyPatterns: { proId: string; blocks: Block[] }[] = [
+    {
+      proId: "seed-tod-pardo",
+      blocks: [
+        { hour: 9, minute: 0, slug: "consulta-dermatologica" },
+        { hour: 10, minute: 30, slug: "consulta-dermatologica" },
+        { hour: 14, minute: 0, slug: "control-de-acne" },
+      ],
     },
-  });
+    {
+      proId: "seed-tod-kahn",
+      blocks: [
+        { hour: 11, minute: 0, slug: "consulta-dermatologica" },
+        { hour: 15, minute: 30, slug: "consulta-dermatologica" },
+      ],
+    },
+    {
+      proId: "seed-tod-olguin",
+      blocks: [
+        { hour: 9, minute: 0, slug: "rejuvenecimiento" },
+        { hour: 11, minute: 0, slug: "rejuvenecimiento" },
+        { hour: 16, minute: 0, slug: "peelings-medicos" },
+      ],
+    },
+    {
+      proId: "seed-tod-tezanos",
+      blocks: [
+        { hour: 9, minute: 30, slug: "peelings-medicos" },
+        { hour: 15, minute: 30, slug: "rejuvenecimiento" },
+      ],
+    },
+    {
+      proId: "seed-tod-ortiz",
+      blocks: [
+        { hour: 10, minute: 0, slug: "depilacion-medica" },
+        { hour: 16, minute: 30, slug: "depilacion-medica" },
+      ],
+    },
+    {
+      proId: "seed-tod-kraft",
+      blocks: [
+        { hour: 10, minute: 0, slug: "limpieza-facial-profunda" },
+        { hour: 15, minute: 0, slug: "limpieza-facial-profunda" },
+      ],
+    },
+    {
+      proId: "seed-tod-gigirey",
+      blocks: [
+        { hour: 10, minute: 30, slug: "control-de-acne" },
+        { hour: 17, minute: 0, slug: "consulta-dermatologica" },
+      ],
+    },
+  ];
 
-  const slotDemo = await prisma.availabilitySlot.findFirst({
-    where: { status: SlotStatus.AVAILABLE },
-  });
+  for (let offset = 0; offset < 28; offset++) {
+    const day = new Date(start);
+    day.setDate(day.getDate() + offset);
+    const dow = day.getDay();
+    if (dow === 0 || dow === 6) continue;
 
-  if (slotDemo) {
-    await prisma.bookingRequest.create({
-      data: {
-        contactLeadId: demoLead.id,
-        treatmentId: treatments[0].id,
-        professionalId: slotDemo.professionalId,
-        availabilitySlotId: slotDemo.id,
-        status: BookingStatus.PENDING_CONFIRMATION,
-        source: LeadSource.BOOKING_WIDGET,
-        consentAccepted: true,
-        patientMessage: "Preferencia por turno mañana.",
-      },
-    });
-    await prisma.availabilitySlot.update({
-      where: { id: slotDemo.id },
-      data: { status: SlotStatus.PENDING },
-    });
+    for (const pat of weeklyPatterns) {
+      for (const b of pat.blocks) {
+        const tr = bySlug[b.slug];
+        if (!tr) continue;
+        const startsAt = new Date(day);
+        startsAt.setHours(b.hour, b.minute, 0, 0);
+        if (startsAt.getTime() < now) continue;
+        const endsAt = new Date(startsAt);
+        endsAt.setMinutes(endsAt.getMinutes() + tr.durationMinutes);
+        await prisma.availabilitySlot.create({
+          data: {
+            professionalId: pat.proId,
+            treatmentId: tr.id,
+            startsAt,
+            endsAt,
+            status: SlotStatus.AVAILABLE,
+          },
+        });
+      }
+    }
   }
 
   await prisma.auditLog.create({

@@ -5,9 +5,10 @@ import { prisma } from "../lib/prisma";
 import { requireAdmin } from "../middleware/requireAdmin";
 import { signAdminToken } from "../lib/jwt";
 import { AppError, friendlyError } from "../lib/errors";
-import { invalidateSettingsCache } from "../lib/settings";
+import { getAllSettingsMap, invalidateSettingsCache } from "../lib/settings";
 import { sanitizeText } from "../lib/sanitize";
 import { BookingStatus, LeadSource, SlotStatus } from "@prisma/client";
+import { emailPatientBookingCanceled, emailPatientBookingConfirmed } from "../lib/email";
 import {
   assertDateRangeStartsNotBeforeToday,
   assertSlotStartNotInPast,
@@ -185,7 +186,12 @@ router.patch("/bookings/:id", async (req, res) => {
     if (!parsed.success) throw new AppError(400, "Datos inválidos");
     const booking = await prisma.bookingRequest.findUnique({
       where: { id: req.params.id },
-      include: { availabilitySlot: true },
+      include: {
+        availabilitySlot: true,
+        contactLead: true,
+        treatment: true,
+        professional: true,
+      },
     });
     if (!booking) throw new AppError(404, "No encontrado");
 
@@ -241,7 +247,57 @@ router.patch("/bookings/:id", async (req, res) => {
       });
     });
 
-    const updated = await prisma.bookingRequest.findUnique({ where: { id: req.params.id } });
+    const updated = await prisma.bookingRequest.findUnique({
+      where: { id: req.params.id },
+      include: {
+        availabilitySlot: true,
+        contactLead: true,
+        treatment: true,
+        professional: true,
+      },
+    });
+
+    if (
+      parsed.data.status === BookingStatus.CONFIRMED &&
+      booking.status !== BookingStatus.CONFIRMED &&
+      updated?.contactLead?.email
+    ) {
+      const settings = await getAllSettingsMap();
+      const clinicAddress = settings.get("contact.address")?.trim() || "Camino Boulogne Bancalari 3350, Victoria";
+      const clinicPhone = settings.get("contact.phone")?.trim() || "+54 9 11 2699-2405";
+      const siteUrl = process.env.WEB_PUBLIC_URL?.trim() || process.env.NEXT_PUBLIC_SITE_URL?.trim() || "";
+      const logoUrl = siteUrl ? `${siteUrl.replace(/\/$/, "")}/branding/logo-tod.png` : null;
+
+      void emailPatientBookingConfirmed({
+        to: updated.contactLead.email,
+        patientName: updated.contactLead.name,
+        treatmentName: updated.treatment?.name ?? "Turno confirmado",
+        professionalName: updated.professional?.name ?? null,
+        startsAtIso: updated.availabilitySlot?.startsAt?.toISOString() ?? null,
+        clinicAddress,
+        clinicPhone,
+        logoUrl,
+      });
+    }
+
+    if (
+      parsed.data.status === BookingStatus.CANCELED &&
+      booking.status !== BookingStatus.CANCELED &&
+      updated?.contactLead?.email
+    ) {
+      const settings = await getAllSettingsMap();
+      const clinicPhone = settings.get("contact.phone")?.trim() || "+54 9 11 2699-2405";
+
+      void emailPatientBookingCanceled({
+        to: updated.contactLead.email,
+        patientName: updated.contactLead.name,
+        treatmentName: updated.treatment?.name ?? "Turno",
+        professionalName: updated.professional?.name ?? null,
+        startsAtIso: updated.availabilitySlot?.startsAt?.toISOString() ?? null,
+        clinicPhone,
+      });
+    }
+
     res.json({ booking: updated });
   } catch (e) {
     const { status, message } = friendlyError(e);

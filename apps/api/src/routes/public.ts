@@ -56,6 +56,7 @@ router.get("/professionals", async (_req, res) => {
         id: true,
         name: true,
         specialty: true,
+        specialtyTreatmentId: true,
         bio: true,
         imageUrl: true,
       },
@@ -114,6 +115,13 @@ router.get("/availability", async (req, res) => {
         startsAt: { gte: from, lte: to },
         professional: { deletedAt: null },
         treatment: { deletedAt: null },
+        NOT: {
+          bookingRequests: {
+            some: {
+              status: { notIn: [BookingStatus.CANCELED, BookingStatus.CLOSED] },
+            },
+          },
+        },
         ...(treatmentId ? { treatmentId } : {}),
         ...(professionalId ? { professionalId } : {}),
       },

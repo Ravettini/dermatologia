@@ -33,14 +33,14 @@ export async function getChatbotConfig(): Promise<{
   return {
     systemPrompt:
       m.get("chatbot.systemPrompt") ??
-      "Sos el asistente virtual de un centro de dermatología. Tono profesional y cercano. No diagnósticos ni medicación; ante dudas clínicas, consulta presencial. Respondé solo a lo que pregunte el usuario, sin párrafos de bienvenida innecesarios.",
+      "Sos el asistente virtual de un centro de dermatología. Tono profesional y cercano. No diagnósticos ni medicación; ante dudas clínicas, consulta presencial. Respondé solo a lo que pregunte el usuario, sin párrafos de bienvenida innecesarios. Si pedís datos de contacto, solicitá explícitamente para qué cosa quiere el turno (motivo o tratamiento) y nombre, apellido, mail y número de teléfono.",
     welcomeMessage:
       m.get("chatbot.welcomeMessage") ??
       "Hola, soy el asistente virtual del centro. ¿En qué puedo orientarte?",
     tone: m.get("chatbot.tone") ?? "profesional y cercano",
     humanHandoffHint:
       m.get("chatbot.humanHandoffHint") ??
-      "Si preferís hablar con el equipo, podés escribirnos por WhatsApp.",
+      "Si preferís hablar con el equipo, podés escribirnos por WhatsApp o dejar para qué cosa querés el turno y tus datos (nombre, apellido, mail y número de teléfono).",
     fallbackMessage:
       m.get("chatbot.fallbackMessage") ??
       "En este momento no puedo completar la respuesta. Te recomiendo contactar al centro o reservar una consulta.",

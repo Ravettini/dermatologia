@@ -12,7 +12,7 @@ export function SiteFooter({
   phone: string;
 }) {
   return (
-    <footer className="w-full border-t border-on-surface/5 bg-surface-container-highest">
+    <footer className="w-full border-t border-on-surface/5 bg-surface-container">
       <div className="grid w-full grid-cols-1 gap-12 px-6 py-20 font-body text-sm tracking-wide text-on-surface md:grid-cols-4 md:px-12">
         <div>
           <div className="mb-6 font-headline text-xl italic">{siteName}</div>

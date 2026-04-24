@@ -59,6 +59,7 @@ export async function runChatCompletion(params: {
     "Respondé solo a lo que el usuario escribió. No listes servicios ni des la bienvenida institucional: eso ya aparece al abrir el chat.",
     "Si el mensaje tiene una pregunta o un pedido, respondé a eso. Si reclama o se molesta, una o dos frases máximo, sin monólogo ni repetir quién sos.",
     "Mensajes breves; más detalle solo si el usuario lo pide.",
+    "Si necesitás pedir datos para contacto o seguimiento, pedí de forma explícita: para qué cosa quiere el turno (motivo, consulta o tratamiento) y también nombre, apellido, mail y número de teléfono.",
     "FORMATO DE SALIDA: solo el texto que lee el paciente. PROHIBIDO incluir notas, listas de opciones internas, líneas con asterisco, etiquetas tipo User says o Persona, borradores en inglés, o metaexplicaciones.",
     "No repitas la misma respuesta dos veces. No uses comillas dobles alrededor del mensaje ni pegues dos copias del mismo párrafo.",
     "Una sola variante de respuesta: no repitas el mismo párrafo ni lo vuelvas a pegar entre comillas.",

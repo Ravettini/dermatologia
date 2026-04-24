@@ -77,7 +77,7 @@ export function TeamSection({ professionals }: { professionals: TeamMember[] }) 
   if (professionals.length === 0) {
     return (
       <section
-        className="bg-surface-container-low px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32"
+        className="bg-surface-container px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32"
         id="equipo"
       >
         <p className="mx-auto max-w-[1600px] text-center text-sm text-on-surface-variant">
@@ -88,7 +88,7 @@ export function TeamSection({ professionals }: { professionals: TeamMember[] }) 
   }
 
   return (
-    <section className="bg-surface-container-low px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32" id="equipo">
+    <section className="bg-surface-container px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32" id="equipo">
       <div className="mx-auto max-w-[1600px]">
         <div className="mb-10 flex flex-col gap-4 sm:mb-12 md:flex-row md:items-end md:justify-between">
           <div>
@@ -141,8 +141,8 @@ export function TeamSection({ professionals }: { professionals: TeamMember[] }) 
                   )}
                 </div>
                 <div className="text-center">
-                  <h4 className="font-headline text-2xl">{m.name}</h4>
-                  <p className="mt-1 font-label text-xs uppercase tracking-widest text-secondary">
+                  <h4 className="font-headline text-2xl text-secondary">{m.name}</h4>
+                  <p className="mt-1 font-label text-xs uppercase tracking-widest text-on-surface-variant">
                     {normalizeSpecialty(m.specialty)}
                   </p>
                   {m.bio ? (

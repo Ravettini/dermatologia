@@ -26,7 +26,7 @@ export function SiteHeader({ siteName }: { siteName: string }) {
   }, [menuOpen]);
 
   return (
-    <nav className="fixed top-0 z-50 w-full max-w-[100vw] overflow-x-hidden bg-surface/90 px-4 py-2 backdrop-blur-md sm:px-6 md:px-12 md:py-3">
+    <nav className="fixed top-0 z-50 w-full max-w-[100vw] overflow-x-hidden bg-white/95 px-4 py-2 backdrop-blur-md sm:px-6 md:px-12 md:py-3">
       <div className="relative mx-auto flex max-w-[1600px] items-center">
         <div className="flex min-w-0 flex-1 justify-start">
           <Link
@@ -82,7 +82,7 @@ export function SiteHeader({ siteName }: { siteName: string }) {
       </div>
 
       {menuOpen && (
-        <div className="border-t border-outline-variant/30 bg-surface shadow-lg md:hidden">
+        <div className="border-t border-outline-variant/30 bg-white shadow-lg md:hidden">
           <div className="mx-auto flex max-h-[min(70vh,calc(100dvh-5rem))] max-w-[1600px] flex-col gap-1 overflow-y-auto px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
             {nav.map((item) => (
               <Link

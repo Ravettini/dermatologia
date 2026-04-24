@@ -11,10 +11,10 @@ export const contactFormSchema = z.object({
 
 export const bookingRequestSchema = z.object({
   treatmentId: z.string().min(1),
-  professionalId: z
-    .string()
-    .optional()
-    .transform((s) => (s && s.length > 0 ? s : undefined)),
+  professionalId: z.preprocess(
+    (v) => (v === null || v === undefined || v === "" ? undefined : v),
+    z.string().min(1).optional()
+  ),
   slotId: z.string().min(1),
   name: z.string().min(2).max(120),
   email: z.string().email().max(255),

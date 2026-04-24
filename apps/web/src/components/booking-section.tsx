@@ -21,6 +21,7 @@ type Professional = {
   id: string;
   name: string;
   specialty: string;
+  specialtyTreatmentId?: string | null;
 };
 
 type Slot = {
@@ -50,6 +51,7 @@ export function BookingSection() {
   const [slots, setSlots] = useState<Slot[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [loadErr, setLoadErr] = useState<string | null>(null);
+  const [submitErr, setSubmitErr] = useState<string | null>(null);
   const [submitOk, setSubmitOk] = useState(false);
 
   const {
@@ -69,6 +71,10 @@ export function BookingSection() {
   useEffect(() => {
     setValue("slotId", "");
   }, [treatmentId, professionalId, setValue]);
+
+  useEffect(() => {
+    setSubmitOk(false);
+  }, [treatmentId]);
 
   useEffect(() => {
     void (async () => {
@@ -125,20 +131,47 @@ export function BookingSection() {
     });
   }, [slots, treatmentId, professionalId]);
 
+  /** Profesionales con al menos un horario disponible para el tratamiento elegido (evita lista vacía si falta specialtyTreatmentId en BD). */
+  const professionalsWithSlots = useMemo(() => {
+    if (!treatmentId || slots.length === 0) return [];
+    const byId = new Map<string, Professional>();
+    for (const s of slots) {
+      if (s.treatmentId && s.treatmentId !== treatmentId) continue;
+      if (!byId.has(s.professionalId)) byId.set(s.professionalId, s.professional);
+    }
+    return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name, "es"));
+  }, [slots, treatmentId]);
+
+  useEffect(() => {
+    if (!professionalId) return;
+    const stillValid = professionalsWithSlots.some((p) => p.id === professionalId);
+    if (!stillValid) setValue("professionalId", "");
+  }, [professionalId, professionalsWithSlots, setValue]);
+
   const onSubmit = handleSubmit(async (data) => {
     setSubmitOk(false);
-    await apiFetch("/api/public/booking-request", {
-      method: "POST",
-      json: {
-        ...data,
-        professionalId: data.professionalId || null,
-      },
-    });
-    setSubmitOk(true);
+    setSubmitErr(null);
+    try {
+      await apiFetch("/api/public/booking-request", {
+        method: "POST",
+        json: {
+          ...data,
+          professionalId: data.professionalId || null,
+        },
+      });
+      setSubmitOk(true);
+      setValue("slotId", "");
+      const params = new URLSearchParams({ treatmentId: data.treatmentId });
+      if (data.professionalId) params.set("professionalId", data.professionalId);
+      const refreshed = await apiFetch<{ slots: Slot[] }>(`/api/public/availability?${params.toString()}`);
+      setSlots(refreshed.slots);
+    } catch (e) {
+      setSubmitErr(e instanceof Error ? e.message : "No se pudo enviar la solicitud");
+    }
   });
 
   return (
-    <section id="reservar" className="scroll-mt-32 bg-surface-container-low px-4 py-16 sm:px-6 md:scroll-mt-28 md:px-12 md:py-24">
+    <section id="reservar" className="scroll-mt-32 bg-surface-container px-4 py-16 sm:px-6 md:scroll-mt-28 md:px-12 md:py-24">
       <div className="mx-auto max-w-5xl">
         <span className="mb-4 block font-label text-xs uppercase tracking-[0.3em] text-secondary">Reservá tu consulta</span>
         <h2 className="mb-4 font-headline text-4xl md:text-5xl">Solicitá tu turno</h2>
@@ -150,6 +183,21 @@ export function BookingSection() {
         {loadErr && <p className="mb-6 text-sm text-red-700">{loadErr}</p>}
 
         <form onSubmit={onSubmit} className="grid gap-10 md:grid-cols-2">
+          {submitOk && (
+            <div
+              className="md:col-span-2 flex gap-4 rounded-xl border-2 border-emerald-600/50 bg-emerald-100/90 px-5 py-5 shadow-sm sm:px-6 sm:py-6"
+              role="status"
+              aria-live="polite"
+            >
+              <span className="material-symbols-outlined shrink-0 text-3xl text-emerald-800">check_circle</span>
+              <div>
+                <p className="font-label text-xs uppercase tracking-[0.2em] text-emerald-900">Solicitud enviada</p>
+                <p className="mt-2 text-base font-medium leading-snug text-emerald-950 sm:text-lg">
+                  Recibimos tu solicitud. Te contactaremos para confirmar el turno.
+                </p>
+              </div>
+            </div>
+          )}
           <div className="space-y-6">
             <div>
               <label className="mb-2 block font-label text-xs uppercase tracking-widest text-on-surface-variant">
@@ -179,7 +227,7 @@ export function BookingSection() {
                 disabled={!treatmentId}
               >
                 <option value="">Cualquiera disponible</option>
-                {professionals.map((pr) => (
+                {professionalsWithSlots.map((pr) => (
                   <option key={pr.id} value={pr.id}>
                     {pr.name}
                   </option>
@@ -187,6 +235,11 @@ export function BookingSection() {
               </select>
               {!treatmentId && (
                 <p className="mt-1 text-xs text-on-surface-variant/80">Primero elegí un tratamiento.</p>
+              )}
+              {treatmentId && !slotsLoading && professionalsWithSlots.length === 0 && (
+                <p className="mt-1 text-xs text-on-surface-variant/80">
+                  No hay profesionales con turnos cargados para este tratamiento.
+                </p>
               )}
             </div>
 
@@ -268,11 +321,7 @@ export function BookingSection() {
             >
               Enviar solicitud
             </button>
-            {submitOk && (
-              <p className="text-sm text-secondary">
-                Recibimos tu solicitud. Te contactaremos para confirmar fecha y hora.
-              </p>
-            )}
+            {submitErr && <p className="text-sm text-red-700">{submitErr}</p>}
           </div>
         </form>
       </div>

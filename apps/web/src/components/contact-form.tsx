@@ -8,6 +8,7 @@ import { apiFetch } from "@/lib/api";
 
 type FormValues = {
   name: string;
+  dni: string;
   email: string;
   phone?: string;
   message: string;
@@ -37,7 +38,7 @@ export function ContactForm() {
         json: { ...data, source: "WEB_FORM" },
       });
       setStatus("ok");
-      reset({ name: "", email: "", phone: "", message: "", consent: false });
+      reset({ name: "", dni: "", email: "", phone: "", message: "", consent: false });
     } catch (e) {
       setStatus("err");
       setErr(e instanceof Error ? e.message : "No se pudo enviar");
@@ -53,6 +54,15 @@ export function ContactForm() {
           {...register("name")}
         />
         {errors.name && <p className="mt-1 text-xs text-red-700">{errors.name.message}</p>}
+      </div>
+      <div>
+        <input
+          className="w-full border-0 border-b border-outline-variant bg-transparent py-4 placeholder:text-on-surface-variant/40 focus:border-secondary focus:ring-0"
+          placeholder="DNI o documento"
+          autoComplete="off"
+          {...register("dni")}
+        />
+        {errors.dni && <p className="mt-1 text-xs text-red-700">{errors.dni.message}</p>}
       </div>
       <div>
         <input

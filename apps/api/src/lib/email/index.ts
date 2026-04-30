@@ -85,15 +85,20 @@ async function sendViaSmtp(
 
 export async function notifyAdminNewBooking(payload: {
   patientName: string;
+  patientDni?: string;
   treatment: string;
   when: string;
 }): Promise<void> {
   const to = process.env.ADMIN_NOTIFICATION_EMAIL;
   if (!to) return;
+  const dniLine = payload.patientDni?.trim()
+    ? `<p><strong>DNI / documento:</strong> ${escapeHtml(payload.patientDni)}</p>`
+    : "";
   const r = await sendTransactionalEmail({
     to,
     subject: "Nueva solicitud de turno",
     html: `<p>Nueva solicitud de <strong>${escapeHtml(payload.patientName)}</strong>.</p>
+    ${dniLine}
     <p>Tratamiento: ${escapeHtml(payload.treatment)}</p>
     <p>Fecha/hora solicitada: ${escapeHtml(payload.when)}</p>`,
   });

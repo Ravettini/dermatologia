@@ -8,11 +8,13 @@ import { buildCrmLeadWhatsAppMessage, phoneToWhatsAppUrl } from "@/lib/whatsapp-
 type Lead = {
   id: string;
   name: string;
+  dni: string | null;
   email: string | null;
   phone: string | null;
   source: string;
   lastInteractionAt: string;
   crmContacted: boolean;
+  duplicateIntakeCount: number;
   _count: { bookings: number };
   chatConversationId: string | null;
 };
@@ -72,10 +74,12 @@ export default function AdminLeadsPage() {
           <thead className="bg-surface-container-high text-xs uppercase tracking-widest text-on-surface-variant">
             <tr>
               <th className="px-3 py-2">Nombre</th>
+              <th className="px-3 py-2">DNI</th>
               <th className="px-3 py-2">Email</th>
               <th className="px-3 py-2">Teléfono</th>
               <th className="px-3 py-2">Origen</th>
               <th className="px-3 py-2">Reservas</th>
+              <th className="px-3 py-2">Reingresos</th>
               <th className="min-w-[200px] px-3 py-2 text-right">WhatsApp y seguimiento</th>
             </tr>
           </thead>
@@ -87,10 +91,21 @@ export default function AdminLeadsPage() {
               return (
                 <tr key={l.id} className="border-t border-outline-variant/20">
                   <td className="px-3 py-2">
-                    <Link className="underline" href={`/admin/leads/${l.id}`}>
-                      {l.name}
-                    </Link>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Link className="underline" href={`/admin/leads/${l.id}`}>
+                        {l.name}
+                      </Link>
+                      {l.duplicateIntakeCount > 0 ? (
+                        <span
+                          className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-900 ring-1 ring-amber-200"
+                          title="Volvió a enviar datos desde la web con el mismo DNI; revisá notas automáticas."
+                        >
+                          Reingreso ×{l.duplicateIntakeCount}
+                        </span>
+                      ) : null}
+                    </div>
                   </td>
+                  <td className="px-3 py-2 whitespace-nowrap text-on-surface-variant">{l.dni || "—"}</td>
                   <td className="px-3 py-2">{l.email}</td>
                   <td className="px-3 py-2">{l.phone}</td>
                   <td className="px-3 py-2">
@@ -107,6 +122,7 @@ export default function AdminLeadsPage() {
                     </div>
                   </td>
                   <td className="px-3 py-2">{l._count.bookings}</td>
+                  <td className="px-3 py-2 text-on-surface-variant">{l.duplicateIntakeCount}</td>
                   <td className="px-3 py-2">
                     <div className="flex flex-wrap items-center justify-end gap-3">
                       {wa ? (

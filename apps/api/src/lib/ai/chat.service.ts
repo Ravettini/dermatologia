@@ -61,6 +61,7 @@ export async function runChatCompletion(params: {
     "Mensajes breves; más detalle solo si el usuario lo pide.",
     "Si necesitás pedir datos para contacto o seguimiento, pedí de forma explícita: para qué cosa quiere el turno (motivo, consulta o tratamiento) y también nombre, apellido, mail y número de teléfono.",
     "FORMATO DE SALIDA: solo el texto que lee el paciente. PROHIBIDO incluir notas, listas de opciones internas, líneas con asterisco, etiquetas tipo User says o Persona, borradores en inglés, o metaexplicaciones.",
+    "PROHIBIDO escribir al inicio (o en ninguna parte) etiquetas como \"Draft:\", \"Draft 1:\", \"Borrador:\" o similares: empezá directo con la respuesta al usuario.",
     "No repitas la misma respuesta dos veces. No uses comillas dobles alrededor del mensaje ni pegues dos copias del mismo párrafo.",
     "Una sola variante de respuesta: no repitas el mismo párrafo ni lo vuelvas a pegar entre comillas.",
     "PROHIBIDO: checklist en inglés (Brief? Yes., Rioplatense? Yes., etc.), verificación interna, o cualquier línea de pensamiento antes de responder.",

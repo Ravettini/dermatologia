@@ -5,9 +5,11 @@ import {
   bookingRequestSchema,
   chatMessageSchema,
   contactFormSchema,
+  dniToStore,
   leadCaptureSchema,
 } from "@derma/shared";
 import { prisma } from "../lib/prisma";
+import { intakePublicContactLeadByDni } from "../lib/contact-lead-intake";
 import { AppError, friendlyError } from "../lib/errors";
 import { sanitizeText } from "../lib/sanitize";
 import { runChatCompletion } from "../lib/ai/chat.service";
@@ -148,24 +150,24 @@ router.post("/contact", formLimiter, async (req, res) => {
     const d = parsed.data;
     const source = (d.source as LeadSource | undefined) ?? LeadSource.WEB_FORM;
 
-    const lead = await prisma.contactLead.create({
-      data: {
-        name: sanitizeText(d.name, 120),
-        email: sanitizeText(d.email, 255),
-        phone: d.phone ? sanitizeText(d.phone, 40) : null,
-        source,
-        lastInteractionAt: new Date(),
-      },
+    const dni = dniToStore(d.dni);
+    const messageBody = `Consulta web: ${sanitizeText(d.message, 4000)}`;
+    const { id: leadId, merged } = await intakePublicContactLeadByDni({
+      dni,
+      name: sanitizeText(d.name, 120),
+      email: sanitizeText(d.email, 255),
+      phone: d.phone ? sanitizeText(d.phone, 40) : undefined,
+      source,
+      systemNote: `[Sistema · reingreso con el mismo DNI · ${new Date().toISOString()}]\n\n${messageBody}`,
     });
 
-    await prisma.leadNote.create({
-      data: {
-        contactId: lead.id,
-        body: `Consulta web: ${sanitizeText(d.message, 4000)}`,
-      },
-    });
+    if (!merged) {
+      await prisma.leadNote.create({
+        data: { contactId: leadId, body: messageBody },
+      });
+    }
 
-    res.status(201).json({ ok: true, id: lead.id });
+    res.status(201).json({ ok: true, id: leadId });
   } catch (e) {
     const { status, message } = friendlyError(e);
     res.status(status).json({ error: message });
@@ -199,15 +201,17 @@ router.post("/booking-request", formLimiter, async (req, res) => {
       throw new AppError(400, "El profesional no coincide con el horario seleccionado.");
     }
 
-    const lead = await prisma.contactLead.create({
-      data: {
-        name: sanitizeText(d.name, 120),
-        email: sanitizeText(d.email, 255),
-        phone: sanitizeText(d.phone, 40),
-        source: LeadSource.BOOKING_WIDGET,
-        lastInteractionAt: new Date(),
-      },
+    const dni = dniToStore(d.dni);
+    const { id: leadId } = await intakePublicContactLeadByDni({
+      dni,
+      name: sanitizeText(d.name, 120),
+      email: sanitizeText(d.email, 255),
+      phone: sanitizeText(d.phone, 40),
+      source: LeadSource.BOOKING_WIDGET,
+      systemNote: `[Sistema · reingreso con el mismo DNI · nueva solicitud de turno · ${new Date().toISOString()}]`,
     });
+
+    const lead = await prisma.contactLead.findUniqueOrThrow({ where: { id: leadId } });
 
     const booking = await prisma.$transaction(async (tx) => {
       await tx.availabilitySlot.update({
@@ -217,7 +221,7 @@ router.post("/booking-request", formLimiter, async (req, res) => {
 
       return tx.bookingRequest.create({
         data: {
-          contactLeadId: lead.id,
+          contactLeadId: leadId,
           treatmentId: d.treatmentId,
           professionalId: slot.professionalId,
           availabilitySlotId: slot.id,
@@ -233,6 +237,7 @@ router.post("/booking-request", formLimiter, async (req, res) => {
     const when = `${booking.availabilitySlot?.startsAt.toISOString() ?? ""}`;
     void notifyAdminNewBooking({
       patientName: lead.name,
+      patientDni: lead.dni ?? undefined,
       treatment: booking.treatment.name,
       when,
     });
@@ -253,22 +258,22 @@ router.post("/chat/lead", formLimiter, async (req, res) => {
     const conv = await prisma.chatConversation.findUnique({ where: { visitorId: d.visitorId } });
     if (!conv) throw new AppError(404, "Conversación no encontrada");
 
-    const lead = await prisma.contactLead.create({
-      data: {
-        name: sanitizeText(d.name, 120),
-        email: d.email ? sanitizeText(d.email, 255) : null,
-        phone: d.phone ? sanitizeText(d.phone, 40) : null,
-        source: LeadSource.CHATBOT,
-        lastInteractionAt: new Date(),
-      },
+    const dni = dniToStore(d.dni);
+    const { id: leadId } = await intakePublicContactLeadByDni({
+      dni,
+      name: sanitizeText(d.name, 120),
+      email: d.email ? sanitizeText(d.email, 255) : null,
+      phone: d.phone !== undefined ? (d.phone ? sanitizeText(d.phone, 40) : null) : undefined,
+      source: LeadSource.CHATBOT,
+      systemNote: `[Sistema · reingreso con el mismo DNI · datos desde el chatbot · ${new Date().toISOString()}]`,
     });
 
     await prisma.chatConversation.update({
       where: { id: conv.id },
-      data: { contactLeadId: lead.id },
+      data: { contactLeadId: leadId },
     });
 
-    res.status(201).json({ ok: true, leadId: lead.id });
+    res.status(201).json({ ok: true, leadId });
   } catch (e) {
     const { status, message } = friendlyError(e);
     res.status(status).json({ error: message });

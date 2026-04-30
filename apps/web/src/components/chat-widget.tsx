@@ -23,6 +23,7 @@ export function ChatWidget({
   const [error, setError] = useState<string | null>(null);
   const [showLead, setShowLead] = useState(false);
   const [leadName, setLeadName] = useState("");
+  const [leadDni, setLeadDni] = useState("");
   const [leadEmail, setLeadEmail] = useState("");
   const [leadPhone, setLeadPhone] = useState("");
   const endRef = useRef<HTMLDivElement | null>(null);
@@ -73,12 +74,17 @@ export function ChatWidget({
       return;
     }
     setError(null);
+    if (!leadDni.trim() || leadDni.replace(/\D/g, "").length < 7) {
+      setError("Indicá un DNI o documento válido (al menos 7 dígitos).");
+      return;
+    }
     try {
       await apiFetch("/api/public/chat/lead", {
         method: "POST",
         json: {
           visitorId,
           name: leadName,
+          dni: leadDni.trim(),
           email: leadEmail || undefined,
           phone: leadPhone || undefined,
         },
@@ -173,6 +179,13 @@ export function ChatWidget({
                     placeholder="Nombre"
                     value={leadName}
                     onChange={(e) => setLeadName(e.target.value)}
+                  />
+                  <input
+                    className="w-full rounded border border-outline-variant/40 bg-transparent px-2 py-1"
+                    placeholder="DNI o documento"
+                    autoComplete="off"
+                    value={leadDni}
+                    onChange={(e) => setLeadDni(e.target.value)}
                   />
                   <input
                     className="w-full rounded border border-outline-variant/40 bg-transparent px-2 py-1"

@@ -7,6 +7,7 @@ import { apiFetch } from "@/lib/api";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: "dashboard" },
+  { href: "/admin/asignar-turnos", label: "Asignar turnos", icon: "event_available" },
   { href: "/admin/bookings", label: "Reservas", icon: "event" },
   { href: "/admin/availability", label: "Calendario y turnos", icon: "calendar_month" },
   { href: "/admin/leads", label: "Contactos", icon: "group" },

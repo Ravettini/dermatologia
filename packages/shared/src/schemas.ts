@@ -1,7 +1,23 @@
 import { z } from "zod";
 
+/** DNI u documento: al menos 7 dígitos (admite puntos o espacios al escribir). */
+export const dniSchema = z
+  .string()
+  .trim()
+  .min(1, "DNI / documento requerido")
+  .max(24)
+  .refine((s) => s.replace(/\D/g, "").length >= 7, {
+    message: "El documento debe tener al menos 7 dígitos",
+  });
+
+/** Guardar en base: solo dígitos, máx. 15. */
+export function dniToStore(raw: string): string {
+  return raw.replace(/\D/g, "").slice(0, 15);
+}
+
 export const contactFormSchema = z.object({
   name: z.string().min(2).max(120),
+  dni: dniSchema,
   email: z.string().email().max(255),
   phone: z.string().max(40).optional(),
   message: z.string().min(1).max(4000),
@@ -17,6 +33,7 @@ export const bookingRequestSchema = z.object({
   ),
   slotId: z.string().min(1),
   name: z.string().min(2).max(120),
+  dni: dniSchema,
   email: z.string().email().max(255),
   phone: z.string().min(6).max(40),
   message: z.string().max(2000).optional(),
@@ -32,6 +49,7 @@ export const leadCaptureSchema = z
   .object({
     visitorId: z.string().min(8).max(80),
     name: z.string().min(2).max(120),
+    dni: dniSchema,
     email: z
       .preprocess((v) => (v === "" || v === null || v === undefined ? undefined : v), z.string().email().max(255).optional()),
     phone: z

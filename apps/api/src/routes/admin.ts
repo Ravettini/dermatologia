@@ -1,13 +1,14 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { dniSchema, dniToStore } from "@derma/shared";
 import { prisma } from "../lib/prisma";
 import { requireAdmin } from "../middleware/requireAdmin";
 import { signAdminToken } from "../lib/jwt";
 import { AppError, friendlyError } from "../lib/errors";
 import { getAllSettingsMap, invalidateSettingsCache } from "../lib/settings";
 import { sanitizeText } from "../lib/sanitize";
-import { BookingStatus, LeadSource, SlotStatus } from "@prisma/client";
+import { BookingStatus, LeadSource, Prisma, SlotStatus } from "@prisma/client";
 import { emailPatientBookingCanceled, emailPatientBookingConfirmed } from "../lib/email";
 import {
   assertDateRangeStartsNotBeforeToday,
@@ -72,6 +73,7 @@ router.get("/dashboard", async (_req, res) => {
       topTreatments,
       weekCount,
       monthCount,
+      upcomingBookingsRaw,
     ] = await Promise.all([
       prisma.bookingRequest.count({ where: { status: BookingStatus.PENDING_CONFIRMATION } }),
       prisma.bookingRequest.count({ where: { status: BookingStatus.NEW } }),
@@ -91,6 +93,22 @@ router.get("/dashboard", async (_req, res) => {
       }),
       prisma.bookingRequest.count({ where: { createdAt: { gte: weekAgo } } }),
       prisma.bookingRequest.count({ where: { createdAt: { gte: monthAgo } } }),
+      prisma.bookingRequest.findMany({
+        where: {
+          status: { in: [BookingStatus.CONFIRMED, BookingStatus.RESCHEDULED] },
+          availabilitySlot: { startsAt: { gte: now } },
+        },
+        select: {
+          id: true,
+          status: true,
+          contactLead: { select: { name: true, phone: true, email: true, dni: true } },
+          treatment: { select: { name: true } },
+          professional: { select: { name: true } },
+          availabilitySlot: { select: { startsAt: true } },
+        },
+        orderBy: { availabilitySlot: { startsAt: "asc" } },
+        take: 30,
+      }),
     ]);
 
     const treatmentIds = topTreatments.map((t) => t.treatmentId);
@@ -99,6 +117,20 @@ router.get("/dashboard", async (_req, res) => {
       select: { id: true, name: true },
     });
     const tmap = new Map(treatments.map((t) => [t.id, t.name]));
+
+    const upcomingBookings = upcomingBookingsRaw
+      .filter((b) => b.availabilitySlot)
+      .map((b) => ({
+        id: b.id,
+        status: b.status,
+        startsAt: b.availabilitySlot!.startsAt.toISOString(),
+        patientName: b.contactLead.name,
+        patientPhone: b.contactLead.phone,
+        patientEmail: b.contactLead.email,
+        patientDni: b.contactLead.dni,
+        treatmentName: b.treatment.name,
+        professionalName: b.professional?.name ?? null,
+      }));
 
     res.json({
       metrics: {
@@ -109,6 +141,7 @@ router.get("/dashboard", async (_req, res) => {
         bookingsLastWeek: weekCount,
         bookingsLastMonth: monthCount,
       },
+      upcomingBookings,
       bySource: bySource.map((b) => ({ source: b.source, count: b._count._all })),
       topTreatments: topTreatments.map((t) => ({
         treatmentId: t.treatmentId,
@@ -149,6 +182,148 @@ router.get("/bookings", async (req, res) => {
       take: 300,
     });
     res.json({ bookings: list });
+  } catch (e) {
+    const { status, message } = friendlyError(e);
+    res.status(status).json({ error: message });
+  }
+});
+
+const manualBookingSchema = z
+  .object({
+    availabilitySlotId: z.string().min(1),
+    contactLeadId: z.string().optional(),
+    dni: dniSchema,
+    name: z.string().max(120).optional(),
+    email: z.union([z.string().email(), z.literal("")]).optional(),
+    phone: z.string().max(40).optional(),
+    confirmed: z.boolean().optional().default(true),
+    patientMessage: z.string().max(2000).optional(),
+    notifyPatientEmail: z.boolean().optional().default(true),
+  })
+  .superRefine((data, ctx) => {
+    if (data.contactLeadId) return;
+    if (!data.name?.trim()) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Nombre requerido.", path: ["name"] });
+    }
+    if (!data.email?.trim() && !data.phone?.trim()) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Indicá al menos email o teléfono.", path: ["phone"] });
+    }
+  });
+
+router.post("/bookings/manual", async (req, res) => {
+  try {
+    const parsed = manualBookingSchema.safeParse(req.body);
+    if (!parsed.success) throw new AppError(400, "Datos inválidos");
+
+    const slot = await prisma.availabilitySlot.findUnique({
+      where: { id: parsed.data.availabilitySlotId },
+    });
+    if (!slot || slot.status !== SlotStatus.AVAILABLE) {
+      throw new AppError(409, "Ese horario no está disponible. Elegí otro cupo.");
+    }
+    if (slot.startsAt.getTime() < Date.now()) {
+      throw new AppError(400, "No se puede asignar un horario que ya pasó.");
+    }
+
+    let contactLeadId: string;
+    let leadEmail: string | null;
+    let leadName: string;
+
+    const dniStored = dniToStore(parsed.data.dni);
+
+    if (parsed.data.contactLeadId) {
+      const lead = await prisma.contactLead.findUnique({ where: { id: parsed.data.contactLeadId } });
+      if (!lead) throw new AppError(404, "Contacto no encontrado.");
+      contactLeadId = lead.id;
+      leadEmail = lead.email;
+      leadName = lead.name;
+      await prisma.contactLead.update({
+        where: { id: lead.id },
+        data: { dni: dniStored, lastInteractionAt: new Date() },
+      });
+    } else {
+      const existingByDni = await prisma.contactLead.findUnique({ where: { dni: dniStored } });
+      if (existingByDni) {
+        const updated = await prisma.contactLead.update({
+          where: { id: existingByDni.id },
+          data: {
+            name: sanitizeText(parsed.data.name!.trim(), 120),
+            email: parsed.data.email?.trim() ? sanitizeText(parsed.data.email.trim(), 255) : null,
+            phone: parsed.data.phone?.trim() ? sanitizeText(parsed.data.phone.trim(), 40) : null,
+            lastInteractionAt: new Date(),
+          },
+        });
+        contactLeadId = updated.id;
+        leadEmail = updated.email;
+        leadName = updated.name;
+      } else {
+        const lead = await prisma.contactLead.create({
+          data: {
+            name: sanitizeText(parsed.data.name!.trim(), 120),
+            dni: dniStored,
+            email: parsed.data.email?.trim() ? sanitizeText(parsed.data.email.trim(), 255) : null,
+            phone: parsed.data.phone?.trim() ? sanitizeText(parsed.data.phone.trim(), 40) : null,
+            source: LeadSource.MANUAL,
+            lastInteractionAt: new Date(),
+          },
+        });
+        contactLeadId = lead.id;
+        leadEmail = lead.email;
+        leadName = lead.name;
+      }
+    }
+
+    const confirmed = parsed.data.confirmed !== false;
+    const bookingStatus = confirmed ? BookingStatus.CONFIRMED : BookingStatus.PENDING_CONFIRMATION;
+    const slotStatusNext = confirmed ? SlotStatus.CONFIRMED : SlotStatus.PENDING;
+
+    const booking = await prisma.$transaction(async (tx) => {
+      await tx.availabilitySlot.update({
+        where: { id: slot.id },
+        data: { status: slotStatusNext },
+      });
+      return tx.bookingRequest.create({
+        data: {
+          contactLeadId,
+          treatmentId: slot.treatmentId,
+          professionalId: slot.professionalId,
+          availabilitySlotId: slot.id,
+          status: bookingStatus,
+          source: LeadSource.MANUAL,
+          patientMessage: parsed.data.patientMessage?.trim()
+            ? sanitizeText(parsed.data.patientMessage, 2000)
+            : null,
+          consentAccepted: true,
+        },
+        include: {
+          contactLead: true,
+          treatment: true,
+          professional: true,
+          availabilitySlot: true,
+        },
+      });
+    });
+
+    if (confirmed && parsed.data.notifyPatientEmail !== false && leadEmail?.trim()) {
+      const settings = await getAllSettingsMap();
+      const clinicAddress = settings.get("contact.address")?.trim() || "Camino Boulogne Bancalari 3350, Victoria";
+      const clinicPhone = settings.get("contact.phone")?.trim() || "+54 9 11 2699-2405";
+      const siteUrl = process.env.WEB_PUBLIC_URL?.trim() || process.env.NEXT_PUBLIC_SITE_URL?.trim() || "";
+      const logoUrl = siteUrl ? `${siteUrl.replace(/\/$/, "")}/branding/logo-tod.png` : null;
+
+      void emailPatientBookingConfirmed({
+        to: leadEmail,
+        patientName: leadName,
+        treatmentName: booking.treatment?.name ?? "Turno",
+        professionalName: booking.professional?.name ?? null,
+        startsAtIso: booking.availabilitySlot?.startsAt?.toISOString() ?? null,
+        clinicAddress,
+        clinicPhone,
+        logoUrl,
+      });
+    }
+
+    res.status(201).json({ booking });
   } catch (e) {
     const { status, message } = friendlyError(e);
     res.status(status).json({ error: message });
@@ -203,6 +378,29 @@ router.patch("/bookings/:id", async (req, res) => {
         if (!newSlot || newSlot.status !== SlotStatus.AVAILABLE) {
           throw new AppError(409, "El nuevo horario no está disponible");
         }
+        if (newSlot.treatmentId !== booking.treatmentId) {
+          throw new AppError(400, "El cupo es de otro tratamiento. Elegí un horario del mismo tratamiento.");
+        }
+        if (booking.status === BookingStatus.CANCELED || booking.status === BookingStatus.CLOSED) {
+          throw new AppError(400, "No se puede reprogramar una reserva cancelada o cerrada.");
+        }
+
+        const wasConfirmed = booking.status === BookingStatus.CONFIRMED;
+        const keepPendingFamily =
+          booking.status === BookingStatus.PENDING_CONFIRMATION ||
+          booking.status === BookingStatus.NEW ||
+          booking.status === BookingStatus.CONTACT_PENDING ||
+          booking.status === BookingStatus.CONTACTED;
+
+        const nextSlotStatus = wasConfirmed ? SlotStatus.CONFIRMED : SlotStatus.PENDING;
+        const nextBookingStatus = wasConfirmed
+          ? BookingStatus.CONFIRMED
+          : keepPendingFamily
+            ? booking.status
+            : booking.status === BookingStatus.RESCHEDULED
+              ? BookingStatus.RESCHEDULED
+              : BookingStatus.RESCHEDULED;
+
         if (booking.availabilitySlotId) {
           await tx.availabilitySlot.update({
             where: { id: booking.availabilitySlotId },
@@ -211,14 +409,14 @@ router.patch("/bookings/:id", async (req, res) => {
         }
         await tx.availabilitySlot.update({
           where: { id: newSlot.id },
-          data: { status: SlotStatus.PENDING },
+          data: { status: nextSlotStatus },
         });
         await tx.bookingRequest.update({
           where: { id: booking.id },
           data: {
             availabilitySlotId: newSlot.id,
             professionalId: newSlot.professionalId,
-            status: BookingStatus.RESCHEDULED,
+            status: nextBookingStatus,
             internalNotes: parsed.data.internalNotes ?? booking.internalNotes,
           },
         });
@@ -316,8 +514,17 @@ router.get("/availability", async (req, res) => {
     const to = req.query.to
       ? new Date(String(req.query.to))
       : new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
+    const slotStatusQ = typeof req.query.slotStatus === "string" ? req.query.slotStatus : "";
+    const treatmentIdQ = typeof req.query.treatmentId === "string" ? req.query.treatmentId.trim() : "";
+
+    const where: Prisma.AvailabilitySlotWhereInput = {
+      startsAt: { gte: from, lte: to },
+    };
+    if (slotStatusQ === "AVAILABLE") where.status = SlotStatus.AVAILABLE;
+    if (treatmentIdQ) where.treatmentId = treatmentIdQ;
+
     const slots = await prisma.availabilitySlot.findMany({
-      where: { startsAt: { gte: from, lte: to } },
+      where,
       include: { professional: true, treatment: true },
       orderBy: { startsAt: "asc" },
     });
@@ -607,16 +814,24 @@ router.patch("/leads/:id", async (req, res) => {
     const body = z
       .object({
         name: z.string().min(2).optional(),
+        dni: z.union([dniSchema, z.literal(""), z.null()]).optional(),
         email: z.string().email().optional().nullable(),
         phone: z.string().optional().nullable(),
         crmContacted: z.boolean().optional(),
       })
       .safeParse(req.body);
     if (!body.success) throw new AppError(400, "Datos inválidos");
+    const dniNext =
+      body.data.dni === undefined
+        ? undefined
+        : body.data.dni === "" || body.data.dni === null
+          ? null
+          : dniToStore(body.data.dni);
     const lead = await prisma.contactLead.update({
       where: { id: req.params.id },
       data: {
         name: body.data.name,
+        ...(dniNext !== undefined ? { dni: dniNext } : {}),
         email: body.data.email ?? undefined,
         phone: body.data.phone ?? undefined,
         ...(body.data.crmContacted !== undefined ? { crmContacted: body.data.crmContacted } : {}),
@@ -886,7 +1101,7 @@ router.get("/chat/conversations", async (_req, res) => {
       orderBy: { updatedAt: "desc" },
       take: 100,
       include: {
-        contactLead: { select: { id: true, name: true, email: true, phone: true } },
+        contactLead: { select: { id: true, name: true, email: true, phone: true, dni: true } },
       },
     });
     const ids = list.map((c) => c.id);
@@ -954,6 +1169,7 @@ router.get("/export/:dataset", async (req, res) => {
         "creado",
         "actualizado",
         "paciente",
+        "dni",
         "email",
         "telefono",
         "tratamiento",
@@ -968,6 +1184,7 @@ router.get("/export/:dataset", async (req, res) => {
         b.createdAt.toISOString(),
         b.updatedAt.toISOString(),
         b.contactLead.name,
+        b.contactLead.dni ?? "",
         b.contactLead.email ?? "",
         b.contactLead.phone ?? "",
         b.treatment.name,
@@ -988,10 +1205,12 @@ router.get("/export/:dataset", async (req, res) => {
       const headers = [
         "id",
         "nombre",
+        "dni",
         "email",
         "telefono",
         "origen",
         "contactado",
+        "reingresos_mismo_dni",
         "ultima_interaccion",
         "creado",
         "reservas_relacionadas",
@@ -999,10 +1218,12 @@ router.get("/export/:dataset", async (req, res) => {
       const rows = list.map((c) => [
         c.id,
         c.name,
+        c.dni ?? "",
         c.email ?? "",
         c.phone ?? "",
         c.source,
         c.crmContacted ? "sí" : "no",
+        String(c.duplicateIntakeCount),
         c.lastInteractionAt.toISOString(),
         c.createdAt.toISOString(),
         String(c._count.bookings),

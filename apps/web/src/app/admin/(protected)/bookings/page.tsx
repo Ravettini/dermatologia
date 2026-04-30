@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { AdminButton } from "@/components/admin/admin-button";
 import { BookingStatusBadge } from "@/components/admin/booking-status";
+import { RescheduleBookingDialog } from "@/components/admin/reschedule-booking-dialog";
 import { formatDateTimeEs } from "@/lib/date-format";
 import { buildBookingWhatsAppMessage, phoneToWhatsAppUrl } from "@/lib/whatsapp-booking";
 
@@ -11,8 +13,8 @@ type Booking = {
   id: string;
   status: string;
   createdAt: string;
-  contactLead: { name: string; email: string | null; phone: string | null };
-  treatment: { name: string };
+  contactLead: { name: string; dni: string | null; email: string | null; phone: string | null };
+  treatment: { id: string; name: string };
   professional: { name: string } | null;
   availabilitySlot: { startsAt: string } | null;
 };
@@ -42,6 +44,8 @@ export default function AdminBookingsPage() {
   const [rows, setRows] = useState<Booking[]>([]);
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [rescheduleFor, setRescheduleFor] = useState<Booking | null>(null);
+  const [rescheduleMode, setRescheduleMode] = useState<"assign" | "reschedule">("reschedule");
 
   const activeTab = useMemo(() => TABS.find((t) => t.id === tab)!, [tab]);
 
@@ -101,15 +105,40 @@ export default function AdminBookingsPage() {
     }
   }
 
+  function openReschedule(b: Booking, mode: "assign" | "reschedule") {
+    setRescheduleMode(mode);
+    setRescheduleFor(b);
+  }
+
   return (
     <div className="min-w-0 space-y-6">
+      {rescheduleFor && (
+        <RescheduleBookingDialog
+          open
+          onOpenChange={(v) => {
+            if (!v) setRescheduleFor(null);
+          }}
+          onSuccess={() => void load()}
+          bookingId={rescheduleFor.id}
+          treatmentId={rescheduleFor.treatment.id}
+          treatmentName={rescheduleFor.treatment.name}
+          currentSlotStartsAt={rescheduleFor.availabilitySlot?.startsAt ?? null}
+          mode={rescheduleMode}
+        />
+      )}
+
       <div>
         <h1 className="font-headline text-2xl text-slate-900 sm:text-3xl">Reservas y solicitudes</h1>
         <p className="mt-2 max-w-2xl text-sm text-slate-600">
           En <strong className="text-slate-800">Por confirmar</strong>, el flujo recomendado es: primero{" "}
           <strong>WhatsApp</strong> al paciente (queda registrado como &quot;Esperando WhatsApp&quot;). Cuando la persona
           confirma por chat, usá <strong>Confirmar</strong> o <strong>Rechazar</strong> según corresponda. Los turnos
-          confirmados pasan a la pestaña &quot;Confirmados&quot;; al confirmar, el cupo deja de ofrecerse en la web.
+          confirmados pasan a la pestaña &quot;Confirmados&quot;; al confirmar, el cupo deja de ofrecerse en la web. Para
+          dar de alta un turno manual (persona nueva o contacto), usá la pestaña{" "}
+          <Link href="/admin/asignar-turnos" className="font-medium text-sky-700 underline underline-offset-2">
+            Asignar turnos
+          </Link>
+          .
         </p>
       </div>
 
@@ -169,6 +198,7 @@ export default function AdminBookingsPage() {
                   <tr key={b.id} className="hover:bg-slate-50/80">
                     <td className="px-4 py-3">
                       <div className="font-medium text-slate-900">{b.contactLead.name}</div>
+                      <div className="text-xs text-slate-500">DNI: {b.contactLead.dni || "—"}</div>
                       <div className="text-xs text-slate-500">{b.contactLead.email ?? "—"}</div>
                       <div className="text-xs text-slate-500">{b.contactLead.phone ?? ""}</div>
                     </td>
@@ -182,8 +212,29 @@ export default function AdminBookingsPage() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap justify-end gap-2">
-                        {(b.status === "PENDING_CONFIRMATION" || b.status === "NEW" || b.status === "CONTACT_PENDING") && (
+                        {(b.status === "PENDING_CONFIRMATION" ||
+                          b.status === "NEW" ||
+                          b.status === "CONTACT_PENDING" ||
+                          b.status === "CONTACTED") && (
                           <>
+                            {!b.availabilitySlot && (
+                              <AdminButton
+                                variant="primary"
+                                className="!px-3 !py-1.5 text-xs"
+                                onClick={() => openReschedule(b, "assign")}
+                              >
+                                Asignar cupo
+                              </AdminButton>
+                            )}
+                            {b.availabilitySlot && (
+                              <AdminButton
+                                variant="primary"
+                                className="!px-3 !py-1.5 text-xs"
+                                onClick={() => openReschedule(b, "reschedule")}
+                              >
+                                Cambiar cupo
+                              </AdminButton>
+                            )}
                             <button
                               type="button"
                               title={b.contactLead.phone ? "Abrir WhatsApp con mensaje sugerido" : "Falta teléfono del paciente"}
@@ -209,6 +260,13 @@ export default function AdminBookingsPage() {
                         )}
                         {b.status === "CONFIRMED" && (
                           <>
+                            <AdminButton
+                              variant="primary"
+                              className="!px-3 !py-1.5 text-xs"
+                              onClick={() => openReschedule(b, "reschedule")}
+                            >
+                              Reprogramar
+                            </AdminButton>
                             <AdminButton variant="neutral" className="!px-3 !py-1.5 text-xs" onClick={() => void patch(b.id, "CLOSED")}>
                               Marcar cerrado
                             </AdminButton>
@@ -217,12 +275,27 @@ export default function AdminBookingsPage() {
                             </AdminButton>
                           </>
                         )}
+                        {b.status === "RESCHEDULED" && b.availabilitySlot && (
+                          <>
+                            <AdminButton
+                              variant="primary"
+                              className="!px-3 !py-1.5 text-xs"
+                              onClick={() => openReschedule(b, "reschedule")}
+                            >
+                              Reprogramar
+                            </AdminButton>
+                            <AdminButton variant="warning" className="!px-3 !py-1.5 text-xs" onClick={() => void patch(b.id, "CANCELED")}>
+                              Cancelar
+                            </AdminButton>
+                          </>
+                        )}
                         {b.status !== "CANCELED" &&
                           b.status !== "CLOSED" &&
                           b.status !== "PENDING_CONFIRMATION" &&
                           b.status !== "NEW" &&
                           b.status !== "CONTACT_PENDING" &&
-                          b.status !== "CONFIRMED" && (
+                          b.status !== "CONFIRMED" &&
+                          b.status !== "RESCHEDULED" && (
                             <AdminButton variant="warning" className="!px-3 !py-1.5 text-xs" onClick={() => void patch(b.id, "CANCELED")}>
                               Cancelar
                             </AdminButton>

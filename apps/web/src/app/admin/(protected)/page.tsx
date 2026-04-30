@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { downloadAdminExport } from "@/lib/admin-export";
+import { BookingStatusBadge } from "@/components/admin/booking-status";
+import { formatDateTimeEs } from "@/lib/date-format";
 
 type Dashboard = {
   metrics: {
@@ -14,6 +16,17 @@ type Dashboard = {
     bookingsLastWeek: number;
     bookingsLastMonth: number;
   };
+  upcomingBookings: {
+    id: string;
+    status: string;
+    startsAt: string;
+    patientName: string;
+    patientDni: string;
+    patientPhone: string | null;
+    patientEmail: string | null;
+    treatmentName: string;
+    professionalName: string | null;
+  }[];
   bySource: { source: string; count: number }[];
   topTreatments: { treatmentId: string; name: string; count: number }[];
 };
@@ -47,6 +60,7 @@ export default function AdminDashboardPage() {
   if (!data) return <p className="text-sm text-slate-500">Cargando…</p>;
 
   const m = data.metrics;
+  const upcoming = data.upcomingBookings ?? [];
 
   async function runExport(dataset: string, format: "csv" | "xlsx") {
     const key = `${dataset}-${format}`;
@@ -79,6 +93,12 @@ export default function AdminDashboardPage() {
         </div>
         <div className="flex w-full min-w-0 flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap">
           <Link
+            href="/admin/asignar-turnos"
+            className="inline-flex justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-center text-sm font-medium text-white shadow hover:bg-emerald-700 sm:justify-start"
+          >
+            Asignar turnos
+          </Link>
+          <Link
             href="/admin/bookings"
             className="inline-flex justify-center rounded-lg bg-sky-600 px-4 py-2.5 text-center text-sm font-medium text-white shadow hover:bg-sky-700 sm:justify-start"
           >
@@ -91,6 +111,68 @@ export default function AdminDashboardPage() {
             Calendario de turnos
           </Link>
         </div>
+      </div>
+
+      <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200/80">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 className="font-headline text-xl text-slate-900">Próximos turnos</h2>
+            <p className="mt-1 text-sm text-slate-600">
+              Confirmados y reprogramados con fecha y hora a partir de ahora (orden cronológico).
+            </p>
+          </div>
+          <Link
+            href="/admin/bookings"
+            className="shrink-0 text-sm font-medium text-sky-700 underline-offset-2 hover:text-sky-900 hover:underline"
+          >
+            Ver reservas
+          </Link>
+        </div>
+        {upcoming.length === 0 ? (
+          <p className="mt-6 text-sm text-slate-500">
+            No hay turnos confirmados o reprogramados próximos. Cuando confirmes solicitudes con cupo futuro,
+            aparecerán acá.
+          </p>
+        ) : (
+          <div className="mt-6 overflow-x-auto rounded-xl ring-1 ring-slate-100">
+            <table className="min-w-full text-left text-sm">
+              <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th className="px-4 py-3">Fecha y hora</th>
+                  <th className="px-4 py-3">Paciente</th>
+                  <th className="px-4 py-3">Tratamiento</th>
+                  <th className="px-4 py-3">Profesional</th>
+                  <th className="px-4 py-3">Estado</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {upcoming.map((row) => (
+                  <tr key={row.id} className="bg-white hover:bg-slate-50/80">
+                    <td className="whitespace-nowrap px-4 py-3 font-medium text-slate-900">
+                      {formatDateTimeEs(row.startsAt)}
+                    </td>
+                    <td className="px-4 py-3 text-slate-800">
+                      <div className="font-medium">{row.patientName}</div>
+                      {row.patientDni ? (
+                        <div className="mt-0.5 text-xs text-slate-500">DNI: {row.patientDni}</div>
+                      ) : null}
+                      {(row.patientPhone || row.patientEmail) && (
+                        <div className="mt-0.5 text-xs text-slate-500">
+                          {[row.patientPhone, row.patientEmail].filter(Boolean).join(" · ")}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-slate-700">{row.treatmentName}</td>
+                    <td className="px-4 py-3 text-slate-700">{row.professionalName ?? "—"}</td>
+                    <td className="px-4 py-3">
+                      <BookingStatusBadge status={row.status} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

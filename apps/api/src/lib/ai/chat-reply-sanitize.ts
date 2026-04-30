@@ -4,14 +4,14 @@
  */
 
 const META_LINE_START =
-  /^(user says|persona|tone|goal|context|constraint|language|action\s*:|draft\s*\d|option\s*\d+)/i;
+  /^(user says|persona|tone|goal|context|constraint|language|action\s*:|draft(\s+\d+)?\s*:|borrador(\s*\d+)?\s*:|option\s*\d+)/i;
 
 /** Encabezado típico de “nota interna” al inicio de un trozo */
 function chunkLooksMeta(head: string): boolean {
   const h = head.slice(0, 200).toLowerCase();
   if (META_LINE_START.test(head.trim())) return true;
   if (
-    /\b(user says|persona:|context:|tone:|goal:|draft\s*\d|virtual assistant for|action:|rioplatense\?|professional|brief\?|no\s+diagnosis|no\s+welcome)\b/i.test(
+    /\b(user says|persona:|context:|tone:|goal:|draft(\s+\d+)?\s*:|borrador(\s*\d+)?\s*:|virtual assistant for|action:|rioplatense\?|professional|brief\?|no\s+diagnosis|no\s+welcome)\b/i.test(
       h,
     )
   ) {
@@ -61,6 +61,24 @@ function stripInternalToneChecklistLines(s: string): string {
 
 const norm = (x: string) => x.replace(/\s+/g, " ").trim();
 
+/** Modelos sueltan "Draft:", "Draft 1:", "Borrador:" antes del texto visible (a veces sin número). */
+function stripDraftOrBorradorPrefixLines(s: string): string {
+  const re = /^(draft(\s+\d+)?|borrador(\s*\d+)?)\s*:\s*/i;
+  return s
+    .split("\n")
+    .map((line) => {
+      let t = line.trim();
+      for (let n = 0; n < 4; n++) {
+        const u = t.replace(re, "").trim();
+        if (u === t) break;
+        t = u;
+      }
+      return t;
+    })
+    .join("\n")
+    .trim();
+}
+
 /** Gemini a veces usa “ ” en lugar de " — sin esto no detectamos duplicados pegados con comilla */
 function normalizeAiQuotes(s: string): string {
   return s
@@ -75,7 +93,7 @@ function stripExactAdjacentDuplicate(s: string): string {
   const t = s.trim();
   if (t.length < 50) return s;
   const mid = Math.floor(t.length / 2);
-  for (let d = 0; d <= 160; d++) {
+  for (let d = 0; d <= 400; d++) {
     for (const i of [mid + d, mid - d]) {
       if (i < 20 || i > t.length - 20) continue;
       const L = norm(t.slice(0, i));
@@ -184,7 +202,7 @@ function extractFromAsteriskFragments(s: string): string | null {
     let chunk = p;
 
     const draftTail = p.match(
-      /(?:\bdraft\s*\d[^:]*|more\s+professional[^:]*):\s*\*?\s*(Hola\.\s+.+)$/is,
+      /(?:\bdraft(\s+\d+)?\s*:|more\s+professional[^:]*):\s*\*?\s*(Hola\.\s+.+)$/is,
     );
     if (draftTail) chunk = draftTail[1].trim();
 
@@ -241,13 +259,17 @@ export function sanitizeChatModelOutput(raw: string): string {
   let s = normalizeAiQuotes(raw.replace(/\r\n/g, "\n").trim());
   if (!s) return s;
 
+  s = stripDraftOrBorradorPrefixLines(s);
+  s = dedupeStrayQuotesAndRepeat(s);
+
   s = stripAlternativeQuotedDuplicate(s);
   s = stripLeadingEnglishChecklist(s);
   s = stripInternalToneChecklistLines(s);
 
   const contaminated =
-    /\*|user\s+says|persona:|draft\s*\d|context:|tone:|goal:|action:|alternative:/i.test(s) ||
-    /rioplatense\?/i.test(s);
+    /\*|user\s+says|persona:|draft(\s+\d+)?\s*:|borrador(\s*\d+)?\s*:|context:|tone:|goal:|action:|alternative:/i.test(
+      s,
+    ) || /rioplatense\?/i.test(s);
 
   if (contaminated) {
     const glued = extractAfterYesHolaGlue(s);
@@ -293,7 +315,7 @@ export function sanitizeChatModelOutput(raw: string): string {
   s = kept.join("\n").trim();
 
   // Una sola línea con restos de CoT separados por *
-  if (/user says|persona:|draft\s*\d|virtual assistant|option\s*\d|constraint check/i.test(s)) {
+  if (/user says|persona:|draft(\s+\d+)?\s*:|borrador(\s*\d+)?\s*:|virtual assistant|option\s*\d|constraint check/i.test(s)) {
     const parts = raw.split(/\*/);
     const good: string[] = [];
     for (const part of parts) {
@@ -308,7 +330,8 @@ export function sanitizeChatModelOutput(raw: string): string {
         /^context\s*:/i.test(t) ||
         /^constraint/i.test(t) ||
         /^language\s*:/i.test(t) ||
-        /^draft\s*\d/i.test(t) ||
+        /^draft(\s+\d+)?\s*:/i.test(t) ||
+        /^borrador(\s*\d+)?\s*:/i.test(t) ||
         /^option\s*\d/i.test(t) ||
         /^professional\?/i.test(t) ||
         /virtual assistant/i.test(probe)
@@ -332,6 +355,10 @@ export function sanitizeChatModelOutput(raw: string): string {
 
   s = stripAlternativeQuotedDuplicate(s);
   s = stripInternalToneChecklistLines(stripLeadingEnglishChecklist(dedupeStrayQuotesAndRepeat(normalizeOut(s))));
+  s = stripTrailingStrayQuotes(s);
+
+  s = stripDraftOrBorradorPrefixLines(s);
+  s = dedupeStrayQuotesAndRepeat(s);
   s = stripTrailingStrayQuotes(s);
 
   if (s.length < 2) return raw.trim();

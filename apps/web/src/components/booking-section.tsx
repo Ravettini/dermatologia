@@ -39,6 +39,7 @@ type FormValues = {
   professionalId: string;
   slotId: string;
   name: string;
+  dni: string;
   email: string;
   phone: string;
   message?: string;
@@ -171,9 +172,12 @@ export function BookingSection() {
   });
 
   return (
-    <section id="reservar" className="scroll-mt-32 bg-surface-container px-4 py-16 sm:px-6 md:scroll-mt-28 md:px-12 md:py-24">
+    <section
+      id="reservar"
+      className="scroll-mt-32 bg-surface-container px-4 pb-20 pt-16 sm:px-6 sm:pb-24 md:scroll-mt-28 md:px-12 md:pb-28 md:pt-24"
+    >
       <div className="mx-auto max-w-5xl">
-        <span className="mb-4 block font-label text-xs uppercase tracking-[0.3em] text-secondary">Reservá tu consulta</span>
+        <span className="mb-4 block font-label text-xs uppercase tracking-[0.3em] text-secondary">Turnos con horario</span>
         <h2 className="mb-4 font-headline text-4xl md:text-5xl">Solicitá tu turno</h2>
         <p className="mb-12 max-w-2xl text-on-surface-variant">
           Elegí tratamiento, horario disponible y dejanos tus datos. El equipo confirmará o reprogramará según
@@ -284,6 +288,15 @@ export function BookingSection() {
                 {...register("name")}
               />
               {errors.name && <p className="mt-1 text-xs text-red-700">{errors.name.message}</p>}
+            </div>
+            <div>
+              <input
+                className="w-full border-0 border-b border-outline-variant bg-transparent py-3 placeholder:text-on-surface-variant/40 focus:border-secondary focus:ring-0"
+                placeholder="DNI o documento"
+                autoComplete="off"
+                {...register("dni")}
+              />
+              {errors.dni && <p className="mt-1 text-xs text-red-700">{errors.dni.message}</p>}
             </div>
             <div>
               <input

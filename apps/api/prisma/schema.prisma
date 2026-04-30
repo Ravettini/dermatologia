@@ -102,11 +102,15 @@ model AvailabilitySlot {
 model ContactLead {
   id                  String              @id @default(cuid())
   name                String
+  /// Documento (DNI u otro); solo dígitos. Null = sin documento cargado (varios registros sin DNI permitidos).
+  dni                 String?             @unique
   phone               String?
   email               String?
   source              LeadSource
   /// El equipo ya contactó al lead (CRM).
   crmContacted Boolean @default(false)
+  /// Veces que la misma persona volvió a enviar datos desde formulario web, reserva o chat (mismo DNI).
+  duplicateIntakeCount Int                @default(0)
   lastInteractionAt   DateTime            @default(now())
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt

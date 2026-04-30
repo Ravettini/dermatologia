@@ -246,14 +246,19 @@ export function HomeLanding({
       <BookingSection />
 
       <section
-        className="bg-surface-container px-4 py-10 sm:px-6 sm:py-12 md:px-10 md:py-14 lg:px-12 lg:py-16"
+        className="border-t border-outline-variant/30 bg-surface px-4 pb-16 pt-20 sm:px-6 sm:pb-20 sm:pt-24 md:px-10 md:pb-24 md:pt-28 lg:px-12 lg:pb-28 lg:pt-32"
         id="contacto"
       >
         <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-8 md:grid-cols-2 md:items-start md:gap-10 lg:gap-12">
           <div>
-            <h2 className="mb-6 font-headline text-3xl md:mb-7 md:text-4xl lg:text-[clamp(1.75rem,2.5vw,2.25rem)]">
-              Estamos para acompañarte.
+            <h2 className="mb-3 font-headline text-3xl md:mb-4 md:text-4xl lg:text-[clamp(1.75rem,2.5vw,2.25rem)]">
+              Contacto y ubicación
             </h2>
+            <p className="mb-8 max-w-xl font-body text-sm leading-relaxed text-on-surface-variant md:mb-9 md:text-base">
+              Para consultas generales o seguimiento, escribinos desde el formulario. Para reservar con día y hora
+              concretos, usá la sección <strong className="font-medium text-on-surface">Solicitá tu turno</strong> más
+              arriba.
+            </p>
             <div className="space-y-5 md:space-y-5">
               <div className="flex gap-4">
                 <span className="material-symbols-outlined shrink-0 text-lg text-secondary md:text-xl">location_on</span>

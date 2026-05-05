@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { apiFetch } from "@/lib/api";
+import { ADMIN_AUTH_TOKEN_KEY, apiFetch } from "@/lib/api";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: "dashboard" },
@@ -89,6 +89,7 @@ export default function AdminProtectedLayout({ children }: { children: React.Rea
 
   async function logout() {
     await apiFetch("/api/admin/auth/logout", { method: "POST" });
+    window.localStorage.removeItem(ADMIN_AUTH_TOKEN_KEY);
     setNavOpen(false);
     router.replace("/admin/login");
   }

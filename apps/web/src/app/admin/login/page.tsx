@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { apiFetch } from "@/lib/api";
+import { ADMIN_AUTH_TOKEN_KEY, apiFetch } from "@/lib/api";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -16,11 +16,15 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setErr(null);
     setLoading(true);
+    window.localStorage.removeItem(ADMIN_AUTH_TOKEN_KEY);
     try {
-      await apiFetch("/api/admin/auth/login", {
+      const response = await apiFetch<{ token?: string }>("/api/admin/auth/login", {
         method: "POST",
         json: { email, password },
       });
+      if (response.token) {
+        window.localStorage.setItem(ADMIN_AUTH_TOKEN_KEY, response.token);
+      }
       router.replace("/admin");
     } catch (ex) {
       setErr(ex instanceof Error ? ex.message : "No se pudo iniciar sesión");

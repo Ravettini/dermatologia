@@ -57,7 +57,7 @@ router.post("/auth/login", async (req, res) => {
       ...adminTokenCookieBase(),
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.json({ ok: true, email: admin.email, name: admin.name });
+    res.json({ ok: true, email: admin.email, name: admin.name, token });
   } catch (e) {
     const { status, message } = friendlyError(e);
     res.status(status).json({ error: message });

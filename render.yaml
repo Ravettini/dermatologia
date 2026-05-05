@@ -1,0 +1,9 @@
+# Blueprint opcional: podés crear el servicio desde el repo o copiar solo los comandos al dashboard.
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: dermatologia-api
+    runtime: node
+    buildCommand: npm install -g pnpm@9.14.2 && pnpm install && pnpm --filter @derma/shared build && pnpm --filter api exec prisma generate && pnpm --filter api run build
+    startCommand: pnpm --filter api start
+    healthCheckPath: /health

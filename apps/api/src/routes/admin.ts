@@ -23,6 +23,26 @@ const loginSchema = z.object({
   password: z.string().min(6),
 });
 
+/** Vercel + API en otro dominio (p. ej. Render): el fetch es cross-site; hace falta SameSite=None + Secure. */
+function adminTokenCookieBase(): {
+  httpOnly: true;
+  sameSite: "lax" | "none";
+  secure: boolean;
+  path: "/";
+} {
+  const frontend = (process.env.FRONTEND_URL || "").trim();
+  const isLocal =
+    !frontend ||
+    /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\b/i.test(frontend);
+  const crossSite = process.env.NODE_ENV === "production" && !isLocal;
+  return {
+    httpOnly: true,
+    sameSite: crossSite ? "none" : "lax",
+    secure: crossSite ? true : process.env.NODE_ENV === "production",
+    path: "/",
+  };
+}
+
 router.post("/auth/login", async (req, res) => {
   try {
     const parsed = loginSchema.safeParse(req.body);
@@ -33,11 +53,8 @@ router.post("/auth/login", async (req, res) => {
     }
     const token = signAdminToken({ sub: admin.id, email: admin.email });
     res.cookie("admin_token", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      ...adminTokenCookieBase(),
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/",
     });
     res.json({ ok: true, email: admin.email, name: admin.name });
   } catch (e) {
@@ -47,7 +64,7 @@ router.post("/auth/login", async (req, res) => {
 });
 
 router.post("/auth/logout", (_req, res) => {
-  res.clearCookie("admin_token", { path: "/" });
+  res.clearCookie("admin_token", adminTokenCookieBase());
   res.json({ ok: true });
 });
 

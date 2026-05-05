@@ -5,14 +5,13 @@ import cookieParser from "cookie-parser";
 import { publicRouter } from "./routes/public";
 import { adminRouter } from "./routes/admin";
 import { friendlyError } from "./lib/errors";
+import { corsOriginDelegate } from "./lib/cors-config";
 
 const app = express();
 
-const frontend = process.env.FRONTEND_URL || "http://localhost:3000";
-
 app.use(
   cors({
-    origin: frontend,
+    origin: corsOriginDelegate,
     credentials: true,
   })
 );

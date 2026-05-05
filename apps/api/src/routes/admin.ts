@@ -15,6 +15,7 @@ import {
   assertSlotStartNotInPast,
 } from "../lib/availability-rules";
 import { parseExportFormat, sendTable } from "../lib/export-format";
+import { primaryFrontendUrl } from "../lib/cors-config";
 
 const router = Router();
 
@@ -30,7 +31,7 @@ function adminTokenCookieBase(): {
   secure: boolean;
   path: "/";
 } {
-  const frontend = (process.env.FRONTEND_URL || "").trim();
+  const frontend = primaryFrontendUrl();
   const isLocal =
     !frontend ||
     /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\b/i.test(frontend);

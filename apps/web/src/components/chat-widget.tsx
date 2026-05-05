@@ -74,8 +74,16 @@ export function ChatWidget({
       return;
     }
     setError(null);
+    if (!leadName.trim() || leadName.trim().length < 2) {
+      setError("Indicá nombre y apellido (mínimo 2 caracteres).");
+      return;
+    }
     if (!leadDni.trim() || leadDni.replace(/\D/g, "").length < 7) {
       setError("Indicá un DNI o documento válido (al menos 7 dígitos).");
+      return;
+    }
+    if (!leadEmail.trim() && !leadPhone.trim()) {
+      setError("Indicá al menos un email o un teléfono.");
       return;
     }
     try {
@@ -126,8 +134,15 @@ export function ChatWidget({
               </button>
             </div>
             <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
-              <div className="rounded-lg bg-surface-container-high px-3 py-2 text-xs text-on-surface-variant">
-                Este asistente no diagnostica ni prescribe. Ante urgencias, consultá en persona o por WhatsApp.
+              <div className="space-y-2">
+                <div className="rounded-lg bg-surface-container-high px-3 py-2 text-xs text-on-surface-variant">
+                  Este asistente no diagnostica ni prescribe. Ante urgencias, consultá en persona o por WhatsApp.
+                </div>
+                <div className="rounded-lg border border-secondary/25 bg-secondary/5 px-3 py-2 text-[11px] leading-snug text-on-surface">
+                  <strong>Para que el equipo reciba tu solicitud</strong> (nombre, DNI, contacto) tenés que usar el botón{" "}
+                  <strong>Mis datos</strong> abajo y enviar el formulario. Escribir solo en el chat{" "}
+                  <strong>no guarda</strong> datos en el centro.
+                </div>
               </div>
               {messages.map((m, i) => (
                 <div
@@ -174,9 +189,12 @@ export function ChatWidget({
               </div>
               {showLead && (
                 <div className="mb-3 space-y-2 rounded-lg bg-surface-container-high p-3 text-xs">
+                  <p className="text-on-surface-variant">
+                    DNI obligatorio (mín. 7 dígitos) y al menos email o teléfono, para registrar el contacto.
+                  </p>
                   <input
                     className="w-full rounded border border-outline-variant/40 bg-transparent px-2 py-1"
-                    placeholder="Nombre"
+                    placeholder="Nombre y apellido"
                     value={leadName}
                     onChange={(e) => setLeadName(e.target.value)}
                   />

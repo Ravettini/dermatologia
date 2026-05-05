@@ -26,7 +26,9 @@ export function ChatWidget({
   const [leadDni, setLeadDni] = useState("");
   const [leadEmail, setLeadEmail] = useState("");
   const [leadPhone, setLeadPhone] = useState("");
+  const [misDatosPulse, setMisDatosPulse] = useState(false);
   const endRef = useRef<HTMLDivElement | null>(null);
+  const misDatosBtnRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const key = "derma_visitor_id";
@@ -37,6 +39,12 @@ export function ChatWidget({
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typing, open]);
+
+  useEffect(() => {
+    if (misDatosPulse && misDatosBtnRef.current) {
+      misDatosBtnRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [misDatosPulse]);
 
   useEffect(() => {
     if (open && messages.length === 0) {
@@ -52,14 +60,18 @@ export function ChatWidget({
     setMessages((m) => [...m, { role: "user", content: text }]);
     setTyping(true);
     try {
-      const res = await apiFetch<{ visitorId: string; reply: string }>("/api/public/chat", {
-        method: "POST",
-        json: { message: text, visitorId: visitorId ?? undefined },
-      });
+      const res = await apiFetch<{ visitorId: string; reply: string; highlightMisDatos?: boolean }>(
+        "/api/public/chat",
+        {
+          method: "POST",
+          json: { message: text, visitorId: visitorId ?? undefined },
+        }
+      );
       if (!visitorId) {
         setVisitorId(res.visitorId);
         window.localStorage.setItem("derma_visitor_id", res.visitorId);
       }
+      setMisDatosPulse(Boolean(res.highlightMisDatos));
       setMessages((m) => [...m, { role: "model", content: res.reply }]);
     } catch (e) {
       setError(e instanceof Error ? e.message : "No pudimos responder ahora.");
@@ -98,6 +110,7 @@ export function ChatWidget({
         },
       });
       setShowLead(false);
+      setMisDatosPulse(false);
       setMessages((m) => [
         ...m,
         {
@@ -180,9 +193,18 @@ export function ChatWidget({
                   WhatsApp
                 </a>
                 <button
+                  ref={misDatosBtnRef}
                   type="button"
-                  onClick={() => setShowLead((s) => !s)}
-                  className="rounded-full border border-outline-variant/50 px-2.5 py-1 text-[10px] uppercase tracking-wide sm:px-3 sm:text-[11px]"
+                  onClick={() => {
+                    setMisDatosPulse(false);
+                    setShowLead((s) => !s);
+                  }}
+                  className={`rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-wide sm:px-3 sm:text-[11px] ${
+                    misDatosPulse
+                      ? "border-red-600 bg-red-50 font-semibold text-red-900 shadow-[0_0_0_2px_rgba(220,38,38,0.45)] animate-pulse"
+                      : "border-outline-variant/50"
+                  }`}
+                  aria-label="Mis datos: formulario de contacto"
                 >
                   Mis datos
                 </button>

@@ -330,11 +330,14 @@ router.post("/chat", chatLimiter, async (req, res) => {
       }));
 
     let reply: string;
+    let highlightMisDatos = false;
     try {
-      reply = await runChatCompletion({
+      const r = await runChatCompletion({
         history,
         userMessage: msg,
       });
+      reply = r.reply;
+      highlightMisDatos = r.highlightMisDatos;
     } catch (err) {
       console.error("AI error", err);
       reply = cfg.fallbackMessage;
@@ -353,7 +356,7 @@ router.post("/chat", chatLimiter, async (req, res) => {
       data: { updatedAt: new Date() },
     });
 
-    res.json({ visitorId, reply });
+    res.json({ visitorId, reply, highlightMisDatos });
   } catch (e) {
     const { status, message } = friendlyError(e);
     res.status(status).json({ error: message });

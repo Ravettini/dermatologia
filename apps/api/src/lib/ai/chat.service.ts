@@ -2,6 +2,7 @@ import { generateWithGoogleGenAI } from "./provider";
 import { sanitizeChatModelOutput } from "./chat-reply-sanitize";
 import { getChatbotConfig } from "../settings";
 import { prisma } from "../prisma";
+import { stripMisDatosMarker } from "../chat-mis-datos-marker";
 
 async function faqKnowledgeForPrompt(): Promise<string> {
   const items = await prisma.fAQItem.findMany({
@@ -38,13 +39,13 @@ function bareGreetingReply(userMessage: string): string | null {
 export async function runChatCompletion(params: {
   history: { role: "user" | "model"; text: string }[];
   userMessage: string;
-}): Promise<string> {
+}): Promise<{ reply: string; highlightMisDatos: boolean }> {
   const cfg = await getChatbotConfig();
   const provider = process.env.AI_PROVIDER || "google";
 
   const staticGreeting = bareGreetingReply(params.userMessage);
   if (staticGreeting && (provider === "google" || provider === "gemini")) {
-    return staticGreeting;
+    return { reply: staticGreeting, highlightMisDatos: false };
   }
 
   const faqBlock = await faqKnowledgeForPrompt();
@@ -59,8 +60,9 @@ export async function runChatCompletion(params: {
     "Respondé solo a lo que el usuario escribió. No listes servicios ni des la bienvenida institucional: eso ya aparece al abrir el chat.",
     "Si el mensaje tiene una pregunta o un pedido, respondé a eso. Si reclama o se molesta, una o dos frases máximo, sin monólogo ni repetir quién sos.",
     "Mensajes breves; más detalle solo si el usuario lo pide.",
-    "Si necesitás pedir datos para contacto o turno, pedí: motivo o tratamiento, nombre y apellido, DNI o documento, mail y teléfono. Si el usuario los escribe en el chat, agradecé y explicá que **para que el centro los reciba en el sistema** tiene que tocar el botón «Mis datos» en este chat, completar el formulario (DNI obligatorio) y Enviar; o usar reservas/contacto del sitio o WhatsApp.",
+    "Si necesitás pedir datos para contacto o turno, pedí: motivo o tratamiento, nombre y apellido, DNI o documento, mail y teléfono. Si el usuario los escribe en el chat, agradecé y explicá que **para que el centro los reciba en el sistema** tiene que tocar el botón rojo «Mis datos» abajo en este chat, completar el formulario (DNI obligatorio) y Enviar; o usar reservas/contacto del sitio o WhatsApp.",
     "PROHIBIDO decir que sus datos «ya quedaron guardados», «ya los tenemos», «el equipo los recibió» o similares solo porque escribió en el chat. Eso no registra nada: el registro en el centro es solo con el formulario «Mis datos», o formulario web, o reserva, o WhatsApp. En el chat podés ser amable y orientar a esos canales, sin afirmar un alta en la base de datos.",
+    "Cuando invites a usar el formulario «Mis datos» (o recordés que ahí cargan DNI y contacto para que el equipo los vea), **terminá tu mensaje con una línea nueva que contenga solo** <<<MIS_DATOS>>> (sin texto extra en esa línea). Esa marca la quita el sistema: el paciente no debe verla. Usala en cuanto menciones el botón Mis datos o el formulario de contacto del chat.",
     "FORMATO DE SALIDA: solo el texto que lee el paciente. PROHIBIDO incluir notas, listas de opciones internas, líneas con asterisco, etiquetas tipo User says o Persona, borradores en inglés, o metaexplicaciones.",
     "PROHIBIDO escribir al inicio (o en ninguna parte) etiquetas como \"Draft:\", \"Draft 1:\", \"Borrador:\" o similares: empezá directo con la respuesta al usuario.",
     "No repitas la misma respuesta dos veces. No uses comillas dobles alrededor del mensaje ni pegues dos copias del mismo párrafo.",
@@ -78,17 +80,20 @@ export async function runChatCompletion(params: {
   const temperature = Number(process.env.AI_TEMPERATURE ?? "0.4");
 
   if (provider === "google" || provider === "gemini") {
-    const reply = await generateWithGoogleGenAI({
+    const raw = await generateWithGoogleGenAI({
       systemInstruction,
       history: params.history,
       userMessage: params.userMessage,
       temperature: Number.isFinite(temperature) ? temperature : 0.4,
     });
-    let out = sanitizeChatModelOutput(reply).trim();
+    const { text: withoutMarker, highlightMisDatos } = stripMisDatosMarker(raw);
+    let out = sanitizeChatModelOutput(withoutMarker).trim();
+    let highlight = highlightMisDatos;
     if (!out || /^rioplatense\?/i.test(out) || /^brief\?/i.test(out)) {
       out = OFF_TOPIC_FALLBACK;
+      highlight = false;
     }
-    return out;
+    return { reply: out, highlightMisDatos: highlight };
   }
 
   throw new Error(`Proveedor AI no soportado: ${provider}`);

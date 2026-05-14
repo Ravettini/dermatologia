@@ -1,4 +1,5 @@
 node_modules
+/Fotos/
 dist
 .next
 .turbo

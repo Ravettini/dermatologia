@@ -16,10 +16,18 @@ async function main() {
     },
   });
 
-  const portraitPool = [
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBR5aiYZFRxuSxT7FTiqyQgLYVX1ssOXvFS0s8jGuP0ZvG5JnexGxEJejAnFgexfvdvOw7LU_vD-gjwlJILyzE0dtgL_I1b1kF60GT5Y8G0sKPSWSssWB6IaLqNOoggkxXF3BwTV6O9kT8i6wSszg15zPI5E0UOzph232LtqmvgmtRivCEQvlsmL6JthTONrlChcYFPiGj-IQ6npiWQP5GJHW14c7U2STqS99b2pyYatjcy0p3qA1o7mhl1i7PV_sna84ac2fURZd3K",
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuB2M9P_2JwwHOnmCHanQ1a4TIEnqwlpxI3Q_SS8bmvFrJhUXh_ZB66YjqVgZfu3pfDMQlxRh8XRlnf6nqG68WdOuJ_N3_pKzJ6UDP_5mYgVpi82uAZONak4pNiw9arqKtI3B3KhwgvKd3pVo5CdlmZPsw3MoC6gbOVzByKettd6fRQJ4GSpddKeidKlDz6Yv2nrW8jaDXUTh1GEXKNu8h-jzV4bDc_yGgP9xdd9fqwTtgtMnPYqLFd6_Ucl09EV9hZH542a4ogxA7HR",
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuDwjBvfD0ijK_lYM7Ex7-sA9YE-AmSYv9V5SYrPNaYKk7dnB28RNnGLrPSh3ObGRhXmdj1roHjQDjcthMnHm1IJWVtGQI_OvGmWZif8GiY7irB2gP2NZ6TD5y0gIX31TOrdytWDmUTtf_iXuC0lDKRWVAJe6H88wTZoOjEt6hrRZkzXt8iX_ObAjh076UeeN4hklEX-rLeDoeYFqMvzbQyydkiNs7eGuvhD6wHjimgPYT4rrYd2KOBxwiSa1SzA1Ndg8K6Tp6f60QUr",
+  const professionalImageUrls = [
+    "/fotos/equipo/olivia-tezanos.png",
+    "/fotos/equipo/florencia-olguin.png",
+    "/fotos/equipo/lucia-deane.png",
+    "/fotos/equipo/pardo.jpeg",
+    "/fotos/equipo/kahn.jpeg",
+    "/fotos/equipo/toninetti.jpeg",
+    "/fotos/equipo/valentina-reggiani.png",
+    "/fotos/equipo/gigirey.jpeg",
+    "/fotos/equipo/varano.png",
+    "/fotos/equipo/kraft.jpeg",
+    "/fotos/equipo/ortiz.jpeg",
   ] as const;
 
   const professionalDefs = [
@@ -127,7 +135,7 @@ async function main() {
 
   const pros = await Promise.all(
     professionalDefs.map((p, i) => {
-      const imageUrl = portraitPool[i % portraitPool.length];
+      const imageUrl = professionalImageUrls[i];
       return prisma.professional.upsert({
         where: { id: p.id },
         update: {

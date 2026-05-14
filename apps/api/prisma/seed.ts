@@ -16,19 +16,20 @@ async function main() {
     },
   });
 
-  const professionalImageUrls = [
+  /** Solo fotos nombradas según archivo en `Fotos/` → `apps/web/public/fotos/equipo/`. Sin archivo = null. */
+  const professionalImageUrls: (string | null)[] = [
     "/fotos/equipo/olivia-tezanos.png",
     "/fotos/equipo/florencia-olguin.png",
     "/fotos/equipo/lucia-deane.png",
-    "/fotos/equipo/pardo.jpeg",
-    "/fotos/equipo/kahn.jpeg",
-    "/fotos/equipo/toninetti.jpeg",
+    null,
+    "/fotos/equipo/kahn-felicitas.png",
+    null,
     "/fotos/equipo/valentina-reggiani.png",
-    "/fotos/equipo/gigirey.jpeg",
-    "/fotos/equipo/varano.png",
-    "/fotos/equipo/kraft.jpeg",
-    "/fotos/equipo/ortiz.jpeg",
-  ] as const;
+    null,
+    null,
+    null,
+    null,
+  ];
 
   const professionalDefs = [
     {

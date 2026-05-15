@@ -4,6 +4,7 @@ import { BookingSection } from "@/components/booking-section";
 import { ContactForm } from "@/components/contact-form";
 import { FeaturedSpecialtiesSection } from "@/components/landing/featured-specialties-section";
 import { FaqSection } from "@/components/landing/faq-section";
+import { SociasSection } from "@/components/landing/socias-section";
 import { TeamSection } from "@/components/landing/team-section";
 import { TreatmentsSection } from "@/components/landing/treatments-section";
 
@@ -24,6 +25,9 @@ type PublicTreatment = {
   category: string;
   requiresPriorEval: boolean;
 };
+
+/** IDs de seed / admin alineados con las médicas socias (orden de aparición en la página). */
+const SOCIO_IDS = ["seed-tod-deane", "seed-tod-olguin", "seed-tod-tezanos"] as const;
 
 const DEFAULT_MAP_NAME = "Dermatología TOD";
 const DEFAULT_MAP_COORDS = "-34.4853853304583,-58.594249209497896";
@@ -90,6 +94,13 @@ export function HomeLanding({
   const hours = site["contact.hours"] ?? "Lunes a viernes de 9 a 19 hs.";
   const mapEmbedSrc = resolveMapEmbedSrc(site["contact.mapImageUrl"] ?? "");
   const disclaimer = site["legal.disclaimer"] ?? "";
+
+  const byId = new Map(professionals.map((p) => [p.id, p] as const));
+  const socias = SOCIO_IDS.map((id) => byId.get(id)).filter(
+    (p): p is PublicProfessional => p != null,
+  );
+  const sociasIdSet = new Set<string>(SOCIO_IDS as unknown as string[]);
+  const teamProfessionals = professionals.filter((p) => !sociasIdSet.has(p.id));
 
   return (
     <main className="w-full min-w-0 max-w-[100vw] overflow-x-hidden">
@@ -225,7 +236,9 @@ export function HomeLanding({
 
       <FeaturedSpecialtiesSection treatments={treatments} />
 
-      <TeamSection professionals={professionals} />
+      <SociasSection members={socias} />
+
+      <TeamSection professionals={teamProfessionals} />
 
       <section className="bg-on-primary-container px-4 py-16 text-surface sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32">
         <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-12 md:grid-cols-3 md:gap-16">

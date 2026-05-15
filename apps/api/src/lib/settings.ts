@@ -28,21 +28,35 @@ export async function getChatbotConfig(): Promise<{
   tone: string;
   humanHandoffHint: string;
   fallbackMessage: string;
+  /** URL pública de agenda (Bekandu u otra). Se inyecta en instrucciones del modelo. */
+  turnosOnlineUrl: string;
 }> {
   const m = await getAllSettingsMap();
+  const turnosOnlineUrl =
+    (m.get("contact.turnosOnlineUrl") ?? "").trim() ||
+    (process.env.TURNOS_ONLINE_URL ?? "").trim() ||
+    "https://tod.bekandu.com/turnos_online";
+
   return {
     systemPrompt:
       m.get("chatbot.systemPrompt") ??
-      "Sos el asistente virtual de un centro de dermatología. Tono profesional y cercano. No diagnósticos ni medicación; ante dudas clínicas, consulta presencial. Respondé solo a lo que pregunte el usuario, sin párrafos de bienvenida innecesarios. Si pedís datos de contacto, solicitá explícitamente para qué cosa quiere el turno (motivo o tratamiento) y nombre, apellido, mail y número de teléfono.",
+      [
+        "Sos el asistente virtual de un centro de dermatología.",
+        "Tono profesional y cercano. No diagnósticos ni medicación; ante dudas clínicas, consulta presencial.",
+        "Orientá sobre servicios, ubicación, horarios y turnos.",
+        "Para reservar orientá siempre la agenda en línea (Bekandu); la URL exacta llega aparte en las instrucciones. No pidas en el chat listas obligatorias de datos personales ni menciones botones internos.",
+        "Respondé solo a lo que pregunte el usuario, sin párrafos largos de bienvenida.",
+      ].join(" "),
     welcomeMessage:
       m.get("chatbot.welcomeMessage") ??
       "Hola, soy el asistente virtual del centro. ¿En qué puedo orientarte?",
     tone: m.get("chatbot.tone") ?? "profesional y cercano",
     humanHandoffHint:
       m.get("chatbot.humanHandoffHint") ??
-      "Si preferís hablar con el equipo, podés escribirnos por WhatsApp o dejar para qué cosa querés el turno y tus datos (nombre, apellido, mail y número de teléfono).",
+      "Si preferís que responda el equipo humano: WhatsApp o la sección de contacto del sitio.",
     fallbackMessage:
       m.get("chatbot.fallbackMessage") ??
-      "En este momento no puedo completar la respuesta. Te recomiendo contactar al centro o reservar una consulta.",
+      "En este momento no puedo responderte bien. Probá más tarde o gestioná el turno por la agenda online del centro o WhatsApp.",
+    turnosOnlineUrl,
   };
 }

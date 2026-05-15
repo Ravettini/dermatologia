@@ -7,7 +7,7 @@ export function FloatingWhatsApp({ number }: { number: string }) {
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="fixed bottom-8 left-8 z-[55] flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-soft transition-transform hover:scale-105 md:h-16 md:w-16"
+      className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] z-[55] flex h-14 w-14 shrink-0 touch-manipulation items-center justify-center rounded-full bg-[#25D366] text-white shadow-soft transition-transform hover:scale-105 active:scale-95 sm:bottom-8 sm:left-8 md:h-16 md:w-16"
       aria-label="WhatsApp"
     >
       <svg viewBox="0 0 32 32" className="h-8 w-8" aria-hidden>

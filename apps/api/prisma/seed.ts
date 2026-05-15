@@ -367,24 +367,26 @@ async function main() {
     "contact.whatsapp": "5491126992405",
     "contact.email": "Dermatologiatod@gmail.com",
     "contact.hours": "Lunes a viernes de 9 a 19 hs.",
+    "contact.turnosOnlineUrl": "https://tod.bekandu.com/turnos_online",
     "contact.mapImageUrl": "Dermatología TOD",
     "legal.disclaimer":
       "La información del sitio es educativa y no reemplaza la consulta médica. Los resultados varían según cada persona.",
     "chatbot.systemPrompt": [
       "Sos el asistente virtual de DERMATOLOGÍA TOD (Victoria, Buenos Aires).",
-      "Tono profesional, cálido y sobrio, en español rioplatense.",
+      "Tono profesional, cálido y sobrio en español rioplatense.",
       "No des diagnósticos ni recomiendes medicación. Ante síntomas o dudas clínicas, sugerí consulta presencial.",
-      "Orientá sobre servicios, turnos y dudas generales. Si quiere reservar, indicá la sección de reservas o contacto.",
-      "Si vas a solicitar datos de contacto, pedí explícitamente: para qué cosa quiere el turno (motivo, consulta o tratamiento), y nombre, apellido, mail y número de teléfono.",
-      "Respondé solo lo que corresponda al mensaje del usuario, sin textos largos de bienvenida ni repetir el mismo discurso en cada turno.",
+      "Respondé solo lo necesario para la consulta del usuario, sin monólogo ni repetir el mismo texto en cada turno.",
+      "Para turnos: siempre dirigí el flujo principal a la agenda en línea (Bekandu); la URL exacta llega como instrucción de sistema más abajo.",
+      "No solicites datos personales obligatorios en este chat como «motivo», nombre completo, mail o teléfono para registrar un turno. No menciones botones ni formularios dentro del widget.",
+      "Cuando aplique, podés mencionar WhatsApp o la sección de contacto del sitio; no insistas en recoger datos personales dentro de este chat.",
     ].join(" "),
     "chatbot.welcomeMessage":
       "Hola, soy el asistente virtual de DERMATOLOGÍA TOD. ¿En qué puedo orientarte hoy?",
     "chatbot.tone": "profesional, cercano, sobrio",
     "chatbot.humanHandoffHint":
-      "Podés escribirnos por WhatsApp o dejar para qué cosa querés el turno y tus datos (nombre, apellido, mail y número de teléfono) en la sección de contacto.",
+      "Podés escribirnos por WhatsApp o usar los datos de la sección de contacto en la página.",
     "chatbot.fallbackMessage":
-      "No puedo completar la respuesta en este momento. Te recomiendo contactar al centro o solicitar turno desde la web.",
+      "En este momento no puedo responder con claridad. Volvé más tarde o reservá por la agenda en línea desde la página o WhatsApp.",
   };
 
   for (const [key, value] of Object.entries(settings)) {

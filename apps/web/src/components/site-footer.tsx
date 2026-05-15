@@ -34,7 +34,7 @@ export function SiteFooter({
               </Link>
             </li>
             <li>
-              <Link className="opacity-70 transition-opacity hover:opacity-100" href="/reservar">
+              <Link className="opacity-70 transition-opacity hover:opacity-100" href="/#reservar">
                 Reservar consulta
               </Link>
             </li>

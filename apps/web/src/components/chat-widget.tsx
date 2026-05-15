@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { apiFetch } from "@/lib/api";
+import { BEKANDU_TURNOS_URL } from "@/lib/bekandu-turnos";
 
 type Msg = { role: "user" | "model"; content: string };
 
@@ -21,14 +22,7 @@ export function ChatWidget({
   const [messages, setMessages] = useState<Msg[]>([]);
   const [typing, setTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showLead, setShowLead] = useState(false);
-  const [leadName, setLeadName] = useState("");
-  const [leadDni, setLeadDni] = useState("");
-  const [leadEmail, setLeadEmail] = useState("");
-  const [leadPhone, setLeadPhone] = useState("");
-  const [misDatosPulse, setMisDatosPulse] = useState(false);
   const endRef = useRef<HTMLDivElement | null>(null);
-  const misDatosBtnRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const key = "derma_visitor_id";
@@ -39,12 +33,6 @@ export function ChatWidget({
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typing, open]);
-
-  useEffect(() => {
-    if (misDatosPulse && misDatosBtnRef.current) {
-      misDatosBtnRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
-  }, [misDatosPulse]);
 
   useEffect(() => {
     if (open && messages.length === 0) {
@@ -60,18 +48,14 @@ export function ChatWidget({
     setMessages((m) => [...m, { role: "user", content: text }]);
     setTyping(true);
     try {
-      const res = await apiFetch<{ visitorId: string; reply: string; highlightMisDatos?: boolean }>(
-        "/api/public/chat",
-        {
-          method: "POST",
-          json: { message: text, visitorId: visitorId ?? undefined },
-        }
-      );
+      const res = await apiFetch<{ visitorId: string; reply: string }>("/api/public/chat", {
+        method: "POST",
+        json: { message: text, visitorId: visitorId ?? undefined },
+      });
       if (!visitorId) {
         setVisitorId(res.visitorId);
         window.localStorage.setItem("derma_visitor_id", res.visitorId);
       }
-      setMisDatosPulse(Boolean(res.highlightMisDatos));
       setMessages((m) => [...m, { role: "model", content: res.reply }]);
     } catch (e) {
       setError(e instanceof Error ? e.message : "No pudimos responder ahora.");
@@ -80,56 +64,14 @@ export function ChatWidget({
     }
   }
 
-  async function sendLead() {
-    if (!visitorId) {
-      setError("Enviá un mensaje primero para iniciar la conversación.");
-      return;
-    }
-    setError(null);
-    if (!leadName.trim() || leadName.trim().length < 2) {
-      setError("Indicá nombre y apellido (mínimo 2 caracteres).");
-      return;
-    }
-    if (!leadDni.trim() || leadDni.replace(/\D/g, "").length < 7) {
-      setError("Indicá un DNI o documento válido (al menos 7 dígitos).");
-      return;
-    }
-    if (!leadEmail.trim() && !leadPhone.trim()) {
-      setError("Indicá al menos un email o un teléfono.");
-      return;
-    }
-    try {
-      await apiFetch("/api/public/chat/lead", {
-        method: "POST",
-        json: {
-          visitorId,
-          name: leadName,
-          dni: leadDni.trim(),
-          email: leadEmail || undefined,
-          phone: leadPhone || undefined,
-        },
-      });
-      setShowLead(false);
-      setMisDatosPulse(false);
-      setMessages((m) => [
-        ...m,
-        {
-          role: "model",
-          content: "Gracias. Registramos tus datos y el equipo te contactará a la brevedad.",
-        },
-      ]);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "No pudimos guardar tus datos.");
-    }
-  }
-
   const waHref = `https://wa.me/${whatsappNumber.replace(/\D/g, "")}`;
 
   return (
     <>
-      <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(0.75rem,env(safe-area-inset-right))] z-[60] flex w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] flex-col items-stretch gap-2 sm:bottom-8 sm:right-8 sm:w-auto sm:max-w-none sm:items-end sm:gap-3">
+      {/* w-auto + items-end: en móvil no ocupar todo el viewport (antes bloqueaba toques sobre el FAB de WhatsApp a la izquierda). */}
+      <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(0.75rem,env(safe-area-inset-right))] z-[60] flex w-auto max-w-none flex-col items-end gap-2 sm:bottom-8 sm:right-8 sm:gap-3">
         {open && (
-          <div className="flex h-[min(520px,calc(100dvh-7rem))] w-full max-w-[min(380px,100%)] flex-col overflow-hidden rounded-xl border border-outline-variant/40 bg-surface-container-lowest/95 shadow-soft backdrop-blur sm:h-[min(560px,80vh)] sm:max-w-[min(380px,92vw)]">
+          <div className="flex h-[min(520px,calc(100dvh-7rem))] w-[min(380px,calc(100vw-1.25rem))] flex-col overflow-hidden rounded-xl border border-outline-variant/40 bg-surface-container-lowest/95 shadow-soft backdrop-blur sm:h-[min(560px,80vh)] sm:w-[min(380px,92vw)]">
             <div className="flex items-center justify-between border-b border-outline-variant/30 bg-surface-container-high px-4 py-3">
               <div>
                 <p className="font-headline text-lg">{siteName}</p>
@@ -152,9 +94,16 @@ export function ChatWidget({
                   Este asistente no diagnostica ni prescribe. Ante urgencias, consultá en persona o por WhatsApp.
                 </div>
                 <div className="rounded-lg border border-secondary/25 bg-secondary/5 px-3 py-2 text-[11px] leading-snug text-on-surface">
-                  <strong>Para que el equipo reciba tu solicitud</strong> (nombre, DNI, contacto) tenés que usar el botón{" "}
-                  <strong>Mis datos</strong> abajo y enviar el formulario. Escribir solo en el chat{" "}
-                  <strong>no guarda</strong> datos en el centro.
+                  Para reservar usamos la agenda en{" "}
+                  <a
+                    href={BEKANDU_TURNOS_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-secondary underline decoration-secondary/40 underline-offset-2"
+                  >
+                    Bekandu
+                  </a>
+                  . Si necesitás una mano o algo no cargó bien, WhatsApp suele ser lo más rápido.
                 </div>
               </div>
               {messages.map((m, i) => (
@@ -178,12 +127,14 @@ export function ChatWidget({
             </div>
             <div className="border-t border-outline-variant/30 bg-surface-container-lowest px-2 py-2 sm:px-3 sm:py-3">
               <div className="mb-2 flex flex-wrap gap-1.5 sm:gap-2">
-                <Link
-                  href="/#reservar"
+                <a
+                  href={BEKANDU_TURNOS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="rounded-full border border-outline-variant/50 px-2.5 py-1 text-[10px] uppercase tracking-wide text-on-surface sm:px-3 sm:text-[11px]"
                 >
-                  Reservar
-                </Link>
+                  Turnos online
+                </a>
                 <a
                   href={waHref}
                   target="_blank"
@@ -192,62 +143,13 @@ export function ChatWidget({
                 >
                   WhatsApp
                 </a>
-                <button
-                  ref={misDatosBtnRef}
-                  type="button"
-                  onClick={() => {
-                    setMisDatosPulse(false);
-                    setShowLead((s) => !s);
-                  }}
-                  className={`rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-wide sm:px-3 sm:text-[11px] ${
-                    misDatosPulse
-                      ? "border-red-600 bg-red-50 font-semibold text-red-900 shadow-[0_0_0_2px_rgba(220,38,38,0.45)] animate-pulse"
-                      : "border-outline-variant/50"
-                  }`}
-                  aria-label="Mis datos: formulario de contacto"
+                <Link
+                  href="/#contacto"
+                  className="rounded-full border border-outline-variant/50 px-2.5 py-1 text-[10px] uppercase tracking-wide text-on-surface sm:px-3 sm:text-[11px]"
                 >
-                  Mis datos
-                </button>
+                  Contacto
+                </Link>
               </div>
-              {showLead && (
-                <div className="mb-3 space-y-2 rounded-lg bg-surface-container-high p-3 text-xs">
-                  <p className="text-on-surface-variant">
-                    DNI obligatorio (mín. 7 dígitos) y al menos email o teléfono, para registrar el contacto.
-                  </p>
-                  <input
-                    className="w-full rounded border border-outline-variant/40 bg-transparent px-2 py-1"
-                    placeholder="Nombre y apellido"
-                    value={leadName}
-                    onChange={(e) => setLeadName(e.target.value)}
-                  />
-                  <input
-                    className="w-full rounded border border-outline-variant/40 bg-transparent px-2 py-1"
-                    placeholder="DNI o documento"
-                    autoComplete="off"
-                    value={leadDni}
-                    onChange={(e) => setLeadDni(e.target.value)}
-                  />
-                  <input
-                    className="w-full rounded border border-outline-variant/40 bg-transparent px-2 py-1"
-                    placeholder="Email"
-                    value={leadEmail}
-                    onChange={(e) => setLeadEmail(e.target.value)}
-                  />
-                  <input
-                    className="w-full rounded border border-outline-variant/40 bg-transparent px-2 py-1"
-                    placeholder="Teléfono"
-                    value={leadPhone}
-                    onChange={(e) => setLeadPhone(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => void sendLead()}
-                    className="w-full rounded bg-on-primary-container py-2 text-[11px] uppercase tracking-widest text-surface"
-                  >
-                    Enviar datos
-                  </button>
-                </div>
-              )}
               {error && <p className="mb-2 text-xs text-red-700">{error}</p>}
               <div className="flex min-h-0 gap-1.5 sm:gap-2">
                 <input
@@ -276,7 +178,7 @@ export function ChatWidget({
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="ml-auto flex h-12 w-12 items-center justify-center rounded-full bg-on-primary-container text-surface shadow-soft transition hover:opacity-95 sm:h-auto sm:w-auto sm:gap-3 sm:px-4 sm:py-3"
+          className="flex h-14 w-14 shrink-0 touch-manipulation items-center justify-center rounded-full bg-on-primary-container text-surface shadow-soft transition hover:opacity-95 sm:ml-auto sm:h-auto sm:w-auto sm:gap-3 sm:px-4 sm:py-3"
           aria-label={open ? "Cerrar chat" : "Abrir chat"}
         >
           <span className="material-symbols-outlined text-[26px] sm:text-2xl">chat_bubble</span>

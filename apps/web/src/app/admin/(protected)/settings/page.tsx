@@ -30,6 +30,7 @@ export default function AdminSettingsPage() {
     "contact.phone",
     "contact.email",
     "contact.hours",
+    "contact.turnosOnlineUrl",
     "contact.mapImageUrl",
     "legal.disclaimer",
     "chatbot.systemPrompt",

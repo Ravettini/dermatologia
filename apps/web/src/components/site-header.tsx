@@ -63,7 +63,7 @@ export function SiteHeader({ siteName }: { siteName: string }) {
 
         <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
           <Link
-            href="/reservar"
+            href="/#reservar"
             className="bg-on-primary-container px-3 py-2 font-label text-[10px] uppercase tracking-[0.16em] text-surface transition-opacity hover:opacity-90 sm:px-5 sm:text-xs sm:tracking-widest"
             onClick={() => setMenuOpen(false)}
           >

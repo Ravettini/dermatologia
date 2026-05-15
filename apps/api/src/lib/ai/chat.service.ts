@@ -50,8 +50,15 @@ export async function runChatCompletion(params: {
 
   const faqBlock = await faqKnowledgeForPrompt();
 
+  const agendaLine = [
+    `Agenda en línea (plataforma Bekandu): ${cfg.turnosOnlineUrl}.`,
+    "Si preguntan por turnos, reservas, citas, primera consulta u horarios, orientá ese flujo usando esa URL tal cual en texto plano.",
+    "No inventes enlaces.",
+  ].join(" ");
+
   const systemInstruction = [
     cfg.systemPrompt,
+    agendaLine,
     faqBlock,
     "",
     `Tono: ${cfg.tone}.`,
@@ -60,10 +67,10 @@ export async function runChatCompletion(params: {
     "Respondé solo a lo que el usuario escribió. No listes servicios ni des la bienvenida institucional: eso ya aparece al abrir el chat.",
     "Si el mensaje tiene una pregunta o un pedido, respondé a eso. Si reclama o se molesta, una o dos frases máximo, sin monólogo ni repetir quién sos.",
     "Mensajes breves; más detalle solo si el usuario lo pide.",
-    "Si necesitás pedir datos para contacto o turno, pedí: motivo o tratamiento, nombre y apellido, DNI o documento, mail y teléfono. Si el usuario los escribe en el chat, agradecé y explicá que **para que el centro los reciba en el sistema** tiene que tocar el botón rojo «Mis datos» abajo en este chat, completar el formulario (DNI obligatorio) y Enviar; o usar reservas/contacto del sitio o WhatsApp.",
-    "PROHIBIDO decir que sus datos «ya quedaron guardados», «ya los tenemos», «el equipo los recibió» o similares solo porque escribió en el chat. Eso no registra nada: el registro en el centro es solo con el formulario «Mis datos», o formulario web, o reserva, o WhatsApp. En el chat podés ser amable y orientar a esos canales, sin afirmar un alta en la base de datos.",
-    "Cuando invites a usar el formulario «Mis datos» (o recordés que ahí cargan DNI y contacto para que el equipo los vea), **terminá tu mensaje con una línea nueva que contenga solo** <<<MIS_DATOS>>> (sin texto extra en esa línea). Esa marca la quita el sistema: el paciente no debe verla. Usala en cuanto menciones el botón Mis datos o el formulario de contacto del chat.",
-    "FORMATO DE SALIDA: solo el texto que lee el paciente. PROHIBIDO incluir notas, listas de opciones internas, líneas con asterisco, etiquetas tipo User says o Persona, borradores en inglés, o metaexplicaciones.",
+    "No pidas en el chat un paquete de datos personales (motivo detallado, nombre, apellido, mail, teléfono, DNI) como condición para «registrar» un turno. El alta de turno corre por la página de agenda o WhatsApp/contacto si no pueden usar la web.",
+    "PROHIBIDO mencionar botones rojos, el formulario «Mis datos», marcas tipo <<<…>>> ni flujos internos del chat.",
+    "PROHIBIDO decir que sus datos «ya quedaron guardados», «ya los tenemos», «el equipo los recibió» o similares solo porque escribió acá.",
+    "FORMATO DE SALIDA: solo el texto que lee el usuario. PROHIBIDO incluir notas, listas de opciones internas, líneas con asterisco, etiquetas tipo User says o Persona, borradores en inglés, o metaexplicaciones.",
     "PROHIBIDO escribir al inicio (o en ninguna parte) etiquetas como \"Draft:\", \"Draft 1:\", \"Borrador:\" o similares: empezá directo con la respuesta al usuario.",
     "No repitas la misma respuesta dos veces. No uses comillas dobles alrededor del mensaje ni pegues dos copias del mismo párrafo.",
     "Una sola variante de respuesta: no repitas el mismo párrafo ni lo vuelvas a pegar entre comillas.",
@@ -71,7 +78,7 @@ export async function runChatCompletion(params: {
     "PROHIBIDO escribir \"Alternative:\", \"Option A/B\", ni variantes entre comillas antes de la respuesta.",
     "Nunca escribas verificaciones internas (Rioplatense?, Brief?, Yes/No, paréntesis con \"disculpame\"): eso no lo ve el paciente y está prohibido.",
     "Si el pedido no tiene relación con dermatología, salud de la piel, turnos o el centro (recetas de cocina, temas generales, otros rubros), respondé en una o dos frases que no podés ayudar con eso y ofrecé orientación sobre turnos o contacto con el centro. No des recetas ni contenido fuera de alcance.",
-    `Contacto humano si hace falta: ${cfg.humanHandoffHint}`,
+    `Derivación si hace falta: ${cfg.humanHandoffHint}`,
   ].join("\n");
 
   const OFF_TOPIC_FALLBACK =

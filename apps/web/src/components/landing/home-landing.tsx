@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BookingSection } from "@/components/booking-section";
-import { ContactForm } from "@/components/contact-form";
 import { FeaturedSpecialtiesSection } from "@/components/landing/featured-specialties-section";
 import { FaqSection } from "@/components/landing/faq-section";
+import { OnlineTurnosPanel } from "@/components/landing/online-turnos-section";
 import { SociasSection } from "@/components/landing/socias-section";
 import { TeamSection } from "@/components/landing/team-section";
 import { TreatmentsSection } from "@/components/landing/treatments-section";
@@ -256,66 +255,79 @@ export function HomeLanding({
         <FaqSection faqs={faqs} />
       </section>
 
-      <BookingSection />
-
       <section
-        className="border-t border-outline-variant/30 bg-surface px-4 pb-16 pt-20 sm:px-6 sm:pb-20 sm:pt-24 md:px-10 md:pb-24 md:pt-28 lg:px-12 lg:pb-28 lg:pt-32"
+        className="border-t border-outline-variant/25 bg-surface px-4 py-14 sm:px-6 sm:py-16 md:px-10 md:py-20 lg:px-12 lg:py-24"
         id="contacto"
+        aria-labelledby="contacto-heading"
       >
-        <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-8 md:grid-cols-2 md:items-start md:gap-10 lg:gap-12">
-          <div>
-            <h2 className="mb-3 font-headline text-3xl md:mb-4 md:text-4xl lg:text-[clamp(1.75rem,2.5vw,2.25rem)]">
+        <div className="mx-auto grid max-w-[1600px] gap-12 lg:grid-cols-2 lg:items-start lg:gap-16 xl:gap-24">
+          <div className="min-w-0">
+            <span className="mb-3 block font-label text-[11px] uppercase tracking-[0.32em] text-on-surface-variant md:text-xs">
+              Consultas
+            </span>
+            <h2 id="contacto-heading" className="font-headline text-3xl text-on-surface md:text-4xl">
               Contacto y ubicación
             </h2>
-            <p className="mb-8 max-w-xl font-body text-sm leading-relaxed text-on-surface-variant md:mb-9 md:text-base">
-              Para consultas generales o seguimiento, escribinos desde el formulario. Para reservar con día y hora
-              concretos, usá la sección <strong className="font-medium text-on-surface">Solicitá tu turno</strong> más
-              arriba.
+            <p className="mt-5 max-w-md font-body text-sm leading-relaxed text-on-surface-variant md:text-base">
+              Dirección, horarios y cómo ubicarnos. En este mismo espacio encontrás también la agenda para pedir tu
+              turno.
             </p>
-            <div className="space-y-5 md:space-y-5">
-              <div className="flex gap-4">
-                <span className="material-symbols-outlined shrink-0 text-lg text-secondary md:text-xl">location_on</span>
+
+            <ul className="mt-10 space-y-5">
+              <li className="flex gap-4 rounded-2xl border border-outline-variant/25 bg-surface-container-low p-5 shadow-sm">
+                <span className="material-symbols-outlined mt-0.5 shrink-0 text-xl text-secondary md:text-2xl">
+                  location_on
+                </span>
                 <div className="min-w-0">
-                  <h6 className="mb-0.5 font-label text-[10px] uppercase tracking-widest md:text-xs">Ubicación</h6>
-                  <p className="font-body text-sm leading-snug md:text-[0.9375rem]">{address}</p>
+                  <h6 className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant md:text-xs">
+                    Ubicación
+                  </h6>
+                  <p className="mt-1.5 font-body text-sm leading-snug text-on-surface md:text-[0.9375rem]">{address}</p>
                 </div>
-              </div>
-              <div className="flex gap-4">
-                <span className="material-symbols-outlined shrink-0 text-lg text-secondary md:text-xl">phone</span>
+              </li>
+              <li className="flex gap-4 rounded-2xl border border-outline-variant/25 bg-surface-container-low p-5 shadow-sm">
+                <span className="material-symbols-outlined mt-0.5 shrink-0 text-xl text-secondary md:text-2xl">phone</span>
                 <div className="min-w-0">
-                  <h6 className="mb-0.5 font-label text-[10px] uppercase tracking-widest md:text-xs">WhatsApp / Teléfono</h6>
-                  <p className="font-body text-sm leading-snug md:text-[0.9375rem]">{phone}</p>
+                  <h6 className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant md:text-xs">
+                    WhatsApp / Teléfono
+                  </h6>
+                  <p className="mt-1.5 font-body text-sm leading-snug text-on-surface md:text-[0.9375rem]">{phone}</p>
                 </div>
-              </div>
-              <div className="flex gap-4">
-                <span className="material-symbols-outlined shrink-0 text-lg text-secondary md:text-xl">mail</span>
+              </li>
+              <li className="flex gap-4 rounded-2xl border border-outline-variant/25 bg-surface-container-low p-5 shadow-sm">
+                <span className="material-symbols-outlined mt-0.5 shrink-0 text-xl text-secondary md:text-2xl">mail</span>
                 <div className="min-w-0">
-                  <h6 className="mb-0.5 font-label text-[10px] uppercase tracking-widest md:text-xs">Correo</h6>
+                  <h6 className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant md:text-xs">Correo</h6>
                   <a
-                    className="break-words font-body text-sm text-secondary underline decoration-secondary/30 underline-offset-4 md:text-[0.9375rem]"
+                    className="mt-1.5 inline-block break-words font-body text-sm text-secondary underline decoration-secondary/30 underline-offset-4 md:text-[0.9375rem]"
                     href={`mailto:${email}`}
                   >
                     {email}
                   </a>
                 </div>
-              </div>
-              <div className="flex gap-4">
-                <span className="material-symbols-outlined shrink-0 text-lg text-secondary md:text-xl">schedule</span>
+              </li>
+              <li className="flex gap-4 rounded-2xl border border-outline-variant/25 bg-surface-container-low p-5 shadow-sm">
+                <span className="material-symbols-outlined mt-0.5 shrink-0 text-xl text-secondary md:text-2xl">
+                  schedule
+                </span>
                 <div className="min-w-0">
-                  <h6 className="mb-0.5 font-label text-[10px] uppercase tracking-widest md:text-xs">Horarios</h6>
-                  <p className="font-body text-sm leading-snug md:text-[0.9375rem]">{hours}</p>
+                  <h6 className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant md:text-xs">Horarios</h6>
+                  <p className="mt-1.5 font-body text-sm leading-snug text-on-surface md:text-[0.9375rem]">{hours}</p>
                 </div>
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
-          <div className="bg-surface-container-lowest p-5 shadow-sm sm:p-6 md:p-8">
-            <h3 className="mb-4 font-headline text-xl md:text-2xl">Dejanos tus datos</h3>
-            <ContactForm />
+
+          <div
+            id="reservar"
+            className="min-w-0 scroll-mt-[calc(5rem+env(safe-area-inset-top,0px))] border-t border-outline-variant/25 pt-10 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-1 xl:pl-16"
+          >
+            <OnlineTurnosPanel phone={phone} variant="column" />
           </div>
         </div>
       </section>
 
-      <section className="h-[280px] w-full overflow-hidden bg-surface-container sm:h-[340px] md:h-[400px]">
+      <section className="h-[280px] w-full overflow-hidden bg-surface-container sm:h-[340px] md:h-[400px]" id="mapa">
         <iframe
           title="Mapa de ubicación"
           src={mapEmbedSrc}

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { BookingSection } from "@/components/booking-section";
+import { OnlineTurnosSection } from "@/components/landing/online-turnos-section";
 import { ChatWidget } from "@/components/chat-widget";
 import { FloatingWhatsApp } from "@/components/floating-whatsapp";
 
@@ -30,6 +30,7 @@ export default async function ReservarPage() {
   const site = data.site;
   const name = site["site.name"] ?? "Dermaclinic";
   const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5491112345678";
+  const phone = site["contact.phone"] ?? "+54 9 11 2699-2405";
 
   return (
     <>
@@ -40,7 +41,7 @@ export default async function ReservarPage() {
             Volver al inicio
           </Link>
         </div>
-        <BookingSection />
+        <OnlineTurnosSection anchor={false} phone={phone} />
       </div>
       <SiteFooter
         siteName={name}

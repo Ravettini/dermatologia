@@ -127,7 +127,7 @@ export function HomeLanding({
                 href="/#reservar"
                 className="bg-on-primary-container px-6 py-3 font-label text-xs uppercase tracking-widest text-surface transition-all hover:opacity-90 sm:px-8 sm:py-4 sm:text-sm"
               >
-                Pedir turno
+                Solicitar turno
               </Link>
               <Link
                 href="/#tratamientos"
@@ -190,7 +190,7 @@ export function HomeLanding({
             {
               n: "01.",
               t: "Profesionales de la salud",
-              p: "Médicos especialistas dedicados a dermatología clínica y estética responsable.",
+              p: "Médicos especialistas dedicados a dermatología clínica, estética responsable y medicina funcional.",
             },
             {
               n: "02.",
@@ -269,7 +269,7 @@ export function HomeLanding({
               Contacto y ubicación
             </h2>
             <p className="mt-5 max-w-md font-body text-sm leading-relaxed text-on-surface-variant md:text-base">
-              Dirección, horarios y cómo ubicarnos. En este mismo espacio encontrás también la agenda para pedir tu
+              Dirección, horarios y cómo ubicarnos. En este mismo espacio encontrás también la agenda para solicitar tu
               turno.
             </p>
 
@@ -340,7 +340,7 @@ export function HomeLanding({
 
       <section className="bg-surface px-4 py-16 text-center sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32">
         <h2 className="mb-8 font-headline text-3xl sm:mb-10 sm:text-4xl md:text-5xl lg:text-6xl">
-          Cuidá tu piel. Pedí tu turno.
+          Cuidá tu piel. Solicitá tu turno.
         </h2>
         <Link
           href="/#reservar"

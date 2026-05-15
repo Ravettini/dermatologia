@@ -1,4 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
+import { instagramProfileUrl } from "@/lib/social-links";
+
+const RANITA_INSTAGRAM = "https://www.instagram.com/ranitadesign/";
 
 export function SiteFooter({
   siteName,
@@ -29,9 +33,14 @@ export function SiteFooter({
               </Link>
             </li>
             <li>
-              <Link className="opacity-70 transition-opacity hover:opacity-100" href="/#tratamientos">
-                Tratamientos
-              </Link>
+              <a
+                className="opacity-70 transition-opacity hover:opacity-100"
+                href={instagramProfileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Seguinos en Instagram
+              </a>
             </li>
             <li>
               <Link className="opacity-70 transition-opacity hover:opacity-100" href="/#reservar">
@@ -69,6 +78,28 @@ export function SiteFooter({
         <p className="max-w-3xl text-center text-[9px] normal-case leading-relaxed">
           La información es orientativa y no sustituye la evaluación médica presencial. Los resultados pueden variar.
         </p>
+      </div>
+
+      <div className="flex justify-center bg-[#024053] px-4 py-2 md:py-2.5">
+        <a
+          href={RANITA_INSTAGRAM}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex max-w-[min(100%,28rem)] items-center gap-3 text-white transition-opacity hover:opacity-95"
+        >
+          <span className="relative h-[1.375rem] w-12 shrink-0 sm:h-6 sm:w-14 md:h-[1.45rem] md:w-[3.65rem]">
+            <Image
+              src="/branding/ranita-design-logo.png"
+              alt="RanitaDesign"
+              fill
+              className="object-contain object-left"
+              sizes="64px"
+            />
+          </span>
+          <span className="text-left font-body text-[11px] leading-snug text-white/95 sm:text-xs md:text-[13px]">
+            Diseñado por <strong className="font-semibold text-white">RanitaDesign</strong>
+          </span>
+        </a>
       </div>
     </footer>
   );

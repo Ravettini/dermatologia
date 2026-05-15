@@ -178,11 +178,13 @@ export function ChatWidget({
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="flex h-14 w-14 shrink-0 touch-manipulation items-center justify-center rounded-full bg-on-primary-container text-surface shadow-soft transition hover:opacity-95 sm:ml-auto sm:h-auto sm:w-auto sm:gap-3 sm:px-4 sm:py-3"
-          aria-label={open ? "Cerrar chat" : "Abrir chat"}
+          className="flex max-w-[min(100vw-5.5rem,18rem)] shrink-0 touch-manipulation items-center gap-2 rounded-full bg-on-primary-container px-3 py-3 text-surface shadow-soft transition hover:opacity-95 sm:ml-auto sm:max-w-[20rem] sm:gap-3 sm:px-4 sm:py-3"
+          aria-label={open ? "Cerrar chat" : "¿En qué te podemos ayudar?"}
         >
-          <span className="material-symbols-outlined text-[26px] sm:text-2xl">chat_bubble</span>
-          <span className="hidden font-label text-xs uppercase tracking-widest sm:inline">¿Dudas?</span>
+          <span className="material-symbols-outlined shrink-0 text-[26px] sm:text-2xl">chat_bubble</span>
+          <span className="min-w-0 flex-1 text-left font-label text-[9px] uppercase leading-snug tracking-wide sm:text-[11px]">
+            ¿En qué te podemos ayudar?
+          </span>
         </button>
       </div>
     </>

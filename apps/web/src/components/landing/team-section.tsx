@@ -44,7 +44,8 @@ function normalizeSpecialty(specialty: string): string {
 }
 
 export function TeamSection({ professionals }: { professionals: TeamMember[] }) {
-  const [filter, setFilter] = useState(DEFAULT_FILTER);
+  /** Al entrar desde el menú «Equipo» el listado se muestra completo; el filtro sigue disponible. */
+  const [filter, setFilter] = useState(ALL_FILTER);
 
   const dermatologiaClinica = useMemo(
     () => professionals.filter((p) => normalizeSpecialty(p.specialty) === DERMATOLOGY_GENERAL),
@@ -95,7 +96,7 @@ export function TeamSection({ professionals }: { professionals: TeamMember[] }) 
             <span className="mb-2 block font-label text-xs uppercase tracking-[0.3em] text-secondary">Equipo</span>
             <h2 className="font-headline text-3xl text-on-surface md:text-4xl">Profesionales</h2>
             <p className="mt-2 max-w-xl text-sm text-on-surface-variant">
-              Mostramos primero el equipo de dermatología. Elegí una especialidad para ver al resto del equipo.
+              Todo el equipo en un solo lugar. Si querés, podés filtrar por especialidad.
             </p>
           </div>
           <label className="flex w-full flex-col gap-2 md:w-72">

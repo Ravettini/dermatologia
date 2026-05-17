@@ -69,7 +69,7 @@ export function ChatWidget({
   return (
     <>
       {/* w-auto + items-end: en móvil no ocupar todo el viewport (antes bloqueaba toques sobre el FAB de WhatsApp a la izquierda). */}
-      <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(0.75rem,env(safe-area-inset-right))] z-[60] flex w-auto max-w-none flex-col items-end gap-2 sm:bottom-8 sm:right-8 sm:gap-3">
+      <div className="fixed bottom-[calc(2rem+env(safe-area-inset-bottom,0px))] right-[max(0.75rem,env(safe-area-inset-right))] z-[60] flex w-auto max-w-none flex-col items-end gap-2 sm:bottom-8 sm:right-8 sm:gap-3">
         {open && (
           <div className="flex h-[min(520px,calc(100dvh-7rem))] w-[min(380px,calc(100vw-1.25rem))] flex-col overflow-hidden rounded-xl border border-outline-variant/40 bg-surface-container-lowest/95 shadow-soft backdrop-blur sm:h-[min(560px,80vh)] sm:w-[min(380px,92vw)]">
             <div className="flex items-center justify-between border-b border-outline-variant/30 bg-surface-container-high px-4 py-3">
@@ -178,11 +178,13 @@ export function ChatWidget({
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="flex max-w-[min(100vw-5.5rem,18rem)] shrink-0 touch-manipulation items-center gap-2 rounded-full bg-on-primary-container px-3 py-3 text-surface shadow-soft transition hover:opacity-95 sm:ml-auto sm:max-w-[20rem] sm:gap-3 sm:px-4 sm:py-3"
+          className="flex size-[3.65rem] shrink-0 touch-manipulation items-center justify-center rounded-full bg-on-primary-container text-surface shadow-soft transition hover:opacity-95 sm:ml-auto sm:size-auto sm:max-w-[20rem] sm:gap-3 sm:px-[1.1rem] sm:py-[0.825rem]"
           aria-label={open ? "Cerrar chat" : "¿En qué te podemos ayudar?"}
         >
-          <span className="material-symbols-outlined shrink-0 text-[26px] sm:text-2xl">chat_bubble</span>
-          <span className="min-w-0 flex-1 text-left font-label text-[9px] uppercase leading-snug tracking-wide sm:text-[11px]">
+          <span className="material-symbols-outlined shrink-0 text-[31px] sm:text-[26px]">
+            {open ? "close" : "smart_toy"}
+          </span>
+          <span className="hidden min-w-0 flex-1 text-left font-label text-[9px] uppercase leading-snug tracking-wide sm:inline sm:text-[12.1px]">
             ¿En qué te podemos ayudar?
           </span>
         </button>

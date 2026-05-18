@@ -54,6 +54,7 @@ export default async function ReservarPage() {
         siteName={name}
         welcome={site["chatbot.welcomeMessage"] ?? "Hola, ¿querés ayuda para reservar?"}
         whatsappNumber={whatsapp}
+        disclaimer={"legal.disclaimer" in site ? site["legal.disclaimer"] : undefined}
       />
     </>
   );

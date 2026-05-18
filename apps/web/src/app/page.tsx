@@ -53,7 +53,7 @@ const fallbackHome = {
     "contact.hours": "Lunes a viernes de 9 a 19 hs.",
     "contact.mapImageUrl": "Camino Boulogne Bancalari 3350, Victoria, Argentina",
     "legal.disclaimer":
-      "La información es orientativa y no sustituye la evaluación médica presencial. Los resultados pueden variar.",
+      "La información del sitio es educativa y no reemplaza la consulta médica. Los resultados varían según cada persona.",
     "chatbot.welcomeMessage": "Hola, soy el asistente virtual. ¿En qué puedo orientarte?",
   },
   faqs: [] as { id: string; question: string; answer: string }[],
@@ -129,7 +129,12 @@ export default async function Page() {
         phone={site["contact.phone"] ?? ""}
       />
       <FloatingWhatsApp number={whatsapp} />
-      <ChatWidget siteName={name} welcome={site["chatbot.welcomeMessage"] ?? "Hola, ¿en qué te ayudo?"} whatsappNumber={whatsapp} />
+      <ChatWidget
+        siteName={name}
+        welcome={site["chatbot.welcomeMessage"] ?? "Hola, ¿en qué te ayudo?"}
+        whatsappNumber={whatsapp}
+        disclaimer={site["legal.disclaimer"]}
+      />
     </>
   );
 }

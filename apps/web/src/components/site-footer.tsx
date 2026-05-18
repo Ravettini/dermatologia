@@ -73,11 +73,8 @@ export function SiteFooter({
           </ul>
         </div>
       </div>
-      <div className="flex flex-col items-center justify-between gap-6 border-t border-on-surface/5 px-6 py-8 text-[10px] uppercase tracking-widest opacity-60 md:flex-row md:px-12">
+      <div className="border-t border-on-surface/5 px-6 py-8 text-center text-[10px] uppercase tracking-widest opacity-60 md:px-12">
         <p>© {new Date().getFullYear()} {siteName}. Todos los derechos reservados.</p>
-        <p className="max-w-3xl text-center text-[9px] normal-case leading-relaxed">
-          La información es orientativa y no sustituye la evaluación médica presencial. Los resultados pueden variar.
-        </p>
       </div>
 
       <div className="flex justify-center bg-[#024053] px-4 py-2 md:py-2.5">

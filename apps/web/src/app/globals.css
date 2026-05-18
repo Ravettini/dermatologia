@@ -17,3 +17,242 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* —— Hero —— */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background-color: #f5f2ed;
+  min-height: max(680px, calc(100svh - 4.5rem));
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+.hero-bg--desktop {
+  display: block;
+  background-image: url("/branding/hero-dermatologia-bg.png");
+  background-position: center right;
+}
+
+.hero-bg--mobile {
+  display: none;
+  background-color: #f5f2ed;
+  background-image: url("/branding/hero-dermatologia-mobile.png");
+  background-size: 100% auto;
+  background-position: center bottom;
+}
+
+.hero::before {
+  content: none;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  height: 180px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(245, 242, 237, 0) 0%, #f5f2ed 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+@media (min-width: 769px) and (max-width: 1023px) {
+  .hero-bg--desktop {
+    background-position: 72% center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    min-height: max(720px, calc(100svh - 5rem));
+  }
+}
+
+/* Mobile ≤768px: imagen vertical abajo, texto en zona superior */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 100dvh;
+    min-height: 100svh;
+    align-items: flex-start;
+  }
+
+  .hero-bg--desktop {
+    display: none;
+  }
+
+  .hero-bg--mobile {
+    display: block;
+  }
+
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      #f5f2ed 0%,
+      rgba(245, 242, 237, 0.97) 28%,
+      rgba(245, 242, 237, 0.55) 42%,
+      rgba(245, 242, 237, 0) 52%
+    );
+  }
+
+  .hero::after {
+    height: 140px;
+  }
+
+  .hero-content {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 0;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(1.5rem, 7.2vw, 2rem);
+    line-height: 1.08;
+    word-break: break-word;
+  }
+
+  .hero-content .hero-lead {
+    font-size: 1rem;
+    line-height: 1.35;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-content .hero-actions {
+    gap: 0.625rem;
+    margin-top: 0.25rem;
+  }
+
+  .hero-content .hero-body {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero::after {
+    height: 180px;
+  }
+}
+
+/* FAB flotantes: ícono fijo + texto con grid (anima bien al cerrar) */
+.fab {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: max-content;
+  height: 3rem;
+  min-width: 3rem;
+  max-width: 3rem;
+  padding: 0;
+  transition:
+    grid-template-columns 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+    gap 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+    max-width 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+    padding 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fab--whatsapp {
+  grid-template-columns: auto 0fr;
+}
+
+.fab--chat {
+  grid-template-columns: 0fr auto;
+}
+
+.fab__icon {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  justify-self: center;
+}
+
+.fab__icon.material-symbols-outlined {
+  width: 26px;
+  height: 26px;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.fab__label {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  font-size: 10px;
+  line-height: 1.2;
+  transition: opacity 0.15s ease-in;
+}
+
+@media (hover: hover) {
+  .fab--whatsapp:hover {
+    justify-content: start;
+    grid-template-columns: auto 1fr;
+    gap: 0.625rem;
+    max-width: 18rem;
+    padding-right: 1rem;
+    transition-duration: 0.28s;
+    transition-timing-function: ease-out;
+  }
+
+  .fab--chat:hover {
+    justify-content: end;
+    grid-template-columns: 1fr auto;
+    gap: 0.625rem;
+    max-width: 18rem;
+    padding-left: 1rem;
+    transition-duration: 0.28s;
+    transition-timing-function: ease-out;
+  }
+
+  .fab:hover .fab__label {
+    opacity: 1;
+    transition: opacity 0.22s ease-out 0.12s;
+  }
+}
+
+@media (min-width: 768px) {
+  .fab {
+    height: 3.6rem;
+    min-width: 3.6rem;
+    max-width: 3.6rem;
+  }
+
+  .fab__icon {
+    width: 31px;
+    height: 31px;
+  }
+
+  .fab__icon.material-symbols-outlined {
+    width: 31px;
+    height: 31px;
+    font-size: 31px;
+  }
+
+  .fab__label {
+    font-size: 11px;
+  }
+}

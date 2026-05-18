@@ -92,8 +92,6 @@ export function HomeLanding({
   const email = site["contact.email"] ?? "Dermatologiatod@gmail.com";
   const hours = site["contact.hours"] ?? "Lunes a viernes de 9 a 19 hs.";
   const mapEmbedSrc = resolveMapEmbedSrc(site["contact.mapImageUrl"] ?? "");
-  const disclaimer = site["legal.disclaimer"] ?? "";
-
   const byId = new Map(professionals.map((p) => [p.id, p] as const));
   const socias = SOCIO_IDS.map((id) => byId.get(id)).filter(
     (p): p is PublicProfessional => p != null,
@@ -104,54 +102,39 @@ export function HomeLanding({
   return (
     <main className="w-full min-w-0 max-w-[100vw] overflow-x-hidden">
       <section
-        className="relative flex w-full max-w-[100vw] flex-col overflow-hidden bg-surface px-4 pb-0 pt-[calc(7.25rem+env(safe-area-inset-top,0px))] sm:px-6 sm:pt-28 md:px-10 md:pt-32 lg:min-h-[90svh] lg:pt-24 lg:pb-0 xl:px-12"
+        className="hero flex w-full max-w-[100vw] flex-col px-4 pb-16 pt-[calc(9.5rem+env(safe-area-inset-top,0px))] max-md:min-h-[100dvh] max-md:pb-8 max-md:pt-[calc(6.25rem+env(safe-area-inset-top,0px))] sm:px-6 sm:pb-20 md:px-10 md:pb-24 md:pt-40 lg:pb-28 xl:px-12"
         id="inicio"
       >
-        <div className="mx-auto grid min-h-0 w-full max-w-[1600px] grid-cols-1 gap-8 sm:gap-10 md:gap-12 lg:min-h-[calc(90svh-6rem)] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-stretch lg:gap-0">
-          <div className="flex min-h-0 min-w-0 max-w-2xl flex-col justify-center pb-8 sm:pb-10 lg:pb-16 lg:pr-8 xl:pr-12">
-            <span className="mb-4 block font-label text-[10px] uppercase tracking-[0.28em] text-secondary sm:mb-5 sm:text-xs sm:tracking-[0.3em]">
+        <div className="hero-bg hero-bg--desktop" aria-hidden="true" />
+        <div className="hero-bg hero-bg--mobile" aria-hidden="true" />
+        <div className="hero-content mx-auto flex w-full max-w-[1600px] flex-col justify-center max-md:min-h-0 max-md:w-full max-md:flex-none max-md:justify-start md:min-h-[inherit]">
+          <div className="w-full max-w-[min(100%,34.5rem)] max-md:max-w-full sm:max-w-[min(100%,35rem)]">
+            <span className="mb-4 block font-label text-[10px] uppercase tracking-[0.28em] text-secondary max-md:mb-2 sm:mb-5 sm:text-xs sm:tracking-[0.3em]">
               {tagline}
             </span>
-            <h1 className="mb-5 font-headline text-[clamp(1.85rem,5.5vw,2.75rem)] leading-[1.12] text-on-surface sm:mb-6 sm:text-5xl md:text-6xl lg:mb-4 lg:text-[clamp(1.75rem,2.75vw,2.85rem)] xl:text-[clamp(2rem,3vw,3.25rem)] 2xl:text-5xl">
+            <h1 className="mb-5 font-headline text-[clamp(1.85rem,5.5vw,2.75rem)] leading-[1.12] text-on-surface max-md:mb-2 sm:mb-6 sm:text-5xl md:text-6xl lg:mb-4 lg:text-[clamp(1.75rem,2.75vw,2.85rem)] xl:text-[clamp(2rem,3vw,3.25rem)] 2xl:text-5xl">
               {brand}
             </h1>
-            <p className="mb-3 font-headline text-lg font-normal leading-snug text-on-surface sm:text-xl md:text-2xl">
+            <p className="hero-lead mb-3 font-headline text-lg font-normal leading-snug text-on-surface max-md:mb-2 max-md:text-base sm:text-xl md:text-2xl">
               Dermatología clínica y estética con una mirada profesional y personalizada
             </p>
-            <p className="mb-8 font-body text-base leading-relaxed text-on-surface-variant opacity-80 sm:mb-9 sm:text-lg md:text-xl lg:mb-6 lg:max-w-xl lg:text-[clamp(0.95rem,1.25vw,1.1rem)] xl:text-lg">
+            <p className="hero-body mb-8 font-body text-base leading-relaxed text-on-surface-variant opacity-80 max-md:mb-5 sm:mb-9 sm:text-lg md:text-xl lg:mb-6 lg:text-[clamp(0.95rem,1.25vw,1.1rem)] xl:text-lg">
               Tratamientos pensados para cuidar, mejorar y acompañar la salud y belleza de tu piel, combinando
               evidencia científica con una estética natural y equilibrada.
             </p>
-            <div className="flex flex-wrap gap-4 sm:gap-6">
+            <div className="hero-actions flex flex-wrap gap-3 max-md:w-full max-md:flex-col sm:gap-6">
               <Link
                 href="/#reservar"
-                className="bg-on-primary-container px-6 py-3 font-label text-xs uppercase tracking-widest text-surface transition-all hover:opacity-90 sm:px-8 sm:py-4 sm:text-sm"
+                className="bg-on-primary-container px-6 py-3 text-center font-label text-xs uppercase tracking-widest text-surface transition-all hover:opacity-90 max-md:w-full sm:px-8 sm:py-4 sm:text-sm"
               >
                 Solicitar turno
               </Link>
               <Link
                 href="/#tratamientos"
-                className="border border-outline-variant px-6 py-3 font-label text-xs uppercase tracking-widest text-secondary transition-all hover:bg-surface-container-low sm:px-8 sm:py-4 sm:text-sm"
+                className="border border-outline-variant bg-[#f5f2ed]/80 px-6 py-3 text-center font-label text-xs uppercase tracking-widest text-secondary backdrop-blur-[2px] transition-all hover:bg-surface-container-low max-md:w-full sm:px-8 sm:py-4 sm:text-sm"
               >
                 Ver tratamientos
               </Link>
-            </div>
-            {disclaimer && (
-              <p className="mt-6 max-w-xl text-[11px] leading-relaxed text-on-surface-variant sm:mt-8 sm:text-xs lg:mt-5">
-                {disclaimer}
-              </p>
-            )}
-          </div>
-          <div className="relative min-h-[380px] w-full overflow-hidden sm:min-h-[500px] lg:min-h-0 lg:h-full">
-            <div className="absolute inset-0">
-              <Image
-                src="/branding/imagen-hero.png"
-                alt="Retrato editorial con piel luminosa y luz suave"
-                fill
-                className="object-contain object-right-bottom"
-                sizes="(max-width: 1024px) 100vw, 52vw"
-                priority
-              />
             </div>
           </div>
         </div>

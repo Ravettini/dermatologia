@@ -7,14 +7,19 @@ import { BEKANDU_TURNOS_URL } from "@/lib/bekandu-turnos";
 
 type Msg = { role: "user" | "model"; content: string };
 
+const DEFAULT_LEGAL_DISCLAIMER =
+  "La información del sitio es educativa y no reemplaza la consulta médica. Los resultados varían según cada persona.";
+
 export function ChatWidget({
   siteName,
   welcome,
   whatsappNumber,
+  disclaimer = DEFAULT_LEGAL_DISCLAIMER,
 }: {
   siteName: string;
   welcome: string;
   whatsappNumber: string;
+  disclaimer?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -105,6 +110,11 @@ export function ChatWidget({
                   </a>
                   . Si necesitás una mano o algo no cargó bien, WhatsApp suele ser lo más rápido.
                 </div>
+                {disclaimer ? (
+                  <p className="rounded-lg bg-surface-container-high/90 px-3 py-2 text-[10px] leading-relaxed text-on-surface-variant">
+                    {disclaimer}
+                  </p>
+                ) : null}
               </div>
               {messages.map((m, i) => (
                 <div
@@ -178,15 +188,11 @@ export function ChatWidget({
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="flex size-[3.65rem] shrink-0 touch-manipulation items-center justify-center rounded-full bg-on-primary-container text-surface shadow-soft transition hover:opacity-95 sm:ml-auto sm:size-auto sm:max-w-[20rem] sm:gap-3 sm:px-[1.1rem] sm:py-[0.825rem]"
+          className="fab fab--chat group ml-auto shrink-0 touch-manipulation rounded-full bg-on-primary-container font-label uppercase tracking-wide text-surface shadow-soft hover:opacity-95"
           aria-label={open ? "Cerrar chat" : "¿En qué te podemos ayudar?"}
         >
-          <span className="material-symbols-outlined shrink-0 text-[31px] sm:text-[26px]">
-            {open ? "close" : "smart_toy"}
-          </span>
-          <span className="hidden min-w-0 flex-1 text-left font-label text-[9px] uppercase leading-snug tracking-wide sm:inline sm:text-[12.1px]">
-            ¿En qué te podemos ayudar?
-          </span>
+          <span className="fab__label text-right leading-snug">{open ? "Cerrar" : "¿En qué te podemos ayudar?"}</span>
+          <span className="fab__icon material-symbols-outlined">{open ? "close" : "smart_toy"}</span>
         </button>
       </div>
     </>

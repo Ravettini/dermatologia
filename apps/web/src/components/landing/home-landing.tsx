@@ -102,12 +102,12 @@ export function HomeLanding({
   return (
     <main className="w-full min-w-0 max-w-[100vw] overflow-x-hidden">
       <section
-        className="hero flex w-full max-w-[100vw] flex-col px-4 pb-16 pt-[calc(9.5rem+env(safe-area-inset-top,0px))] max-md:min-h-[100dvh] max-md:pb-8 max-md:pt-[calc(6.25rem+env(safe-area-inset-top,0px))] sm:px-6 sm:pb-20 md:px-10 md:pb-24 md:pt-40 lg:pb-28 xl:px-12"
+        className="hero w-full max-w-[100vw] px-4 max-md:min-h-[100dvh] max-md:pb-8 max-md:pt-[calc(6.25rem+env(safe-area-inset-top,0px))] sm:px-6 md:px-10 xl:px-12"
         id="inicio"
       >
         <div className="hero-bg hero-bg--desktop" aria-hidden="true" />
         <div className="hero-bg hero-bg--mobile" aria-hidden="true" />
-        <div className="hero-content mx-auto flex w-full max-w-[1600px] flex-col justify-center max-md:min-h-0 max-md:w-full max-md:flex-none max-md:justify-start md:min-h-[inherit]">
+        <div className="hero-content flex w-full flex-col max-md:min-h-0 max-md:w-full max-md:justify-start">
           <div className="w-full max-w-[min(100%,34.5rem)] max-md:max-w-full sm:max-w-[min(100%,35rem)]">
             <span className="mb-4 block font-label text-[10px] uppercase tracking-[0.28em] text-secondary max-md:mb-2 sm:mb-5 sm:text-xs sm:tracking-[0.3em]">
               {tagline}

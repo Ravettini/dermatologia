@@ -21,6 +21,8 @@ body {
 /* —— Hero —— */
 .hero {
   position: relative;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   background-color: #f5f2ed;
   min-height: max(680px, calc(100svh - 4.5rem));
@@ -38,7 +40,7 @@ body {
 .hero-bg--desktop {
   display: block;
   background-image: url("/branding/hero-dermatologia-bg.png");
-  background-position: center right;
+  background-position: right 25%;
 }
 
 .hero-bg--mobile {
@@ -70,15 +72,34 @@ body {
   z-index: 2;
 }
 
-@media (min-width: 769px) and (max-width: 1023px) {
-  .hero-bg--desktop {
-    background-position: 72% center;
+/* Desktop/tablet: texto centrado verticalmente, alineado a la izquierda */
+@media (min-width: 769px) {
+  .hero {
+    justify-content: center;
+    min-height: 100svh;
+    min-height: 100dvh;
+    padding-top: calc(5rem + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .hero-content {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1600px;
+    margin-inline: auto;
+    padding-left: max(5.5rem, calc(1rem + env(safe-area-inset-left, 0px)));
+    padding-right: 1rem;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left;
   }
 }
 
-@media (min-width: 1024px) {
-  .hero {
-    min-height: max(720px, calc(100svh - 5rem));
+@media (min-width: 769px) and (max-width: 1023px) {
+  .hero-bg--desktop {
+    background-position: 72% 25%;
   }
 }
 

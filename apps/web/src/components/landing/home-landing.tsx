@@ -102,23 +102,23 @@ export function HomeLanding({
   return (
     <main className="w-full min-w-0 max-w-[100vw] overflow-x-hidden">
       <section
-        className="hero w-full max-w-[100vw] px-4 max-md:min-h-[100dvh] max-md:pb-8 max-md:pt-[calc(6.25rem+env(safe-area-inset-top,0px))] sm:px-6 md:px-10 xl:px-12"
+        className="hero w-full max-w-[100vw] px-4 max-md:min-h-[100dvh] max-md:pb-8 max-md:pt-[calc(5.5rem+env(safe-area-inset-top,0px))] sm:px-6 md:px-10 xl:px-12"
         id="inicio"
       >
         <div className="hero-bg hero-bg--desktop" aria-hidden="true" />
         <div className="hero-bg hero-bg--mobile" aria-hidden="true" />
-        <div className="hero-content flex w-full flex-col max-md:min-h-0 max-md:w-full max-md:justify-start">
-          <div className="w-full max-w-[min(100%,34.5rem)] max-md:max-w-full sm:max-w-[min(100%,35rem)]">
-            <span className="mb-4 block font-label text-[10px] uppercase tracking-[0.28em] text-secondary max-md:mb-2 sm:mb-5 sm:text-xs sm:tracking-[0.3em]">
+        <div className="hero-content flex w-full flex-col max-md:min-h-0 max-md:w-full max-md:justify-center">
+          <div className="w-full max-w-[min(100%,44rem)] max-md:max-w-full sm:max-w-[min(100%,44rem)]">
+            <span className="mb-4 block font-label text-[13.2px] uppercase tracking-[0.28em] text-secondary max-md:mb-3 sm:mb-5 sm:text-[15.4px] sm:tracking-[0.3em]">
               {tagline}
             </span>
-            <h1 className="mb-5 font-headline text-[clamp(1.85rem,5.5vw,2.75rem)] leading-[1.12] text-on-surface max-md:mb-2 sm:mb-6 sm:text-5xl md:text-6xl lg:mb-4 lg:text-[clamp(1.75rem,2.75vw,2.85rem)] xl:text-[clamp(2rem,3vw,3.25rem)] 2xl:text-5xl">
+            <h1 className="mb-5 font-headline text-[clamp(2.48rem,7.15vw,3.58rem)] leading-[1.1] text-on-surface max-md:mb-3 sm:mb-6 sm:text-[4.125rem] md:text-[4.95rem] lg:mb-4 lg:text-[clamp(2.75rem,4.18vw,4.4rem)] xl:text-[clamp(3rem,4.4vw,4.95rem)] 2xl:text-[4.125rem]">
               {brand}
             </h1>
-            <p className="hero-lead mb-3 font-headline text-lg font-normal leading-snug text-on-surface max-md:mb-2 max-md:text-base sm:text-xl md:text-2xl">
+            <p className="hero-lead mb-4 font-headline text-[1.375rem] font-normal leading-snug text-on-surface max-md:mb-3 max-md:text-[1.235rem] sm:text-[1.65rem] md:text-[2.06rem]">
               Dermatología clínica y estética con una mirada profesional y personalizada
             </p>
-            <p className="hero-body mb-8 font-body text-base leading-relaxed text-on-surface-variant opacity-80 max-md:mb-5 sm:mb-9 sm:text-lg md:text-xl lg:mb-6 lg:text-[clamp(0.95rem,1.25vw,1.1rem)] xl:text-lg">
+            <p className="hero-body mb-8 font-body text-[1.235rem] leading-relaxed text-on-surface-variant opacity-80 max-md:mb-6 sm:mb-9 sm:text-[1.375rem] md:text-[1.65rem] lg:mb-6 lg:text-[clamp(1.16rem,1.54vw,1.375rem)] xl:text-[1.375rem]">
               Tratamientos pensados para cuidar, mejorar y acompañar la salud y belleza de tu piel, combinando
               evidencia científica con una estética natural y equilibrada.
             </p>
@@ -131,7 +131,7 @@ export function HomeLanding({
               </Link>
               <Link
                 href="/#tratamientos"
-                className="border border-outline-variant bg-[#f5f2ed]/80 px-6 py-3 text-center font-label text-xs uppercase tracking-widest text-secondary backdrop-blur-[2px] transition-all hover:bg-surface-container-low max-md:w-full sm:px-8 sm:py-4 sm:text-sm"
+                className="border border-white/70 bg-white/10 px-6 py-3 text-center font-label text-xs uppercase tracking-widest text-white backdrop-blur-[2px] transition-all hover:bg-white/20 max-md:w-full sm:px-8 sm:py-4 sm:text-sm"
               >
                 Ver tratamientos
               </Link>

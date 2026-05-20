@@ -28,7 +28,6 @@ async function main() {
     null,
     null,
     null,
-    null,
   ];
 
   const professionalDefs = [
@@ -101,37 +100,44 @@ async function main() {
       sortOrder: 7,
     },
     {
-      id: "seed-tod-gigirey",
-      name: "Dra. Gigirey Agustina",
-      specialty: "Dermatología",
-      bio: "Médica dermatóloga.",
+      id: "seed-tod-lamberti",
+      name: "Dra. Lamberti Antonela",
+      specialty: "Dermatología pediátrica",
+      bio: "Médica dermatóloga pediátrica.",
       sortOrder: 8,
-    },
-    {
-      id: "seed-tod-varano",
-      name: "Dra. Varano Jimena",
-      specialty: "Pediatría",
-      bio: "Médica pediatra.",
-      sortOrder: 9,
     },
     {
       id: "seed-tod-kraft",
       name: "Kraft Ana",
       specialty: "Cosmetología",
       bio: "Cosmetología.",
-      sortOrder: 10,
+      sortOrder: 9,
     },
     {
       id: "seed-tod-ortiz",
       name: "Ortiz Cintia",
       specialty: "Cosmetología",
       bio: "Cosmetología.",
-      sortOrder: 11,
+      sortOrder: 10,
     },
   ] as const;
 
+  const REMOVED_PROFESSIONAL_IDS = [
+    "seed-pro-1",
+    "seed-pro-2",
+    "seed-pro-3",
+    "seed-tod-gigirey",
+    "seed-tod-varano",
+  ];
+  await prisma.bookingRequest.updateMany({
+    where: { professionalId: { in: REMOVED_PROFESSIONAL_IDS } },
+    data: { professionalId: null, availabilitySlotId: null },
+  });
+  await prisma.availabilitySlot.deleteMany({
+    where: { professionalId: { in: REMOVED_PROFESSIONAL_IDS } },
+  });
   await prisma.professional.deleteMany({
-    where: { id: { in: ["seed-pro-1", "seed-pro-2", "seed-pro-3"] } },
+    where: { id: { in: REMOVED_PROFESSIONAL_IDS } },
   });
 
   const pros = await Promise.all(
@@ -160,81 +166,199 @@ async function main() {
     })
   );
 
-  const treatments = await Promise.all([
-    prisma.treatment.upsert({
-      where: { slug: "limpieza-facial-profunda" },
-      update: {},
-      create: {
-        name: "Limpieza facial profunda",
-        slug: "limpieza-facial-profunda",
-        description: "Remoción de impurezas y nutrición intensa para un cutis renovado.",
-        durationMinutes: 45,
-        category: "Facial",
-        sortOrder: 1,
-      },
-    }),
-    prisma.treatment.upsert({
-      where: { slug: "peelings-medicos" },
-      update: {},
-      create: {
-        name: "Peelings médicos",
-        slug: "peelings-medicos",
-        description: "Renovación celular guiada para manchas y texturas irregulares.",
-        durationMinutes: 40,
-        category: "Facial",
-        sortOrder: 2,
-      },
-    }),
-    prisma.treatment.upsert({
-      where: { slug: "control-de-acne" },
-      update: {},
-      create: {
-        name: "Control de acné",
-        slug: "control-de-acne",
-        description: "Protocolos médicos integrales para brotes y secuelas.",
-        durationMinutes: 35,
-        category: "Clínica",
-        sortOrder: 3,
-      },
-    }),
-    prisma.treatment.upsert({
-      where: { slug: "rejuvenecimiento" },
-      update: {},
-      create: {
-        name: "Rejuvenecimiento",
-        slug: "rejuvenecimiento",
-        description: "Enfoques combinados para una expresión fresca y natural.",
-        durationMinutes: 50,
-        category: "Estética",
-        requiresPriorEval: true,
-        sortOrder: 4,
-      },
-    }),
-    prisma.treatment.upsert({
-      where: { slug: "depilacion-medica" },
-      update: {},
-      create: {
-        name: "Depilación médica láser",
-        slug: "depilacion-medica",
-        description: "Tecnología láser con enfoque médico y seguimiento personalizado.",
-        durationMinutes: 30,
-        category: "Corporal",
-        sortOrder: 5,
-      },
-    }),
-    prisma.treatment.upsert({
-      where: { slug: "consulta-dermatologica" },
-      update: {},
-      create: {
-        name: "Consulta dermatológica general",
-        slug: "consulta-dermatologica",
-        description: "Evaluación integral de piel, pelo y uñas.",
-        durationMinutes: 30,
-        category: "Clínica",
-        sortOrder: 0,
-      },
-    }),
-  ]);
+  /** Limpiar tratamientos viejos que ya no se ofrecen. */
+  const REMOVED_TREATMENT_SLUGS = ["depilacion-medica"];
+  await prisma.availabilitySlot.deleteMany({
+    where: { treatment: { slug: { in: REMOVED_TREATMENT_SLUGS } } },
+  });
+  await prisma.professional.updateMany({
+    where: { specialtyTreatment: { slug: { in: REMOVED_TREATMENT_SLUGS } } },
+    data: { specialtyTreatmentId: null },
+  });
+  await prisma.treatment.deleteMany({
+    where: { slug: { in: REMOVED_TREATMENT_SLUGS } },
+  });
+
+  const treatmentDefs = [
+    {
+      slug: "consulta-dermatologica",
+      name: "Consulta dermatológica general",
+      description: "Evaluación integral de piel, pelo y uñas.",
+      durationMinutes: 30,
+      category: "Clínica",
+      sortOrder: 0,
+      requiresPriorEval: false,
+    },
+    {
+      slug: "limpieza-facial-profunda",
+      name: "Limpieza facial profunda",
+      description: "Remoción de impurezas y nutrición intensa para un cutis renovado.",
+      durationMinutes: 45,
+      category: "Facial",
+      sortOrder: 1,
+      requiresPriorEval: false,
+    },
+    {
+      slug: "peelings-medicos",
+      name: "Peelings médicos",
+      description: "Renovación celular guiada para manchas y texturas irregulares.",
+      durationMinutes: 40,
+      category: "Facial",
+      sortOrder: 2,
+      requiresPriorEval: false,
+    },
+    {
+      slug: "control-de-acne",
+      name: "Control de acné",
+      description: "Protocolos médicos integrales para brotes y secuelas.",
+      durationMinutes: 35,
+      category: "Clínica",
+      sortOrder: 3,
+      requiresPriorEval: false,
+    },
+    {
+      slug: "rejuvenecimiento",
+      name: "Rejuvenecimiento",
+      description: "Enfoques combinados para una expresión fresca y natural.",
+      durationMinutes: 50,
+      category: "Estética",
+      sortOrder: 4,
+      requiresPriorEval: true,
+    },
+    {
+      slug: "mesoterapia-premium",
+      name: "Mesoterapia PREMIUM corporal y capilar",
+      description: "Línea premium corporal y capilar. Definición de plan en consulta.",
+      durationMinutes: 45,
+      category: "Mesoterapia",
+      sortOrder: 5,
+      requiresPriorEval: true,
+    },
+    {
+      slug: "mesoglow-plus",
+      name: "Mesoglow PLUS",
+      description: "Protocolo integral: microdermoabrasión, peeling y mesoterapia facial en una sesión.",
+      durationMinutes: 60,
+      category: "Facial",
+      sortOrder: 6,
+      requiresPriorEval: true,
+    },
+    {
+      slug: "exosomas-facial",
+      name: "Exosomas facial",
+      description:
+        "Tecnología avanzada que potencia la regeneración y reparación celular; mejora la calidad de la piel.",
+      durationMinutes: 45,
+      category: "Facial",
+      sortOrder: 7,
+      requiresPriorEval: true,
+    },
+    {
+      slug: "exosomas-capilar",
+      name: "Exosomas capilar",
+      description:
+        "Tecnología avanzada que potencia la regeneración y reparación celular; mejora la calidad del cabello.",
+      durationMinutes: 45,
+      category: "Capilar",
+      sortOrder: 8,
+      requiresPriorEval: true,
+    },
+    {
+      slug: "luz-pulsada",
+      name: "Luz pulsada",
+      description:
+        "Tecnología que emite pulsos de luz para tratar alteraciones de la piel y fotoenvejecimiento.",
+      durationMinutes: 45,
+      category: "Láser y tecnología",
+      sortOrder: 9,
+      requiresPriorEval: true,
+    },
+    {
+      slug: "light-and-bright",
+      name: "Light & Bright (Nordlys)",
+      description:
+        "Unifica el tono, mejora manchas y rojeces, y aporta luminosidad con tecnología Nordlys.",
+      durationMinutes: 45,
+      category: "Láser y tecnología",
+      sortOrder: 10,
+      requiresPriorEval: true,
+    },
+    {
+      slug: "sunekos",
+      name: "Sunekos",
+      description: "Biorrevitalización y soporte de la estructura dérmica según indicación médica.",
+      durationMinutes: 45,
+      category: "Medicina estética",
+      sortOrder: 11,
+      requiresPriorEval: true,
+    },
+    {
+      slug: "enzimas-biologicas",
+      name: "Enzimas biológicas",
+      description:
+        "Enzimas de uso médico para reducción de fibrosis y grasa localizada según criterio médico.",
+      durationMinutes: 45,
+      category: "Corporal",
+      sortOrder: 12,
+      requiresPriorEval: true,
+    },
+    {
+      slug: "hidratacion-inyectable",
+      name: "Profhilo / Volite / Skinvive / Cellbooster / Skinbooster / Hydrodeluxe",
+      description:
+        "Línea de hidratación inyectable y remodelación (nombres comerciales según plan).",
+      durationMinutes: 40,
+      category: "Medicina estética",
+      sortOrder: 13,
+      requiresPriorEval: true,
+    },
+    {
+      slug: "frax-exosomas-facial",
+      name: "FRAX + exosomas facial",
+      description:
+        "Combinación de láser fraccionado con exosomas para regeneración facial, según protocolo médico.",
+      durationMinutes: 55,
+      category: "Láser y tecnología",
+      sortOrder: 14,
+      requiresPriorEval: true,
+    },
+    {
+      slug: "frax-exosomas-capilar",
+      name: "FRAX + exosomas capilar",
+      description:
+        "Combinación de láser fraccionado con exosomas para regeneración capilar, según protocolo médico.",
+      durationMinutes: 55,
+      category: "Láser y tecnología",
+      sortOrder: 15,
+      requiresPriorEval: true,
+    },
+  ] as const;
+
+  const treatments = await Promise.all(
+    treatmentDefs.map((t) =>
+      prisma.treatment.upsert({
+        where: { slug: t.slug },
+        update: {
+          name: t.name,
+          description: t.description,
+          durationMinutes: t.durationMinutes,
+          category: t.category,
+          sortOrder: t.sortOrder,
+          requiresPriorEval: t.requiresPriorEval,
+          active: true,
+        },
+        create: {
+          name: t.name,
+          slug: t.slug,
+          description: t.description,
+          durationMinutes: t.durationMinutes,
+          category: t.category,
+          sortOrder: t.sortOrder,
+          requiresPriorEval: t.requiresPriorEval,
+        },
+      })
+    )
+  );
 
   /** Solo FAQs del documento clínico (sin administrativas). Las 3 primeras se muestran en la home. */
   const faqs = [
@@ -407,14 +531,14 @@ async function main() {
 
   await prisma.professional.updateMany({ data: { specialtyTreatmentId: null } });
   const specialtyLinks: { id: string; slug: string }[] = [
-    { id: "seed-tod-ortiz", slug: "depilacion-medica" },
+    { id: "seed-tod-ortiz", slug: "limpieza-facial-profunda" },
     { id: "seed-tod-kraft", slug: "limpieza-facial-profunda" },
     { id: "seed-tod-pardo", slug: "consulta-dermatologica" },
     { id: "seed-tod-kahn", slug: "consulta-dermatologica" },
     { id: "seed-tod-olguin", slug: "rejuvenecimiento" },
     { id: "seed-tod-tezanos", slug: "peelings-medicos" },
     { id: "seed-tod-deane", slug: "rejuvenecimiento" },
-    { id: "seed-tod-gigirey", slug: "control-de-acne" },
+    { id: "seed-tod-lamberti", slug: "consulta-dermatologica" },
   ];
   for (const { id, slug } of specialtyLinks) {
     const tr = bySlug[slug];
@@ -463,8 +587,8 @@ async function main() {
     {
       proId: "seed-tod-ortiz",
       blocks: [
-        { hour: 10, minute: 0, slug: "depilacion-medica" },
-        { hour: 16, minute: 30, slug: "depilacion-medica" },
+        { hour: 10, minute: 0, slug: "limpieza-facial-profunda" },
+        { hour: 16, minute: 30, slug: "limpieza-facial-profunda" },
       ],
     },
     {
@@ -475,9 +599,9 @@ async function main() {
       ],
     },
     {
-      proId: "seed-tod-gigirey",
+      proId: "seed-tod-lamberti",
       blocks: [
-        { hour: 10, minute: 30, slug: "control-de-acne" },
+        { hour: 10, minute: 30, slug: "consulta-dermatologica" },
         { hour: 17, minute: 0, slug: "consulta-dermatologica" },
       ],
     },

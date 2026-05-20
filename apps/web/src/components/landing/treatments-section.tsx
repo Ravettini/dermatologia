@@ -58,7 +58,7 @@ export function TreatmentsSection({ treatments }: { treatments: PublicTreatment[
     if (!canSlide) return;
     const id = window.setInterval(() => {
       setIndex((prev) => prev + 1);
-    }, 3200);
+    }, 7000);
     return () => window.clearInterval(id);
   }, [canSlide]);
 
@@ -109,7 +109,7 @@ export function TreatmentsSection({ treatments }: { treatments: PublicTreatment[
       </div>
       <div className="mx-auto max-w-[1600px] overflow-hidden">
         <div
-          className={`flex ${animate ? "transition-transform duration-700 ease-out" : ""}`}
+          className={`flex ${animate ? "transition-transform duration-[1600ms] ease-out" : ""}`}
           style={{ transform: `translateX(-${(index * 100) / cardsPerView}%)` }}
           onTransitionEnd={onTrackTransitionEnd}
         >

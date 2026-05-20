@@ -40,36 +40,58 @@ body {
 .hero-bg--desktop {
   display: block;
   background-image: url("/branding/hero-dermatologia-bg.png");
-  background-position: right 25%;
+  background-position: center center;
 }
 
 .hero-bg--mobile {
   display: none;
   background-color: #f5f2ed;
-  background-image: url("/branding/hero-dermatologia-mobile.png");
-  background-size: 100% auto;
-  background-position: center bottom;
+  background-image: url("/branding/hero-dermatologia-bg.png");
+  background-size: cover;
+  background-position: center center;
 }
 
 .hero::before {
   content: none;
 }
 
+/* Velado oscuro a la izquierda para legibilidad del texto sobre la foto cálida */
 .hero::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   z-index: 1;
-  height: 180px;
   pointer-events: none;
-  background: linear-gradient(to bottom, rgba(245, 242, 237, 0) 0%, #f5f2ed 100%);
+  background: linear-gradient(
+    to right,
+    rgba(20, 14, 8, 0.62) 0%,
+    rgba(20, 14, 8, 0.45) 25%,
+    rgba(20, 14, 8, 0.18) 50%,
+    rgba(20, 14, 8, 0) 70%
+  );
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
+}
+
+/* Texto del hero en claro y con sombra suave para contrastar con la imagen */
+.hero-content > div > span:first-child {
+  color: #f4d6a3;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.hero-content h1 {
+  color: #fbfaf6;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.hero-content .hero-lead,
+.hero-content .hero-body {
+  color: #f3ece1;
+  opacity: 1;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
 }
 
 /* Desktop/tablet: texto centrado verticalmente, alineado a la izquierda */
@@ -99,16 +121,35 @@ body {
 
 @media (min-width: 769px) and (max-width: 1023px) {
   .hero-bg--desktop {
-    background-position: 72% 25%;
+    background-position: center center;
   }
 }
 
-/* Mobile ≤768px: imagen vertical abajo, texto en zona superior */
+/* Mobile ≤768px: texto centrado verticalmente sobre la foto */
 @media (max-width: 768px) {
   .hero {
     min-height: 100dvh;
     min-height: 100svh;
-    align-items: flex-start;
+    justify-content: center;
+    align-items: stretch;
+  }
+
+  /* En mobile el velado oscurece más la zona central del texto para que se lea sobre el dorado del fondo */
+  .hero::after {
+    background: linear-gradient(
+      to bottom,
+      rgba(20, 14, 8, 0.15) 0%,
+      rgba(20, 14, 8, 0.55) 22%,
+      rgba(20, 14, 8, 0.7) 50%,
+      rgba(20, 14, 8, 0.55) 78%,
+      rgba(20, 14, 8, 0.15) 100%
+    );
+  }
+
+  /* El tagline dorado se camufla con la foto: en mobile lo pasamos a blanco crema con buena sombra */
+  .hero-content > div > span:first-child {
+    color: #fdf6e7;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65), 0 0 12px rgba(0, 0, 0, 0.4);
   }
 
   .hero-bg--desktop {
@@ -119,32 +160,13 @@ body {
     display: block;
   }
 
-  .hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background: linear-gradient(
-      to bottom,
-      #f5f2ed 0%,
-      rgba(245, 242, 237, 0.97) 28%,
-      rgba(245, 242, 237, 0.55) 42%,
-      rgba(245, 242, 237, 0) 52%
-    );
-  }
-
-  .hero::after {
-    height: 140px;
-  }
-
   .hero-content {
-    flex: 0 0 auto;
+    flex: 1 1 auto;
     width: 100%;
     max-width: 100%;
-    padding-top: 1rem;
+    padding-top: 0;
     padding-bottom: 0;
-    justify-content: flex-start;
+    justify-content: center;
     text-align: left;
   }
 
@@ -170,13 +192,7 @@ body {
   }
 }
 
-@media (max-width: 420px) {
-  .hero::after {
-    height: 180px;
-  }
-}
-
-/* FAB flotantes: ícono fijo + texto con grid (anima bien al cerrar) */
+/* FAB flotantes: ícono solo por defecto; hover expande y muestra texto */
 .fab {
   display: grid;
   align-items: center;
@@ -223,7 +239,7 @@ body {
   overflow: hidden;
   white-space: nowrap;
   opacity: 0;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.2;
   transition: opacity 0.15s ease-in;
 }
@@ -274,6 +290,6 @@ body {
   }
 
   .fab__label {
-    font-size: 11px;
+    font-size: 12.5px;
   }
 }

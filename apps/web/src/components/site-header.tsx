@@ -39,7 +39,7 @@ export function SiteHeader({ siteName }: { siteName: string }) {
             className="flex shrink-0 items-center py-0.5"
             onClick={() => setMenuOpen(false)}
           >
-            <span className="relative block h-[3.3125rem] w-[198px] origin-left scale-110 sm:h-[3.875rem] sm:w-[237px] md:h-[4.375rem] md:w-[275px] lg:h-[4.9375rem] lg:w-[308px]">
+            <span className="relative block h-[3.3125rem] w-[198px] origin-left scale-[1.21] sm:h-[3.875rem] sm:w-[237px] md:h-[4.375rem] md:w-[275px] lg:h-[4.9375rem] lg:w-[308px]">
               <Image
                 src="/branding/logo-tod.png"
                 alt={siteName}

@@ -26,7 +26,7 @@ type PublicTreatment = {
 };
 
 /** IDs de seed / admin alineados con las médicas socias (orden de aparición en la página). */
-const SOCIO_IDS = ["seed-tod-deane", "seed-tod-olguin", "seed-tod-tezanos"] as const;
+const SOCIO_IDS = ["seed-tod-tezanos", "seed-tod-olguin", "seed-tod-deane"] as const;
 
 const DEFAULT_MAP_NAME = "Dermatología TOD";
 const DEFAULT_MAP_COORDS = "-34.4853853304583,-58.594249209497896";
@@ -153,10 +153,10 @@ export function HomeLanding({
         </div>
         <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4 md:gap-8">
           {[
-            "/fotos/foto1.jpeg",
+            "/fotos/foto4-nueva.png",
             "/fotos/foto2.jpeg",
             "/fotos/foto3.jpeg",
-            "/fotos/foto4.jpeg",
+            "/fotos/foto1-nueva.png",
           ].map((src, i) => (
             <div key={src} className={`aspect-[3/4] ${i % 2 === 0 ? "md:translate-y-12" : ""} ${i === 2 ? "md:translate-y-24" : ""} ${i === 3 ? "md:translate-y-6" : ""}`}>
               <div className="relative h-full w-full">

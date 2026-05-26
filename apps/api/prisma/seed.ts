@@ -36,7 +36,7 @@ async function main() {
       name: "Dra. Tezanos Pinto Olivia",
       specialty: "Medicina estética · co directora",
       bio: [
-        "Médica dermatóloga en medicina estética.",
+        "Médica dermatóloga especialista en medicina estética.",
         "Co directora.",
         "International speaker.",
         "Faculty Allergan Aesthetics Austral.",
@@ -50,7 +50,7 @@ async function main() {
       name: "Dra. Olguín Florencia",
       specialty: "Medicina estética · co directora médica",
       bio: [
-        "Médica dermatóloga en medicina estética.",
+        "Médica dermatóloga especialista en medicina estética y dermatoscopia.",
         "Co directora médica.",
         "Speaker trainer Merz.",
         "Miembro Sociedad AAD – SAD.",
@@ -63,7 +63,7 @@ async function main() {
       name: "Dra. Deane Lucía",
       specialty: "Medicina estética · rejuvenecimiento · longevidad · co directora médica",
       bio: [
-        "Médica dermatóloga en medicina estética, rejuvenecimiento, longevidad y medicina funcional.",
+        "Médica dermatóloga especialista en medicina estética, rejuvenecimiento, longevidad y medicina funcional.",
         "Co directora médica.",
         "Speaker trainer Merz y Allergan.",
         "Miembro Sociedad AAD – SAD.",

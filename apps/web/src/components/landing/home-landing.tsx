@@ -28,6 +28,32 @@ type PublicTreatment = {
 /** IDs de seed / admin alineados con las médicas socias (orden de aparición en la página). */
 const SOCIO_IDS = ["seed-tod-tezanos", "seed-tod-olguin", "seed-tod-deane"] as const;
 
+/** Textos fijos para las socias: pisan lo que venga de la base/API. */
+const SOCIO_BIO_OVERRIDES: Record<string, string> = {
+  "seed-tod-tezanos": [
+    "Médica dermatóloga especialista en medicina estética.",
+    "Co directora.",
+    "International speaker.",
+    "Faculty Allergan Aesthetics Austral.",
+    "Miembro Sociedad AAD – SAD.",
+    "Universidad Austral.",
+  ].join("\n"),
+  "seed-tod-olguin": [
+    "Médica dermatóloga especialista en medicina estética y dermatoscopia.",
+    "Co directora médica.",
+    "Speaker trainer Merz.",
+    "Miembro Sociedad AAD – SAD.",
+    "Universidad de Buenos Aires.",
+  ].join("\n"),
+  "seed-tod-deane": [
+    "Médica dermatóloga especialista en medicina estética, rejuvenecimiento, longevidad y medicina funcional.",
+    "Co directora médica.",
+    "Speaker trainer Merz y Allergan.",
+    "Miembro Sociedad AAD – SAD.",
+    "Universidad Austral.",
+  ].join("\n"),
+};
+
 const DEFAULT_MAP_NAME = "Dermatología TOD";
 const DEFAULT_MAP_COORDS = "-34.4853853304583,-58.594249209497896";
 const DEFAULT_MAP_EMBED_ZOOM = "18";
@@ -93,9 +119,9 @@ export function HomeLanding({
   const hours = site["contact.hours"] ?? "Lunes a viernes de 9 a 19 hs.";
   const mapEmbedSrc = resolveMapEmbedSrc(site["contact.mapImageUrl"] ?? "");
   const byId = new Map(professionals.map((p) => [p.id, p] as const));
-  const socias = SOCIO_IDS.map((id) => byId.get(id)).filter(
-    (p): p is PublicProfessional => p != null,
-  );
+  const socias = SOCIO_IDS.map((id) => byId.get(id))
+    .filter((p): p is PublicProfessional => p != null)
+    .map((p) => (SOCIO_BIO_OVERRIDES[p.id] ? { ...p, bio: SOCIO_BIO_OVERRIDES[p.id] } : p));
   const sociasIdSet = new Set<string>(SOCIO_IDS as unknown as string[]);
   const teamProfessionals = professionals.filter((p) => !sociasIdSet.has(p.id));
 

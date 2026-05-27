@@ -199,7 +199,7 @@ body {
   gap: 0;
   box-sizing: border-box;
   width: max-content;
-  height: 2.75rem;
+  height: 3.6rem;
   padding: 0.3125rem;
   box-shadow:
     0 8px 18px -10px rgba(15, 23, 42, 0.25),
@@ -216,19 +216,19 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.125rem;
-  height: 2.125rem;
+  width: 2.82rem;
+  height: 2.82rem;
   border-radius: 9999px;
   background-color: rgba(255, 255, 255, 0.18);
 }
 
 .fab__icon > svg {
-  width: 1.15rem;
-  height: 1.15rem;
+  width: 1.52rem;
+  height: 1.52rem;
 }
 
 .fab__icon > .material-symbols-outlined {
-  font-size: 1.2rem;
+  font-size: 1.58rem;
   line-height: 1;
 }
 

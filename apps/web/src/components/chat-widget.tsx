@@ -188,11 +188,13 @@ export function ChatWidget({
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="fab fab--chat group ml-auto shrink-0 touch-manipulation rounded-full bg-on-primary-container font-label uppercase tracking-wide text-surface shadow-soft hover:opacity-95"
+          className="fab fab--chat group ml-auto shrink-0 touch-manipulation rounded-full bg-on-primary-container font-label uppercase tracking-wide text-surface shadow-soft"
           aria-label={open ? "Cerrar chat" : "¿En qué te podemos ayudar?"}
         >
           <span className="fab__label text-right leading-snug">{open ? "Cerrar" : "¿En qué te podemos ayudar?"}</span>
-          <span className="fab__icon material-symbols-outlined">{open ? "close" : "smart_toy"}</span>
+          <span className="fab__icon" aria-hidden>
+            <span className="material-symbols-outlined">{open ? "close" : "smart_toy"}</span>
+          </span>
         </button>
       </div>
     </>

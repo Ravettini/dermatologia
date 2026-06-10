@@ -36,7 +36,7 @@ async function main() {
       name: "Dra. Tezanos Pinto Olivia",
       specialty: "Medicina estética",
       bio: [
-        "Médica dermatóloga en medicina estética.",
+        "Médica dermatóloga especialista en medicina estética.",
         "Posgrado en medicina estética y reparadora.",
         "International speaker.",
         "Faculty AMWC.",
@@ -50,7 +50,7 @@ async function main() {
       name: "Dra. Olguín Florencia",
       specialty: "Medicina estética",
       bio: [
-        "Médica dermatóloga en medicina estética.",
+        "Médica dermatóloga especialista en medicina estética y dermatoscopia.",
         "Speaker trainer Merz.",
         "Miembro Sociedad AAD – SAD.",
         "Universidad de Buenos Aires.",
@@ -62,7 +62,7 @@ async function main() {
       name: "Dra. Deane Lucía",
       specialty: "Medicina estética · rejuvenecimiento · longevidad",
       bio: [
-        "Médica dermatóloga en medicina estética, rejuvenecimiento, longevidad y medicina funcional.",
+        "Médica dermatóloga especialista en medicina estética, rejuvenecimiento, longevidad y medicina funcional.",
         "Speaker trainer Merz y Allergan.",
         "Miembro Sociedad AAD – SAD.",
         "Universidad Austral.",

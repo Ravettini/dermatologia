@@ -13,127 +13,53 @@ type Highlight = {
 
 const FEATURED_SPECIALTIES_STATIC: Highlight[] = [
   {
-    id: "feat-consulta-derm",
-    name: "Consulta dermatológica (adultos y pediátrica)",
+    id: "feat-medicina-clinica",
+    name: "Medicina Clínica",
     description:
-      "Evaluación integral de la piel para diagnóstico y plan de tratamiento personalizado, con enfoque en dermatología clínica, estética responsable y medicina funcional.",
+      "Evaluación y tratamiento de las enfermedades de la piel, el pelo y las uñas. Incluye medicina funcional y biopsias cuando son necesarias para un diagnóstico preciso.",
     durationMinutes: 45,
-    category: "Clínica",
+    category: "Dermatología clínica",
     requiresPriorEval: false,
   },
   {
-    id: "feat-limpieza",
-    name: "Limpieza facial profunda",
-    description: "Remoción de impurezas y nutrición intensa para un cutis renovado.",
+    id: "feat-medicina-estetica",
+    name: "Medicina Estética",
+    description:
+      "Procedimientos para mejorar y mantener la calidad de la piel con criterio médico, buscando resultados naturales y armónicos.",
     durationMinutes: 45,
-    category: "Facial",
+    category: "Estética",
     requiresPriorEval: false,
   },
   {
-    id: "feat-rellenos",
-    name: "Rellenos con ácido hialurónico",
+    id: "feat-medicina-pediatrica",
+    name: "Medicina Pediátrica",
     description:
-      "Restauran volumen, mejoran contornos y aportan hidratación profunda con resultados armónicos y personalizados.",
-    durationMinutes: 40,
-    category: "Estética",
-    requiresPriorEval: true,
-  },
-  {
-    id: "feat-peelings",
-    name: "Peelings médicos",
-    description: "Renovación celular guiada para manchas y texturas irregulares.",
-    durationMinutes: 40,
-    category: "Facial",
-    requiresPriorEval: true,
-  },
-  {
-    id: "feat-mesoterapia",
-    name: "Mesoterapia",
-    description:
-      "Microinyecciones con activos según objetivo: hidratación, luminosidad o protocolos médicos a medida.",
-    durationMinutes: 35,
-    category: "Estética",
-    requiresPriorEval: true,
-  },
-  {
-    id: "feat-botox",
-    name: "Toxina botulínica (Botox)",
-    description: "Suavizado de líneas de expresión con criterio médico y resultados naturales.",
-    durationMinutes: 30,
-    category: "Estética",
-    requiresPriorEval: true,
-  },
-  {
-    id: "feat-ultherapy",
-    name: "Ultherapy",
-    description:
-      "Ultrasonido focalizado de alta intensidad para tensar y estimular colágeno (según indicación médica).",
-    durationMinutes: 60,
-    category: "Estética",
-    requiresPriorEval: true,
-  },
-  {
-    id: "feat-luz-pulsada",
-    name: "Luz pulsada (IPL)",
-    description:
-      "Tratamiento de luz controlada para manchas, rubor y fotorejuvenecimiento (evaluación previa).",
+      "Atención dermatológica para bebés, niños y adolescentes, con un enfoque cuidadoso y especializado en la piel en crecimiento.",
     durationMinutes: 45,
-    category: "Facial",
-    requiresPriorEval: true,
+    category: "Pediátrica",
+    requiresPriorEval: false,
   },
   {
     id: "feat-medicina-funcional",
-    name: "Medicina funcional",
+    name: "Medicina Funcional",
     description:
-      "Enfoque integral que complementa el cuidado de la salud asociado a hábitos, metabolismo y bienestar.",
+      "Abordaje integral que relaciona la salud de la piel con hábitos, metabolismo y bienestar general.",
     durationMinutes: 45,
     category: "Integral",
     requiresPriorEval: false,
   },
   {
-    id: "feat-exosomas",
-    name: "Exosomas",
-    description: "Protocolos avanzados de bioestímulo y regeneración cutáneo según criterio del equipo médico.",
-    durationMinutes: 45,
-    category: "Regenerativo",
-    requiresPriorEval: true,
-  },
-  {
-    id: "feat-dermaplaning",
-    name: "Dermaplaning",
-    description: "Exfoliación superficial controlada para piel más lisa y luminosa.",
-    durationMinutes: 35,
-    category: "Facial",
-    requiresPriorEval: false,
-  },
-  {
-    id: "feat-dermapeeling",
-    name: "Dermapeeling",
-    description: "Peeling médico personalizado combinado para renovar la superficie cutáneo.",
-    durationMinutes: 40,
-    category: "Facial",
-    requiresPriorEval: true,
-  },
-  {
-    id: "feat-light-bright",
-    name: "Light & Bright",
-    description: "Protocolo de luminosidad y unificación del tono bajo supervisión médica.",
-    durationMinutes: 50,
-    category: "Facial",
-    requiresPriorEval: true,
-  },
-  {
-    id: "feat-mesoglow",
-    name: "Mesoglow",
+    id: "feat-mapeo-digital",
+    name: "Mapeo digital",
     description:
-      "Hidratación y brillo mediante micro deposición superficial de hidratantes y activos indicados médicamente.",
-    durationMinutes: 40,
-    category: "Facial",
-    requiresPriorEval: true,
+      "Control digital de lunares para la detección temprana y el seguimiento de lesiones de la piel a lo largo del tiempo.",
+    durationMinutes: 30,
+    category: "Diagnóstico",
+    requiresPriorEval: false,
   },
 ];
 
-const INITIAL_COUNT = 4;
+const INITIAL_COUNT = FEATURED_SPECIALTIES_STATIC.length;
 
 function SpecialtyCard({
   t,

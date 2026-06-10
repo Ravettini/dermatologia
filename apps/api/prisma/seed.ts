@@ -34,24 +34,23 @@ async function main() {
     {
       id: "seed-tod-tezanos",
       name: "Dra. Tezanos Pinto Olivia",
-      specialty: "Medicina estética · co directora",
+      specialty: "Medicina estética",
       bio: [
         "Médica dermatóloga en medicina estética.",
-        "Co directora.",
+        "Posgrado en medicina estética y reparadora.",
         "International speaker.",
-        "Faculty Allergan Aesthetics Austral.",
+        "Faculty AMWC.",
+        "Faculty Allergan Aesthetics.",
         "Miembro Sociedad AAD – SAD.",
-        "Universidad Austral.",
       ].join("\n"),
       sortOrder: 1,
     },
     {
       id: "seed-tod-olguin",
       name: "Dra. Olguín Florencia",
-      specialty: "Medicina estética · co directora médica",
+      specialty: "Medicina estética",
       bio: [
         "Médica dermatóloga en medicina estética.",
-        "Co directora médica.",
         "Speaker trainer Merz.",
         "Miembro Sociedad AAD – SAD.",
         "Universidad de Buenos Aires.",
@@ -61,10 +60,9 @@ async function main() {
     {
       id: "seed-tod-deane",
       name: "Dra. Deane Lucía",
-      specialty: "Medicina estética · rejuvenecimiento · longevidad · co directora médica",
+      specialty: "Medicina estética · rejuvenecimiento · longevidad",
       bio: [
         "Médica dermatóloga en medicina estética, rejuvenecimiento, longevidad y medicina funcional.",
-        "Co directora médica.",
         "Speaker trainer Merz y Allergan.",
         "Miembro Sociedad AAD – SAD.",
         "Universidad Austral.",

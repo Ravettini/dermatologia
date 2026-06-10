@@ -12,8 +12,9 @@ type NavItem = NavInternal | NavExternal;
 const nav: NavItem[] = [
   { href: "/#inicio", label: "Inicio" },
   { href: instagramProfileUrl, label: "Seguinos en Instagram", external: true },
-  { href: "/#dermatologia", label: "Dermatología" },
+  { href: "/#tratamientos", label: "Tratamientos" },
   { href: "/#equipo", label: "Equipo" },
+  { href: "/#consultorio", label: "Consultorio" },
   { href: "/#faq", label: "FAQ" },
   { href: "/#contacto", label: "Contacto" },
 ];

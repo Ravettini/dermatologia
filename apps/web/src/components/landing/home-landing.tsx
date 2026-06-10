@@ -119,8 +119,8 @@ export function HomeLanding({
               Dermatología clínica y estética con una mirada profesional y personalizada
             </p>
             <p className="hero-body mb-8 font-body text-[1.235rem] leading-relaxed text-on-surface-variant opacity-80 max-md:mb-6 sm:mb-9 sm:text-[1.375rem] md:text-[1.65rem] lg:mb-6 lg:text-[clamp(1.16rem,1.54vw,1.375rem)] xl:text-[1.375rem]">
-              Tratamientos pensados para cuidar, mejorar y acompañar la salud y belleza de tu piel, combinando
-              evidencia científica con una estética natural y equilibrada.
+              Cada tratamiento es pensado y realizado por médicas dermatólogas expertas en estética, combinando
+              ciencia, criterio clínico y una mirada estética natural y equilibrada.
             </p>
             <div className="hero-actions flex flex-wrap gap-3 max-md:w-full max-md:flex-col sm:gap-6">
               <Link
@@ -140,30 +140,76 @@ export function HomeLanding({
         </div>
       </section>
 
+      <SociasSection members={socias} />
+
+      <TeamSection professionals={teamProfessionals} />
+
       <TreatmentsSection treatments={treatments} />
 
+      <FeaturedSpecialtiesSection treatments={treatments} />
+
       <section
-        className="overflow-hidden bg-surface-container-lowest px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32"
-        id="dermatologia"
+        className="bg-surface px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32"
+        id="objetivos"
+        aria-labelledby="objetivos-heading"
       >
-        <div className="mx-auto mb-16 max-w-4xl sm:mb-20 md:mb-24">
-          <h2 className="font-headline text-3xl italic leading-tight text-secondary sm:text-4xl md:text-5xl lg:text-6xl">
-            La excelencia médica se encuentra con el arte del cuidado.
-          </h2>
-        </div>
-        <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4 md:gap-8">
-          {[
-            "/fotos/foto1.jpeg",
-            "/fotos/foto2.jpeg",
-            "/fotos/foto3.jpeg",
-            "/fotos/foto4.jpeg",
-          ].map((src, i) => (
-            <div key={src} className={`aspect-[3/4] ${i % 2 === 0 ? "md:translate-y-12" : ""} ${i === 2 ? "md:translate-y-24" : ""} ${i === 3 ? "md:translate-y-6" : ""}`}>
-              <div className="relative h-full w-full">
-                <Image src={src} alt="" fill className="object-cover" sizes="25vw" />
+        <div className="mx-auto max-w-[1600px]">
+          <div className="mb-10 text-center sm:mb-14">
+            <span className="mb-3 block font-label text-xs uppercase tracking-[0.3em] text-secondary">
+              Qué tratamos
+            </span>
+            <h2 id="objetivos-heading" className="font-headline text-3xl text-on-surface md:text-4xl lg:text-5xl">
+              Objetivos estéticos y clínicos
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-3">
+            {[
+              {
+                icon: "healing",
+                t: "Acné",
+                p: "Control del acné activo y sus secuelas: limpieza de cutis, peelings y protocolos médicos personalizados.",
+              },
+              {
+                icon: "blur_on",
+                t: "Rosácea",
+                p: "Tratamiento de la rojez persistente, los brotes y la sensibilidad de la piel.",
+              },
+              {
+                icon: "gradient",
+                t: "Melasma",
+                p: "Abordaje de las manchas para unificar y emparejar el tono de la piel.",
+              },
+              {
+                icon: "trending_up",
+                t: "Flacidez",
+                p: "Tratamientos para tensar y mejorar la firmeza de la piel del rostro y el cuerpo.",
+              },
+              {
+                icon: "face_retouching_natural",
+                t: "Papada",
+                p: "Reducción y definición del contorno del cuello y el mentón.",
+              },
+              {
+                icon: "content_cut",
+                t: "Alopecia / pérdida de cabello",
+                p: "Diagnóstico y tratamiento de la caída del cabello con seguimiento personalizado.",
+              },
+              {
+                icon: "stethoscope",
+                t: "Dermatología clínica",
+                p: "Diagnóstico y tratamiento de las enfermedades de la piel, el pelo y las uñas.",
+              },
+            ].map((x) => (
+              <div
+                key={x.t}
+                className="flex flex-col gap-3 border border-outline-variant/40 bg-surface-container-lowest p-6 transition-colors hover:bg-surface-container-low sm:p-8"
+              >
+                <span className="material-symbols-outlined text-3xl text-secondary">{x.icon}</span>
+                <h3 className="font-headline text-xl text-on-surface">{x.t}</h3>
+                <p className="text-sm leading-relaxed text-on-surface-variant">{x.p}</p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
@@ -195,6 +241,47 @@ export function HomeLanding({
         </div>
       </section>
 
+      <section
+        className="bg-surface px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32"
+        id="consultorio"
+        aria-labelledby="consultorio-heading"
+      >
+        <div className="mx-auto max-w-[1600px]">
+          <div className="mb-10 sm:mb-14">
+            <span className="mb-3 block font-label text-xs uppercase tracking-[0.3em] text-secondary">El espacio</span>
+            <h2 id="consultorio-heading" className="font-headline text-3xl text-on-surface md:text-4xl lg:text-5xl">
+              Nuestro consultorio
+            </h2>
+            <p className="mt-3 max-w-xl font-body text-sm leading-relaxed text-on-surface-variant md:text-base">
+              Un espacio pensado para tu comodidad, con la calidez y los estándares de una atención dermatológica de
+              excelencia.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
+            {[
+              "/fotos/consultorio/consultorio-1.jpg",
+              "/fotos/consultorio/consultorio-2.jpg",
+              "/fotos/consultorio/consultorio-3.jpg",
+            ].map((src, i) => (
+              <div
+                key={src}
+                className={`relative aspect-[4/3] overflow-hidden bg-surface-container-high ${
+                  i === 0 ? "sm:col-span-2 lg:col-span-1" : ""
+                }`}
+              >
+                <Image
+                  src={src}
+                  alt="Consultorio Dermatología TOD"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="grid h-auto grid-cols-1 bg-tertiary-fixed md:grid-cols-2 md:h-[600px]">
         <div className="flex flex-col justify-center px-4 py-12 sm:px-10 sm:py-16 md:px-16 lg:px-24">
           <h2 className="mb-8 font-headline text-4xl md:text-5xl">Evolucioná el cuidado de tu piel.</h2>
@@ -215,12 +302,6 @@ export function HomeLanding({
           />
         </div>
       </section>
-
-      <FeaturedSpecialtiesSection treatments={treatments} />
-
-      <SociasSection members={socias} />
-
-      <TeamSection professionals={teamProfessionals} />
 
       <section className="bg-on-primary-container px-4 py-16 text-surface sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32">
         <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-12 md:grid-cols-3 md:gap-16">

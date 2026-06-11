@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 type PopularTreatment = {
   id: string;
@@ -74,9 +74,6 @@ const POPULAR_TREATMENTS: PopularTreatment[] = [
 
 export function TreatmentsSection({ treatments: _treatments }: { treatments: unknown[] }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [cardsPerView, setCardsPerView] = useState(4);
-  const [index, setIndex] = useState(0);
-  const [animate, setAnimate] = useState(true);
 
   const items = useMemo(() => POPULAR_TREATMENTS, []);
   const selected = useMemo(
@@ -84,118 +81,40 @@ export function TreatmentsSection({ treatments: _treatments }: { treatments: unk
     [selectedId, items]
   );
 
-  useEffect(() => {
-    function onResize() {
-      if (window.innerWidth >= 1024) setCardsPerView(4);
-      else if (window.innerWidth >= 640) setCardsPerView(2);
-      else setCardsPerView(1);
-    }
-    onResize();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  useEffect(() => {
-    setIndex(0);
-  }, [cardsPerView]);
-
-  const total = items.length;
-  const canSlide = total > cardsPerView;
-
-  useEffect(() => {
-    if (!canSlide) return;
-    const id = window.setInterval(() => {
-      setIndex((prev) => prev + 1);
-    }, 7000);
-    return () => window.clearInterval(id);
-  }, [canSlide]);
-
-  const loopTail = canSlide ? items.slice(0, cardsPerView) : [];
-  const track = canSlide ? [...items, ...loopTail] : items;
-
-  function onTrackTransitionEnd() {
-    if (!canSlide) return;
-    if (index < total) return;
-    setAnimate(false);
-    setIndex(0);
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => setAnimate(true));
-    });
-  }
-
-  function goNext() {
-    if (!canSlide) return;
-    setIndex((prev) => prev + 1);
-  }
-
-  function goPrev() {
-    if (!canSlide) return;
-    setIndex((prev) => (prev === 0 ? total - 1 : prev - 1));
-  }
-
   return (
     <section className="bg-surface-container px-4 py-14 sm:px-6 sm:py-16 md:px-10 md:py-20 lg:px-12 lg:py-24" id="tratamientos">
-      <div className="mx-auto mb-8 flex max-w-[1600px] flex-col gap-4 sm:mb-10 md:flex-row md:items-end md:justify-between">
-        <div>
-          <span className="mb-2 block font-label text-xs uppercase tracking-[0.3em] text-secondary">Tratamientos</span>
-          <h2 className="font-headline text-3xl text-on-surface md:text-4xl lg:text-5xl">Tratamientos más populares</h2>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={goPrev}
-            disabled={!canSlide}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-outline-variant/40 bg-surface-container-lowest text-on-surface transition hover:bg-surface-container-high disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label="Ver tratamientos anteriores"
-          >
-            <span className="material-symbols-outlined text-lg">chevron_left</span>
-          </button>
-          <button
-            type="button"
-            onClick={goNext}
-            disabled={!canSlide}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-outline-variant/40 bg-surface-container-lowest text-on-surface transition hover:bg-surface-container-high disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label="Ver siguientes tratamientos"
-          >
-            <span className="material-symbols-outlined text-lg">chevron_right</span>
-          </button>
-        </div>
+      <div className="mx-auto mb-8 max-w-[1600px] sm:mb-10">
+        <span className="mb-2 block font-label text-xs uppercase tracking-[0.3em] text-secondary">Tratamientos</span>
+        <h2 className="font-headline text-3xl text-on-surface md:text-4xl lg:text-5xl">Tratamientos más populares</h2>
       </div>
-      <div className="mx-auto max-w-[1600px] overflow-hidden">
-        <div
-          className={`flex ${animate ? "transition-transform duration-[1600ms] ease-out" : ""}`}
-          style={{ transform: `translateX(-${(index * 100) / cardsPerView}%)` }}
-          onTransitionEnd={onTrackTransitionEnd}
-        >
-          {track.map((t, i) => (
-            <article
-              key={`${t.id}-${i}`}
-              className="border-r border-outline-variant/25 bg-surface-container-lowest p-6 transition-colors hover:bg-surface-container-low sm:p-8 md:p-10 lg:p-12"
-              style={{ flex: `0 0 ${100 / cardsPerView}%` }}
-            >
-              <span className="material-symbols-outlined mb-6 block text-3xl text-secondary">{t.icon}</span>
-              <h3 className="mb-2 font-headline text-2xl">{t.name}</h3>
-              <p className="mb-2 text-xs uppercase tracking-wide text-on-surface-variant/80">{t.category}</p>
-              <p className="mb-6 text-sm leading-relaxed text-on-surface-variant">{t.short}</p>
-              {t.href ? (
-                <Link
-                  href={t.href}
-                  className="font-label text-xs uppercase tracking-tighter underline decoration-secondary/30 underline-offset-8"
-                >
-                  Descubrir
-                </Link>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setSelectedId(t.id)}
-                  className="font-label text-xs uppercase tracking-tighter underline decoration-secondary/30 underline-offset-8"
-                >
-                  Descubrir
-                </button>
-              )}
-            </article>
-          ))}
-        </div>
+      <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-px overflow-hidden border border-outline-variant/25 bg-outline-variant/25 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((t) => (
+          <article
+            key={t.id}
+            className="flex flex-col bg-surface-container-lowest p-6 transition-colors hover:bg-surface-container-low sm:p-8 md:p-10 lg:p-12"
+          >
+            <span className="material-symbols-outlined mb-6 block text-3xl text-secondary">{t.icon}</span>
+            <h3 className="mb-2 font-headline text-2xl">{t.name}</h3>
+            <p className="mb-2 text-xs uppercase tracking-wide text-on-surface-variant/80">{t.category}</p>
+            <p className="mb-6 flex-1 text-sm leading-relaxed text-on-surface-variant">{t.short}</p>
+            {t.href ? (
+              <Link
+                href={t.href}
+                className="self-start font-label text-xs uppercase tracking-tighter underline decoration-secondary/30 underline-offset-8"
+              >
+                Descubrir
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setSelectedId(t.id)}
+                className="self-start font-label text-xs uppercase tracking-tighter underline decoration-secondary/30 underline-offset-8"
+              >
+                Descubrir
+              </button>
+            )}
+          </article>
+        ))}
       </div>
 
       {selected && (

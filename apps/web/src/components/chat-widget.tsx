@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { ChatMessageContent } from "@/components/chat-message-content";
 import { apiFetch } from "@/lib/api";
 import { BEKANDU_TURNOS_URL } from "@/lib/bekandu-turnos";
 
@@ -125,7 +126,14 @@ export function ChatWidget({
                       : "mr-auto bg-surface-container-high text-on-surface"
                   }`}
                 >
-                  {m.content}
+                  <ChatMessageContent
+                    text={m.content}
+                    linkClassName={
+                      m.role === "user"
+                        ? "underline decoration-surface/50 underline-offset-2"
+                        : "font-medium text-secondary underline decoration-secondary/40 underline-offset-2"
+                    }
+                  />
                 </div>
               ))}
               {typing && (

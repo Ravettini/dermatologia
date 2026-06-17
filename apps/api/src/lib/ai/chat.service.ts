@@ -1,5 +1,10 @@
 import { generateWithGoogleGenAI } from "./provider";
 import { sanitizeChatModelOutput } from "./chat-reply-sanitize";
+import {
+  bareGreetingReply,
+  buildTurnoBookingReply,
+  isTurnoBookingIntent,
+} from "./chat-static-replies";
 import { getChatbotConfig } from "../settings";
 import { prisma } from "../prisma";
 import { stripMisDatosMarker } from "../chat-mis-datos-marker";
@@ -22,26 +27,19 @@ async function faqKnowledgeForPrompt(): Promise<string> {
   ].join("\n");
 }
 
-/** Saludo suelto, sin pedido concreto: respuesta mínima sin “ofrecer” nada ni segunda pregunta. */
-function bareGreetingReply(userMessage: string): string | null {
-  const t = userMessage
-    .trim()
-    .toLowerCase()
-    .replace(/[!?.¿¡,;:]+$/g, "")
-    .trim();
-  if (t.length === 0 || t.length > 40) return null;
-  if (/^(hola|hey|buen[oa]s|buenos días|buenas tardes|buenas noches)$/.test(t)) {
-    return "Hola.";
-  }
-  return null;
-}
-
 export async function runChatCompletion(params: {
   history: { role: "user" | "model"; text: string }[];
   userMessage: string;
 }): Promise<{ reply: string; highlightMisDatos: boolean }> {
   const cfg = await getChatbotConfig();
   const provider = process.env.AI_PROVIDER || "google";
+
+  if (isTurnoBookingIntent(params.userMessage)) {
+    return {
+      reply: buildTurnoBookingReply(cfg.turnosOnlineUrl),
+      highlightMisDatos: false,
+    };
+  }
 
   const staticGreeting = bareGreetingReply(params.userMessage);
   if (staticGreeting && (provider === "google" || provider === "gemini")) {

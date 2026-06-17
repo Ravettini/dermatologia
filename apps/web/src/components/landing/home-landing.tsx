@@ -283,25 +283,56 @@ export function HomeLanding({
               excelencia.
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-12 md:auto-rows-[minmax(200px,1fr)] md:gap-5">
             {[
-              "/fotos/consultorio/consultorio-1.jpg",
-              "/fotos/consultorio/consultorio-2.jpg",
-              "/fotos/consultorio/consultorio-3.jpg",
-            ].map((src, i) => (
+              {
+                src: "/fotos/consultorio/socias.jpg",
+                alt: "Las tres socias de Dermatología TOD en el consultorio",
+                className:
+                  "col-span-2 aspect-[3/2] md:col-span-7 md:row-span-2 md:aspect-auto md:min-h-[420px]",
+                sizes: "(max-width: 768px) 100vw, (max-width: 1280px) 70vw, 920px",
+                quality: 90,
+                priority: true,
+              },
+              {
+                src: "/fotos/consultorio/consultorio-1.jpg",
+                alt: "Recepción del consultorio Dermatología TOD",
+                className: "aspect-[3/2] md:col-span-5 md:aspect-auto",
+                sizes: "(max-width: 768px) 50vw, 42vw",
+              },
+              {
+                src: "/fotos/consultorio/consultorio-4.jpg",
+                alt: "Detalle del espacio de atención",
+                className: "aspect-[3/2] md:col-span-5 md:aspect-auto",
+                sizes: "(max-width: 768px) 50vw, 42vw",
+              },
+              {
+                src: "/fotos/consultorio/consultorio-5.jpg",
+                alt: "Ambiente del consultorio dermatológico",
+                className: "aspect-[3/2] md:col-span-6 md:aspect-auto",
+                sizes: "(max-width: 768px) 50vw, 50vw",
+              },
+              {
+                src: "/fotos/consultorio/consultorio-6.jpg",
+                alt: "Consultorio Dermatología TOD",
+                className: "aspect-[3/2] md:col-span-6 md:aspect-auto",
+                sizes: "(max-width: 768px) 50vw, 50vw",
+              },
+            ].map((photo) => (
               <div
-                key={src}
-                className={`relative aspect-[4/3] overflow-hidden bg-surface-container-high ${
-                  i === 0 ? "sm:col-span-2 lg:col-span-1" : ""
-                }`}
+                key={photo.src}
+                className={`group relative overflow-hidden bg-surface-container-high ${photo.className}`}
               >
                 <Image
-                  src={src}
-                  alt="Consultorio Dermatología TOD"
+                  src={photo.src}
+                  alt={photo.alt}
                   fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  sizes={photo.sizes}
+                  quality={"quality" in photo ? photo.quality : 80}
+                  priority={"priority" in photo ? photo.priority : false}
                 />
+                <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-on-surface/5" />
               </div>
             ))}
           </div>

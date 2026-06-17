@@ -138,11 +138,11 @@ export function TreatmentsSection({ treatments: _treatments }: { treatments: unk
             <h4 className="mb-4 pr-8 font-headline text-3xl leading-tight text-on-surface">{selected.name}</h4>
             <p className="text-base leading-relaxed text-on-surface-variant">{selected.description}</p>
             <Link
-              href="/#reservar"
+              href="/#tratamientos"
               onClick={() => setSelectedId(null)}
               className="mt-6 inline-block bg-on-primary-container px-6 py-3 font-label text-xs uppercase tracking-widest text-surface transition-opacity hover:opacity-90"
             >
-              Solicitar turno
+              Ver más tratamientos
             </Link>
           </div>
         </div>

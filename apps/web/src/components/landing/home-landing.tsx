@@ -63,6 +63,7 @@ const SOCIO_BIO_OVERRIDES: Record<string, string> = {
 /** Fotos fijas del equipo (pisan lo que venga de la base/API). */
 const TEAM_IMAGE_OVERRIDES: Record<string, string> = {
   "seed-tod-pardo": "/fotos/equipo/natalia-pardo.jpeg",
+  "seed-tod-kahn": "/fotos/equipo/kahn-felicitas.png",
   "seed-tod-toninetti": "/fotos/equipo/josefina-toninetti.jpeg",
   "seed-tod-reggiani": "/fotos/equipo/valentina-reggiani.jpeg",
   "seed-tod-ortiz": "/fotos/equipo/cintia-ortiz.jpeg",

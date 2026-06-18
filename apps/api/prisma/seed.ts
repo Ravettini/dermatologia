@@ -28,6 +28,7 @@ async function main() {
     null,
     null,
     "/fotos/equipo/cintia-ortiz.jpeg",
+    null,
   ];
 
   const professionalDefs = [
@@ -61,9 +62,12 @@ async function main() {
       name: "Dra. Deane Lucía",
       specialty: "Medicina estética",
       bio: [
-        "Médica dermatóloga especialista en medicina estética, longevidad y medicina funcional.",
-        "Speaker trainer Merz y Allergan.",
-        "Miembro Sociedad AAD – SAD.",
+        "Médica dermatóloga",
+        "Posgrado en Medicina Estética",
+        "Diplomado en Medicina Funcional y Longevidad",
+        "",
+        "Speaker & Trainer | Merz · Allergan",
+        "Miembro AAD – SAD",
       ].join("\n"),
       sortOrder: 3,
     },
@@ -115,6 +119,13 @@ async function main() {
       specialty: "Cosmetología",
       bio: "Cosmetología.",
       sortOrder: 10,
+    },
+    {
+      id: "seed-tod-caride",
+      name: "Manuela Caride",
+      specialty: "Medicina funcional",
+      bio: null,
+      sortOrder: 11,
     },
   ] as const;
 

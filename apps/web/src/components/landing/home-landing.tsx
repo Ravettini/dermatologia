@@ -54,11 +54,25 @@ const SOCIO_BIO_OVERRIDES: Record<string, string> = {
     "Universidad de Buenos Aires.",
   ].join("\n"),
   "seed-tod-deane": [
-    "Médica dermatóloga especialista en medicina estética, longevidad y medicina funcional.",
-    "Speaker trainer Merz y Allergan.",
-    "Miembro Sociedad AAD – SAD.",
+    "Médica dermatóloga",
+    "Posgrado en Medicina Estética",
+    "Diplomado en Medicina Funcional y Longevidad",
+    "",
+    "Speaker & Trainer | Merz · Allergan",
+    "Miembro AAD – SAD",
   ].join("\n"),
 };
+
+/** Miembros del equipo definidos en front (por si aún no están en la base). */
+const EXTRA_TEAM_MEMBERS: PublicProfessional[] = [
+  {
+    id: "seed-tod-caride",
+    name: "Manuela Caride",
+    specialty: "Medicina funcional",
+    bio: null,
+    imageUrl: null,
+  },
+];
 
 /** Fotos fijas del equipo (pisan lo que venga de la base/API). */
 const TEAM_IMAGE_OVERRIDES: Record<string, string> = {
@@ -133,7 +147,12 @@ export function HomeLanding({
   const email = site["contact.email"] ?? "Dermatologiatod@gmail.com";
   const hours = site["contact.hours"] ?? "Lunes a viernes de 9 a 19 hs.";
   const mapEmbedSrc = resolveMapEmbedSrc(site["contact.mapImageUrl"] ?? "");
-  const byId = new Map(professionals.map((p) => [p.id, p] as const));
+  const mergedProfessionals = (() => {
+    const ids = new Set(professionals.map((p) => p.id));
+    const extras = EXTRA_TEAM_MEMBERS.filter((e) => !ids.has(e.id));
+    return extras.length > 0 ? [...professionals, ...extras] : professionals;
+  })();
+  const byId = new Map(mergedProfessionals.map((p) => [p.id, p] as const));
   const socias = SOCIO_IDS.map((id) => byId.get(id))
     .filter((p): p is PublicProfessional => p != null)
     .map((p) => ({
@@ -143,7 +162,7 @@ export function HomeLanding({
       bio: SOCIO_BIO_OVERRIDES[p.id] ?? p.bio,
     }));
   const sociasIdSet = new Set<string>(SOCIO_IDS as unknown as string[]);
-  const teamProfessionals = professionals
+  const teamProfessionals = mergedProfessionals
     .filter((p) => !sociasIdSet.has(p.id))
     .map((p) => (TEAM_IMAGE_OVERRIDES[p.id] ? { ...p, imageUrl: TEAM_IMAGE_OVERRIDES[p.id] } : p));
 

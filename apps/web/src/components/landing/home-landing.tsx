@@ -74,13 +74,21 @@ const EXTRA_TEAM_MEMBERS: PublicProfessional[] = [
   },
 ];
 
-/** Fotos fijas del equipo (pisan lo que venga de la base/API). */
+/** Fotos y textos fijos del equipo (pisan lo que venga de la base/API). */
 const TEAM_IMAGE_OVERRIDES: Record<string, string> = {
   "seed-tod-pardo": "/fotos/equipo/natalia-pardo.jpeg",
-  "seed-tod-kahn": "/fotos/equipo/kahn-felicitas.png",
+  "seed-tod-kahn": "/fotos/equipo/kahn-felicitas.jpeg",
   "seed-tod-toninetti": "/fotos/equipo/josefina-toninetti.jpeg",
   "seed-tod-reggiani": "/fotos/equipo/valentina-reggiani.jpeg",
   "seed-tod-ortiz": "/fotos/equipo/cintia-ortiz.jpeg",
+};
+
+const TEAM_SPECIALTY_OVERRIDES: Record<string, string> = {
+  "seed-tod-reggiani": "Médica dermatóloga y clínica",
+};
+
+const TEAM_BIO_OVERRIDES: Record<string, string> = {
+  "seed-tod-reggiani": "Médica dermatóloga y clínica.",
 };
 
 const DEFAULT_MAP_NAME = "Dermatología TOD";
@@ -164,7 +172,12 @@ export function HomeLanding({
   const sociasIdSet = new Set<string>(SOCIO_IDS as unknown as string[]);
   const teamProfessionals = mergedProfessionals
     .filter((p) => !sociasIdSet.has(p.id))
-    .map((p) => (TEAM_IMAGE_OVERRIDES[p.id] ? { ...p, imageUrl: TEAM_IMAGE_OVERRIDES[p.id] } : p));
+    .map((p) => ({
+      ...p,
+      imageUrl: TEAM_IMAGE_OVERRIDES[p.id] ?? p.imageUrl,
+      specialty: TEAM_SPECIALTY_OVERRIDES[p.id] ?? p.specialty,
+      bio: TEAM_BIO_OVERRIDES[p.id] ?? p.bio,
+    }));
 
   return (
     <main className="w-full min-w-0 max-w-[100vw] overflow-x-hidden">
@@ -239,27 +252,27 @@ export function HomeLanding({
               {
                 icon: "blur_on",
                 t: "Rosácea",
-                p: "Tratamiento de la rojez persistente, los brotes y la sensibilidad de la piel.",
+                p: "Luz pulsada, Skin Quality (Botox) y skin booster, según evaluación médica.",
               },
               {
                 icon: "gradient",
                 t: "Melasma",
-                p: "Abordaje de las manchas para unificar y emparejar el tono de la piel.",
+                p: "Mesoterapia combinada con peeling para unificar y emparejar el tono de la piel.",
               },
               {
                 icon: "trending_up",
                 t: "Flacidez",
-                p: "Tratamientos para tensar y mejorar la firmeza de la piel del rostro y el cuerpo.",
+                p: "Radiesse, Sculptra, Ultherapy y otros protocolos para tensar y mejorar la firmeza.",
               },
               {
                 icon: "face_retouching_natural",
                 t: "Papada",
-                p: "Reducción y definición del contorno del cuello y el mentón.",
+                p: "Ultherapy y enzimas biológicas para definir el contorno del cuello y el mentón.",
               },
               {
                 icon: "content_cut",
                 t: "Alopecia / pérdida de cabello",
-                p: "Diagnóstico y tratamiento de la caída del cabello con seguimiento personalizado.",
+                p: "Mesoterapia capilar y exosomas, con diagnóstico y seguimiento personalizado.",
               },
               {
                 icon: "stethoscope",
@@ -319,9 +332,9 @@ export function HomeLanding({
             <h2 id="consultorio-heading" className="font-headline text-3xl text-on-surface md:text-4xl lg:text-5xl">
               Nuestro consultorio
             </h2>
-            <p className="mt-3 max-w-xl font-body text-sm leading-relaxed text-on-surface-variant md:text-base">
-              Un espacio pensado para tu comodidad, con la calidez y los estándares de una atención dermatológica de
-              excelencia.
+            <p className="mt-3 max-w-2xl font-body text-sm leading-relaxed text-on-surface-variant md:text-base">
+              Más que un consultorio: un espacio que combina tecnología de vanguardia, atención de excelencia y un
+              cuidado personalizado para tu piel.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-12 md:auto-rows-[minmax(200px,1fr)] md:gap-5">

@@ -16,7 +16,7 @@ const FEATURED_SPECIALTIES_STATIC: Highlight[] = [
     id: "feat-medicina-clinica",
     name: "Medicina Clínica",
     description:
-      "Evaluación y tratamiento de las enfermedades de la piel, el pelo y las uñas. Incluye medicina funcional y biopsias cuando son necesarias para un diagnóstico preciso.",
+      "Evaluación y tratamiento de las enfermedades de la piel, el pelo y las uñas. Cuando el caso lo requiere, se indican estudios complementarios o biopsias dentro del plan médico correspondiente.",
     durationMinutes: 45,
     category: "Dermatología clínica",
     requiresPriorEval: false,

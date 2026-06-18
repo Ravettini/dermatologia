@@ -22,9 +22,8 @@ export function SociasSection({ members }: { members: SociasMember[] }) {
     >
       <div className="mx-auto max-w-[1600px]">
         <div className="mb-10 sm:mb-12">
-          <span className="mb-2 block font-label text-xs uppercase tracking-[0.3em] text-secondary">Liderazgo</span>
           <h2 id="socias-heading" className="font-headline text-3xl text-on-surface md:text-4xl">
-            Socias
+            Liderazgo
           </h2>
           <p className="mt-2 max-w-xl text-sm text-on-surface-variant">
             Fundadoras y codirectoras médicas que guían la propuesta del centro.

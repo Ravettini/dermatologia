@@ -22,7 +22,7 @@ async function main() {
     "/fotos/equipo/florencia-olguin.png",
     "/fotos/equipo/lucia-deane.png",
     "/fotos/equipo/natalia-pardo.jpeg",
-    "/fotos/equipo/kahn-felicitas.png",
+    "/fotos/equipo/kahn-felicitas.jpeg",
     "/fotos/equipo/josefina-toninetti.jpeg",
     "/fotos/equipo/valentina-reggiani.jpeg",
     null,
@@ -95,8 +95,8 @@ async function main() {
     {
       id: "seed-tod-reggiani",
       name: "Dra. Reggiani Valentina",
-      specialty: "Medicina clínica",
-      bio: "Médica clínica.",
+      specialty: "Médica dermatóloga y clínica",
+      bio: "Médica dermatóloga y clínica.",
       sortOrder: 7,
     },
     {

@@ -29,29 +29,43 @@ type PublicTreatment = {
 const SOCIO_IDS = ["seed-tod-tezanos", "seed-tod-olguin", "seed-tod-deane"] as const;
 
 /** Textos fijos para las socias: pisan lo que venga de la base/API. */
+const SOCIO_SPECIALTY_OVERRIDES: Record<string, string> = {
+  "seed-tod-tezanos": "Medicina estética",
+  "seed-tod-olguin": "Medicina estética",
+  "seed-tod-deane": "Medicina estética",
+};
+
+const SOCIO_SUBTITLE_OVERRIDES: Record<string, string> = {
+  "seed-tod-tezanos": "Posgrado en medicina estética y reparadora",
+};
+
 const SOCIO_BIO_OVERRIDES: Record<string, string> = {
   "seed-tod-tezanos": [
     "Médica dermatóloga especialista en medicina estética.",
-    "Co directora.",
     "International speaker.",
-    "Faculty Allergan Aesthetics Austral.",
+    "Faculty AMWC.",
+    "Faculty Allergan Aesthetics.",
     "Miembro Sociedad AAD – SAD.",
-    "Universidad Austral.",
   ].join("\n"),
   "seed-tod-olguin": [
     "Médica dermatóloga especialista en medicina estética y dermatoscopia.",
-    "Co directora médica.",
     "Speaker trainer Merz.",
     "Miembro Sociedad AAD – SAD.",
     "Universidad de Buenos Aires.",
   ].join("\n"),
   "seed-tod-deane": [
-    "Médica dermatóloga especialista en medicina estética, rejuvenecimiento, longevidad y medicina funcional.",
-    "Co directora médica.",
+    "Médica dermatóloga especialista en medicina estética, longevidad y medicina funcional.",
     "Speaker trainer Merz y Allergan.",
     "Miembro Sociedad AAD – SAD.",
-    "Universidad Austral.",
   ].join("\n"),
+};
+
+/** Fotos fijas del equipo (pisan lo que venga de la base/API). */
+const TEAM_IMAGE_OVERRIDES: Record<string, string> = {
+  "seed-tod-pardo": "/fotos/equipo/natalia-pardo.jpeg",
+  "seed-tod-toninetti": "/fotos/equipo/josefina-toninetti.jpeg",
+  "seed-tod-reggiani": "/fotos/equipo/valentina-reggiani.jpeg",
+  "seed-tod-ortiz": "/fotos/equipo/cintia-ortiz.jpeg",
 };
 
 const DEFAULT_MAP_NAME = "Dermatología TOD";
@@ -121,9 +135,16 @@ export function HomeLanding({
   const byId = new Map(professionals.map((p) => [p.id, p] as const));
   const socias = SOCIO_IDS.map((id) => byId.get(id))
     .filter((p): p is PublicProfessional => p != null)
-    .map((p) => (SOCIO_BIO_OVERRIDES[p.id] ? { ...p, bio: SOCIO_BIO_OVERRIDES[p.id] } : p));
+    .map((p) => ({
+      ...p,
+      specialty: SOCIO_SPECIALTY_OVERRIDES[p.id] ?? p.specialty,
+      subtitle: SOCIO_SUBTITLE_OVERRIDES[p.id] ?? null,
+      bio: SOCIO_BIO_OVERRIDES[p.id] ?? p.bio,
+    }));
   const sociasIdSet = new Set<string>(SOCIO_IDS as unknown as string[]);
-  const teamProfessionals = professionals.filter((p) => !sociasIdSet.has(p.id));
+  const teamProfessionals = professionals
+    .filter((p) => !sociasIdSet.has(p.id))
+    .map((p) => (TEAM_IMAGE_OVERRIDES[p.id] ? { ...p, imageUrl: TEAM_IMAGE_OVERRIDES[p.id] } : p));
 
   return (
     <main className="w-full min-w-0 max-w-[100vw] overflow-x-hidden">

@@ -21,13 +21,13 @@ async function main() {
     "/fotos/equipo/olivia-tezanos.png",
     "/fotos/equipo/florencia-olguin.png",
     "/fotos/equipo/lucia-deane.png",
-    null,
+    "/fotos/equipo/natalia-pardo.jpeg",
     "/fotos/equipo/kahn-felicitas.png",
+    "/fotos/equipo/josefina-toninetti.jpeg",
+    "/fotos/equipo/valentina-reggiani.jpeg",
     null,
-    "/fotos/equipo/valentina-reggiani.png",
     null,
-    null,
-    null,
+    "/fotos/equipo/cintia-ortiz.jpeg",
   ];
 
   const professionalDefs = [
@@ -37,7 +37,6 @@ async function main() {
       specialty: "Medicina estética",
       bio: [
         "Médica dermatóloga especialista en medicina estética.",
-        "Posgrado en medicina estética y reparadora.",
         "International speaker.",
         "Faculty AMWC.",
         "Faculty Allergan Aesthetics.",
@@ -60,12 +59,11 @@ async function main() {
     {
       id: "seed-tod-deane",
       name: "Dra. Deane Lucía",
-      specialty: "Medicina estética · rejuvenecimiento · longevidad",
+      specialty: "Medicina estética",
       bio: [
-        "Médica dermatóloga especialista en medicina estética, rejuvenecimiento, longevidad y medicina funcional.",
+        "Médica dermatóloga especialista en medicina estética, longevidad y medicina funcional.",
         "Speaker trainer Merz y Allergan.",
         "Miembro Sociedad AAD – SAD.",
-        "Universidad Austral.",
       ].join("\n"),
       sortOrder: 3,
     },

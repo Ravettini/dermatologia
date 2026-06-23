@@ -199,8 +199,9 @@ export function HomeLanding({
               </span>
             </h1>
             <p className="hero-lead mb-8 font-headline text-[1.375rem] font-normal leading-snug text-on-surface max-md:mb-6 max-md:text-[1.235rem] sm:mb-9 sm:text-[1.65rem] md:text-[2.06rem]">
-              Cada tratamiento es pensado y realizado por médicas dermatólogas expertas en estética, combinando
-              ciencia, criterio clínico y una mirada estética natural y equilibrada.
+              En {brand}, centro de dermatología clínica y estética en Victoria, cada tratamiento es pensado y
+              realizado por médicas dermatólogas expertas, combinando ciencia, criterio clínico y una mirada estética
+              natural y equilibrada.
             </p>
             <div className="hero-actions flex flex-wrap gap-3 max-md:w-full max-md:flex-col sm:gap-6">
               <Link

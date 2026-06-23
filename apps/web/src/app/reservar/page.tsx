@@ -9,7 +9,7 @@ async function loadSite() {
   const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
   const fallback = {
     site: {
-      "site.name": process.env.NEXT_PUBLIC_SITE_NAME || "Dermaclinic",
+      "site.name": process.env.NEXT_PUBLIC_SITE_NAME || "DERMATOLOGÍA TOD",
       "contact.address": "",
       "contact.email": "",
       "contact.phone": "",
@@ -28,7 +28,7 @@ async function loadSite() {
 export default async function ReservarPage() {
   const data = await loadSite();
   const site = data.site;
-  const name = site["site.name"] ?? "Dermaclinic";
+  const name = site["site.name"] ?? "DERMATOLOGÍA TOD";
   const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5491112345678";
   const phone = site["contact.phone"] ?? "+54 9 11 2699-2405";
 

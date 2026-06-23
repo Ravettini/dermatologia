@@ -21,7 +21,7 @@ type Lead = {
 
 export default function AdminLeadsPage() {
   const [rows, setRows] = useState<Lead[]>([]);
-  const [siteName, setSiteName] = useState("Dermaclinic");
+  const [siteName, setSiteName] = useState("DERMATOLOGÍA TOD");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [patchErr, setPatchErr] = useState<string | null>(null);
 

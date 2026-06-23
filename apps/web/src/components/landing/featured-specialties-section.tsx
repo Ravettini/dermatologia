@@ -71,7 +71,7 @@ function SpecialtyCard({
   return (
     <article className="group flex items-start justify-between border border-outline-variant/40 bg-surface-container-lowest p-5 transition-colors duration-500 hover:bg-surface-container-low sm:p-8 md:p-10">
       <div className="min-w-0 pr-3">
-        <p className="mb-2 font-headline text-2xl leading-snug">{t.name}</p>
+        <h5 className="mb-2 font-headline text-2xl leading-snug">{t.name}</h5>
         <p className="max-w-lg text-sm text-on-surface-variant">{t.description}</p>
       </div>
       <button
@@ -164,9 +164,9 @@ export function FeaturedSpecialtiesSection({ treatments: _treatments }: { treatm
           />
           <div className="relative flex max-h-[min(92dvh,900px)] w-full max-w-5xl flex-col rounded-t-2xl bg-surface shadow-soft sm:rounded-2xl">
             <div className="flex shrink-0 items-center justify-between gap-4 border-b border-outline-variant/40 px-5 py-4 sm:px-6">
-              <p id={modalTitleId} className="font-headline text-xl text-on-surface sm:text-2xl">
+              <h3 id={modalTitleId} className="font-headline text-xl text-on-surface sm:text-2xl">
                 Más especialidades
-              </p>
+              </h3>
               <button
                 type="button"
                 onClick={() => setMoreOpen(false)}
@@ -213,7 +213,7 @@ export function FeaturedSpecialtiesSection({ treatments: _treatments }: { treatm
               <span className="material-symbols-outlined text-xl">close</span>
             </button>
             <p className="mb-2 text-xs uppercase tracking-[0.18em] text-secondary">{selected.category}</p>
-            <p className="mb-3 pr-8 font-headline text-3xl leading-tight text-on-surface">{selected.name}</p>
+            <h4 className="mb-3 pr-8 font-headline text-3xl leading-tight text-on-surface">{selected.name}</h4>
             <p className="mb-4 text-sm text-on-surface-variant">
               Duración orientativa: <strong>{selected.durationMinutes} minutos</strong>
             </p>

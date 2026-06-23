@@ -52,7 +52,7 @@ export function SociasSection({ members }: { members: SociasMember[] }) {
                 )}
               </div>
               <div className="text-center">
-                <p className="font-headline text-2xl text-secondary">{m.name}</p>
+                <h3 className="font-headline text-2xl text-secondary">{m.name}</h3>
                 <p className="mt-1 font-label text-xs uppercase tracking-widest text-on-surface-variant">{m.specialty}</p>
                 {m.subtitle ? (
                   <p className="mt-1 font-body text-sm italic text-on-surface-variant">{m.subtitle}</p>

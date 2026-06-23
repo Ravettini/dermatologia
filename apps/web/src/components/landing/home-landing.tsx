@@ -194,14 +194,13 @@ export function HomeLanding({
             </span>
             <h1 className="mb-5 font-headline text-[clamp(2.48rem,7.15vw,3.58rem)] leading-[1.1] text-on-surface max-md:mb-3 sm:mb-6 sm:text-[4.125rem] md:text-[4.95rem] lg:mb-4 lg:text-[clamp(2.75rem,4.18vw,4.4rem)] xl:text-[clamp(3rem,4.4vw,4.95rem)] 2xl:text-[4.125rem]">
               {brand}
-              <span className="mt-3 block text-[0.38em] font-normal leading-snug tracking-normal text-on-surface-variant sm:mt-4">
-                Centro de dermatología clínica y estética en Victoria
-              </span>
             </h1>
-            <p className="hero-lead mb-8 font-headline text-[1.375rem] font-normal leading-snug text-on-surface max-md:mb-6 max-md:text-[1.235rem] sm:mb-9 sm:text-[1.65rem] md:text-[2.06rem]">
-              En {brand}, centro de dermatología clínica y estética en Victoria, cada tratamiento es pensado y
-              realizado por médicas dermatólogas expertas, combinando ciencia, criterio clínico y una mirada estética
-              natural y equilibrada.
+            <p className="hero-lead mb-4 font-headline text-[1.375rem] font-normal leading-snug text-on-surface max-md:mb-3 max-md:text-[1.235rem] sm:text-[1.65rem] md:text-[2.06rem]">
+              Dermatología clínica y estética con una mirada profesional y personalizada
+            </p>
+            <p className="hero-body mb-8 font-body text-[1.235rem] leading-relaxed text-on-surface-variant opacity-80 max-md:mb-6 sm:mb-9 sm:text-[1.375rem] md:text-[1.65rem] lg:mb-6 lg:text-[clamp(1.16rem,1.54vw,1.375rem)] xl:text-[1.375rem]">
+              Cada tratamiento es pensado y realizado por médicas dermatólogas expertas en estética, combinando
+              ciencia, criterio clínico y una mirada estética natural y equilibrada.
             </p>
             <div className="hero-actions flex flex-wrap gap-3 max-md:w-full max-md:flex-col sm:gap-6">
               <Link
@@ -286,7 +285,7 @@ export function HomeLanding({
                 className="flex flex-col gap-3 border border-outline-variant/40 bg-surface-container-lowest p-6 transition-colors hover:bg-surface-container-low sm:p-8"
               >
                 <span className="material-symbols-outlined text-3xl text-secondary">{x.icon}</span>
-                <p className="font-headline text-xl text-on-surface">{x.t}</p>
+                <h3 className="font-headline text-xl text-on-surface">{x.t}</h3>
                 <p className="text-sm leading-relaxed text-on-surface-variant">{x.p}</p>
               </div>
             ))}
@@ -294,10 +293,7 @@ export function HomeLanding({
         </div>
       </section>
 
-      <section
-        className="bg-surface-container px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32"
-        aria-label="Nuestra propuesta de valor"
-      >
+      <section className="bg-surface-container px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32">
         <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-12 md:grid-cols-3 md:gap-16 lg:gap-20">
           {[
             {
@@ -318,7 +314,7 @@ export function HomeLanding({
           ].map((x) => (
             <div key={x.n} className="flex flex-col gap-6">
               <span className="font-headline text-5xl text-secondary">{x.n}</span>
-              <p className="font-headline text-2xl text-secondary">{x.t}</p>
+              <h4 className="font-headline text-2xl text-secondary">{x.t}</h4>
               <p className="font-body leading-relaxed text-on-surface-variant">{x.p}</p>
             </div>
           ))}
@@ -458,25 +454,25 @@ export function HomeLanding({
                   location_on
                 </span>
                 <div className="min-w-0">
-                  <p className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant md:text-xs">
+                  <h6 className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant md:text-xs">
                     Ubicación
-                  </p>
+                  </h6>
                   <p className="mt-1.5 font-body text-sm leading-snug text-on-surface md:text-[0.9375rem]">{address}</p>
                 </div>
               </li>
               <li className="flex gap-4 rounded-2xl border border-outline-variant/25 bg-surface-container-low p-5 shadow-sm">
                 <span className="material-symbols-outlined mt-0.5 shrink-0 text-xl text-secondary md:text-2xl">phone</span>
                 <div className="min-w-0">
-                  <p className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant md:text-xs">
+                  <h6 className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant md:text-xs">
                     WhatsApp / Teléfono
-                  </p>
+                  </h6>
                   <p className="mt-1.5 font-body text-sm leading-snug text-on-surface md:text-[0.9375rem]">{phone}</p>
                 </div>
               </li>
               <li className="flex gap-4 rounded-2xl border border-outline-variant/25 bg-surface-container-low p-5 shadow-sm">
                 <span className="material-symbols-outlined mt-0.5 shrink-0 text-xl text-secondary md:text-2xl">mail</span>
                 <div className="min-w-0">
-                  <p className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant md:text-xs">Correo</p>
+                  <h6 className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant md:text-xs">Correo</h6>
                   <a
                     className="mt-1.5 inline-block break-words font-body text-sm text-secondary underline decoration-secondary/30 underline-offset-4 md:text-[0.9375rem]"
                     href={`mailto:${email}`}
@@ -490,7 +486,7 @@ export function HomeLanding({
                   schedule
                 </span>
                 <div className="min-w-0">
-                  <p className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant md:text-xs">Horarios</p>
+                  <h6 className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant md:text-xs">Horarios</h6>
                   <p className="mt-1.5 font-body text-sm leading-snug text-on-surface md:text-[0.9375rem]">{hours}</p>
                 </div>
               </li>

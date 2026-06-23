@@ -210,7 +210,7 @@ function MoreTreatmentCard({
     <article className="group flex items-start justify-between border border-outline-variant/40 bg-surface-container-lowest p-5 transition-colors duration-500 hover:bg-surface-container-low sm:p-6">
       <div className="min-w-0 pr-3">
         <p className="mb-1 text-[10px] uppercase tracking-[0.18em] text-secondary">{t.category}</p>
-        <p className="mb-2 font-headline text-xl leading-snug sm:text-2xl">{t.name}</p>
+        <h5 className="mb-2 font-headline text-xl leading-snug sm:text-2xl">{t.name}</h5>
         <p className="max-w-lg text-sm text-on-surface-variant">{t.short}</p>
       </div>
       <button
@@ -257,7 +257,7 @@ export function TreatmentsSection({ treatments: _treatments }: { treatments: unk
             className="flex flex-col bg-surface-container-lowest p-6 transition-colors hover:bg-surface-container-low sm:p-8 md:p-10 lg:p-12"
           >
             <span className="material-symbols-outlined mb-6 block text-3xl text-secondary">{t.icon}</span>
-            <p className="mb-2 font-headline text-2xl">{t.name}</p>
+            <h3 className="mb-2 font-headline text-2xl">{t.name}</h3>
             <p className="mb-2 text-xs uppercase tracking-wide text-on-surface-variant/80">{t.category}</p>
             <p className="mb-6 flex-1 text-sm leading-relaxed text-on-surface-variant">{t.short}</p>
             {t.id === "otros" ? (
@@ -296,9 +296,9 @@ export function TreatmentsSection({ treatments: _treatments }: { treatments: unk
           />
           <div className="relative flex max-h-[min(92dvh,900px)] w-full max-w-5xl flex-col rounded-t-2xl bg-surface shadow-soft sm:rounded-2xl">
             <div className="flex shrink-0 items-center justify-between gap-4 border-b border-outline-variant/40 px-5 py-4 sm:px-6">
-              <p id={modalTitleId} className="font-headline text-xl text-on-surface sm:text-2xl">
+              <h3 id={modalTitleId} className="font-headline text-xl text-on-surface sm:text-2xl">
                 Más tratamientos
-              </p>
+              </h3>
               <button
                 type="button"
                 onClick={() => setMoreOpen(false)}
@@ -341,7 +341,7 @@ export function TreatmentsSection({ treatments: _treatments }: { treatments: unk
               <span className="material-symbols-outlined text-xl">close</span>
             </button>
             <p className="mb-2 text-xs uppercase tracking-[0.18em] text-secondary">{selected.category}</p>
-            <p className="mb-4 pr-8 font-headline text-3xl leading-tight text-on-surface">{selected.name}</p>
+            <h4 className="mb-4 pr-8 font-headline text-3xl leading-tight text-on-surface">{selected.name}</h4>
             <p className="text-base leading-relaxed text-on-surface-variant">{selected.description}</p>
           </div>
         </div>

@@ -19,23 +19,13 @@ const manrope = Manrope({
 
 const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "DERMATOLOGÍA TOD";
 
-const defaultPageTitle =
-  "Centro de dermatología en Victoria: consultas clínicas, medicina estética, tratamientos láser y agenda online con médicas especialistas.";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://tod.bekandu.com"),
   title: {
-    default: defaultPageTitle,
+    default: `${siteName} | Dermatología clínica y estética`,
     template: `%s | ${siteName}`,
   },
-  description: defaultPageTitle,
-  openGraph: {
-    type: "website",
-    locale: "es_AR",
-    siteName,
-    title: defaultPageTitle,
-    description: defaultPageTitle,
-  },
+  description:
+    "Centro de dermatología premium: consultas, tratamientos y acompañamiento profesional para la salud de tu piel.",
   icons: {
     icon: [{ url: "/branding/logo-tod.png", type: "image/png", sizes: "any" }],
     shortcut: "/branding/logo-tod.png",

@@ -88,9 +88,9 @@ export function FaqSection({ faqs }: { faqs: FaqItem[] }) {
           />
           <div className="relative flex max-h-[min(92dvh,900px)] w-full max-w-2xl flex-col rounded-t-2xl bg-surface shadow-soft sm:rounded-2xl">
             <div className="flex shrink-0 items-center justify-between gap-4 border-b border-outline-variant/40 px-5 py-4 sm:px-6">
-              <p id={titleId} className="font-headline text-xl text-on-surface sm:text-2xl">
+              <h3 id={titleId} className="font-headline text-xl text-on-surface sm:text-2xl">
                 Más preguntas frecuentes
-              </p>
+              </h3>
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}

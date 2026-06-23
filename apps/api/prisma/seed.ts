@@ -35,7 +35,7 @@ async function main() {
     {
       id: "seed-tod-tezanos",
       name: "Dra. Tezanos Pinto Olivia",
-      specialty: "Medicina estética",
+      specialty: "Médica dermatóloga",
       bio: [
         "Médica dermatóloga especialista en medicina estética.",
         "International speaker.",
@@ -48,7 +48,7 @@ async function main() {
     {
       id: "seed-tod-olguin",
       name: "Dra. Olguín Florencia",
-      specialty: "Medicina estética",
+      specialty: "Médica dermatóloga",
       bio: [
         "Médica dermatóloga especialista en medicina estética y dermatoscopia.",
         "Speaker trainer Merz.",
@@ -60,7 +60,7 @@ async function main() {
     {
       id: "seed-tod-deane",
       name: "Dra. Deane Lucía",
-      specialty: "Medicina estética",
+      specialty: "Médica dermatóloga",
       bio: [
         "Médica dermatóloga",
         "Posgrado en Medicina Estética",

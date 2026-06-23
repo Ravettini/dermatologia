@@ -30,9 +30,9 @@ const SOCIO_IDS = ["seed-tod-tezanos", "seed-tod-olguin", "seed-tod-deane"] as c
 
 /** Textos fijos para las socias: pisan lo que venga de la base/API. */
 const SOCIO_SPECIALTY_OVERRIDES: Record<string, string> = {
-  "seed-tod-tezanos": "Medicina estética",
-  "seed-tod-olguin": "Medicina estética",
-  "seed-tod-deane": "Medicina estética",
+  "seed-tod-tezanos": "Médica dermatóloga",
+  "seed-tod-olguin": "Médica dermatóloga",
+  "seed-tod-deane": "Médica dermatóloga",
 };
 
 const SOCIO_SUBTITLE_OVERRIDES: Record<string, string> = {

@@ -26,7 +26,7 @@ const POPULAR_TREATMENTS: PopularTreatment[] = [
   },
   {
     id: "lifting-no-quirurgico",
-    name: "Lifting no quirúrgico",
+    name: "Ultherapy (lifting no quirúrgico)",
     category: "Medicina estética",
     icon: "spa",
     short: "Firmeza y reposicionamiento sin cirugía.",

@@ -34,12 +34,21 @@ export function OnlineTurnosPanel({ phone, variant }: PanelProps) {
       >
         Turnos
       </span>
-      <h2
-        id="online-turnos-heading"
-        className="font-headline text-[1.65rem] leading-[1.2] text-on-surface sm:text-4xl md:text-[2.1rem] md:leading-tight"
-      >
-        Tu consulta, con calma y a tu ritmo
-      </h2>
+      {isColumn ? (
+        <p
+          id="online-turnos-heading"
+          className="font-headline text-[1.65rem] leading-[1.2] text-on-surface sm:text-4xl md:text-[2.1rem] md:leading-tight"
+        >
+          Tu consulta, con calma y a tu ritmo
+        </p>
+      ) : (
+        <h2
+          id="online-turnos-heading"
+          className="font-headline text-[1.65rem] leading-[1.2] text-on-surface sm:text-4xl md:text-[2.1rem] md:leading-tight"
+        >
+          Tu consulta, con calma y a tu ritmo
+        </h2>
+      )}
       <p
         className={
           isColumn

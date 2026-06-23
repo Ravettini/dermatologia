@@ -25,11 +25,36 @@ export function SiteFooter({
           </p>
         </div>
         <div>
-          <h6 className="mb-6 font-label text-xs uppercase tracking-[0.2em] opacity-40">Navegación</h6>
+          <p className="mb-6 font-label text-xs uppercase tracking-[0.2em] opacity-40">Navegación</p>
           <ul className="space-y-4">
             <li>
               <Link className="opacity-70 transition-opacity hover:opacity-100" href="/#inicio">
-                Inicio
+                Volver al inicio
+              </Link>
+            </li>
+            <li>
+              <Link className="opacity-70 transition-opacity hover:opacity-100" href="/#tratamientos">
+                Tratamientos dermatológicos
+              </Link>
+            </li>
+            <li>
+              <Link className="opacity-70 transition-opacity hover:opacity-100" href="/#equipo">
+                Equipo médico
+              </Link>
+            </li>
+            <li>
+              <Link className="opacity-70 transition-opacity hover:opacity-100" href="/#consultorio">
+                Fotos del consultorio
+              </Link>
+            </li>
+            <li>
+              <Link className="opacity-70 transition-opacity hover:opacity-100" href="/#faq">
+                Preguntas frecuentes
+              </Link>
+            </li>
+            <li>
+              <Link className="opacity-70 transition-opacity hover:opacity-100" href="/#contacto">
+                Contacto y ubicación
               </Link>
             </li>
             <li>
@@ -39,18 +64,18 @@ export function SiteFooter({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Seguinos en Instagram
+                Instagram de la clínica
               </a>
             </li>
             <li>
               <Link className="opacity-70 transition-opacity hover:opacity-100" href="/#reservar">
-                Reservar consulta
+                Reservar consulta online
               </Link>
             </li>
           </ul>
         </div>
         <div>
-          <h6 className="mb-6 font-label text-xs uppercase tracking-[0.2em] opacity-40">Contacto</h6>
+          <p className="mb-6 font-label text-xs uppercase tracking-[0.2em] opacity-40">Contacto</p>
           <ul className="space-y-4 opacity-70">
             <li>{address}</li>
             <li>{email}</li>
@@ -58,7 +83,7 @@ export function SiteFooter({
           </ul>
         </div>
         <div>
-          <h6 className="mb-6 font-label text-xs uppercase tracking-[0.2em] opacity-40">Legal</h6>
+          <p className="mb-6 font-label text-xs uppercase tracking-[0.2em] opacity-40">Legal</p>
           <ul className="space-y-3">
             <li>
               <Link className="opacity-70 underline decoration-secondary underline-offset-4" href="/privacidad">

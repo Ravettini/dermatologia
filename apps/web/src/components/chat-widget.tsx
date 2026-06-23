@@ -165,7 +165,7 @@ export function ChatWidget({
                   href="/#contacto"
                   className="rounded-full border border-outline-variant/50 px-2.5 py-1 text-[10px] uppercase tracking-wide text-on-surface sm:px-3 sm:text-[11px]"
                 >
-                  Contacto
+                  Datos de contacto
                 </Link>
               </div>
               {error && <p className="mb-2 text-xs text-red-700">{error}</p>}

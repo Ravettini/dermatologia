@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ["@derma/shared"],
+  poweredByHeader: false,
   images: {
     remotePatterns: [
       {

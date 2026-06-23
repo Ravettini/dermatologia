@@ -142,7 +142,7 @@ export function TeamSection({ professionals }: { professionals: TeamMember[] }) 
                   )}
                 </div>
                 <div className="text-center">
-                  <h4 className="font-headline text-2xl text-secondary">{m.name}</h4>
+                  <p className="font-headline text-2xl text-secondary">{m.name}</p>
                   <p className="mt-1 font-label text-xs uppercase tracking-widest text-on-surface-variant">
                     {normalizeSpecialty(m.specialty)}
                   </p>

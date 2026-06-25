@@ -54,11 +54,8 @@ export function SociasSection({ members }: { members: SociasMember[] }) {
               <div className="text-center">
                 <h3 className="font-headline text-2xl text-secondary">{m.name}</h3>
                 <p className="mt-1 font-label text-xs uppercase tracking-widest text-on-surface-variant">{m.specialty}</p>
-                {m.subtitle ? (
-                  <p className="mt-1 font-body text-sm italic text-on-surface-variant">{m.subtitle}</p>
-                ) : null}
                 {m.bio ? (
-                  <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-on-surface-variant">{m.bio}</p>
+                  <p className="mt-5 whitespace-pre-line text-sm leading-relaxed text-on-surface-variant">{m.bio}</p>
                 ) : null}
               </div>
             </div>

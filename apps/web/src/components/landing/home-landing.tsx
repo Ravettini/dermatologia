@@ -35,31 +35,28 @@ const SOCIO_SPECIALTY_OVERRIDES: Record<string, string> = {
   "seed-tod-deane": "Médica dermatóloga",
 };
 
-const SOCIO_SUBTITLE_OVERRIDES: Record<string, string> = {
-  "seed-tod-tezanos": "Posgrado en medicina estética y reparadora",
-};
+const SOCIO_SUBTITLE_OVERRIDES: Record<string, string> = {};
 
 const SOCIO_BIO_OVERRIDES: Record<string, string> = {
   "seed-tod-tezanos": [
-    "Médica dermatóloga especialista en medicina estética.",
+    "Posgrado en medicina estética y reparadora.",
     "International speaker.",
     "Faculty AMWC.",
     "Faculty Allergan Aesthetics.",
     "Miembro Sociedad AAD – SAD.",
   ].join("\n"),
   "seed-tod-olguin": [
-    "Médica dermatóloga especialista en medicina estética y dermatoscopia.",
+    "Especialista en medicina estética y dermatoscopia.",
     "Speaker trainer Merz.",
     "Miembro Sociedad AAD – SAD.",
     "Universidad de Buenos Aires.",
   ].join("\n"),
   "seed-tod-deane": [
-    "Médica dermatóloga",
-    "Posgrado en Medicina Estética",
-    "Diplomado en Medicina Funcional y Longevidad",
+    "Posgrado en Medicina Estética.",
+    "Diplomado en Medicina Funcional y Longevidad.",
     "",
-    "Speaker & Trainer | Merz · Allergan",
-    "Miembro AAD – SAD",
+    "Speaker & Trainer | Merz · Allergan.",
+    "Miembro AAD – SAD.",
   ].join("\n"),
 };
 

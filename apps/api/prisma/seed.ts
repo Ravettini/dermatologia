@@ -40,6 +40,7 @@ async function main() {
         "Posgrado en medicina estética y reparadora.",
         "International speaker.",
         "Faculty AMWC.",
+        "",
         "Faculty Allergan Aesthetics.",
         "Miembro Sociedad AAD – SAD.",
       ].join("\n"),
@@ -52,6 +53,7 @@ async function main() {
       bio: [
         "Especialista en medicina estética y dermatoscopia.",
         "Speaker trainer Merz.",
+        "",
         "Miembro Sociedad AAD – SAD.",
         "Universidad de Buenos Aires.",
       ].join("\n"),
@@ -64,7 +66,6 @@ async function main() {
       bio: [
         "Posgrado en Medicina Estética.",
         "Diplomado en Medicina Funcional y Longevidad.",
-        "",
         "Speaker & Trainer | Merz · Allergan.",
         "Miembro AAD – SAD.",
       ].join("\n"),

@@ -25,8 +25,8 @@ async function main() {
     "/fotos/equipo/kahn-felicitas.jpeg",
     "/fotos/equipo/josefina-toninetti.jpeg",
     "/fotos/equipo/valentina-reggiani.jpeg",
-    null,
-    null,
+    "/fotos/equipo/antonela-lamberti.jpeg",
+    "/fotos/equipo/ana-kraft.jpeg",
     "/fotos/equipo/cintia-ortiz.jpeg",
     null,
   ];

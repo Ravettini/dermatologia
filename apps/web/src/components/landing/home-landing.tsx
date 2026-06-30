@@ -77,6 +77,8 @@ const TEAM_IMAGE_OVERRIDES: Record<string, string> = {
   "seed-tod-kahn": "/fotos/equipo/kahn-felicitas.jpeg",
   "seed-tod-toninetti": "/fotos/equipo/josefina-toninetti.jpeg",
   "seed-tod-reggiani": "/fotos/equipo/valentina-reggiani.jpeg",
+  "seed-tod-lamberti": "/fotos/equipo/antonela-lamberti.jpeg",
+  "seed-tod-kraft": "/fotos/equipo/ana-kraft.jpeg",
   "seed-tod-ortiz": "/fotos/equipo/cintia-ortiz.jpeg",
 };
 

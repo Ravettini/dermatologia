@@ -15,7 +15,7 @@ const DEFAULT_FILTER = "__dermatologia_destacados__";
 const ALL_FILTER = "__todos__";
 
 const DERMATOLOGY_GENERAL = "Dermatología";
-const AESTHETIC_MEDICINE = "Medicina estética";
+const AESTHETIC_DERMATOLOGY = "Dermatología estética";
 
 function normalizeSpecialty(specialty: string): string {
   const clean = specialty.trim();
@@ -35,9 +35,10 @@ function normalizeSpecialty(specialty: string): string {
 
   if (
     lower === "estetica" ||
+    (lower.includes("dermatologia") && lower.includes("estetic")) ||
     (lower.includes("medicina") && lower.includes("estetic"))
   ) {
-    return AESTHETIC_MEDICINE;
+    return AESTHETIC_DERMATOLOGY;
   }
 
   return clean;

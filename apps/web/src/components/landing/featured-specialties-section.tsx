@@ -23,29 +23,29 @@ const FEATURED_SPECIALTIES_STATIC: Highlight[] = [
   },
   {
     id: "feat-medicina-estetica",
-    name: "Medicina Estética",
+    name: "Dermatología estética",
     description:
       "Procedimientos para mejorar y mantener la calidad de la piel con criterio médico, buscando resultados naturales y armónicos.",
     durationMinutes: 45,
-    category: "Estética",
+    category: "Dermatología estética",
     requiresPriorEval: false,
   },
   {
     id: "feat-medicina-pediatrica",
-    name: "Medicina Pediátrica",
+    name: "Dermatología pediátrica",
     description:
       "Atención dermatológica para bebés, niños y adolescentes, con un enfoque cuidadoso y especializado en la piel en crecimiento.",
     durationMinutes: 45,
-    category: "Pediátrica",
+    category: "Dermatología pediátrica",
     requiresPriorEval: false,
   },
   {
     id: "feat-medicina-funcional",
-    name: "Medicina Funcional",
+    name: "Dermatología funcional",
     description:
       "Abordaje integral que relaciona la salud de la piel con hábitos, metabolismo y bienestar general.",
     durationMinutes: 45,
-    category: "Integral",
+    category: "Dermatología funcional",
     requiresPriorEval: false,
   },
   {

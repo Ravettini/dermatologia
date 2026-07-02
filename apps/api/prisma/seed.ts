@@ -37,7 +37,7 @@ async function main() {
       name: "Dra. Tezanos Pinto Olivia",
       specialty: "Médica dermatóloga",
       bio: [
-        "Posgrado en medicina estética y reparadora.",
+        "Posgrado en dermatología estética y reparadora.",
         "International speaker.",
         "Faculty AMWC.",
         "",
@@ -51,7 +51,7 @@ async function main() {
       name: "Dra. Olguín Florencia",
       specialty: "Médica dermatóloga",
       bio: [
-        "Especialista en medicina estética y dermatoscopia.",
+        "Especialista en dermatología estética y dermatoscopia.",
         "Speaker trainer Merz.",
         "",
         "Miembro Sociedad AAD – SAD.",
@@ -123,7 +123,7 @@ async function main() {
     {
       id: "seed-tod-caride",
       name: "Manuela Caride",
-      specialty: "Medicina funcional",
+      specialty: "Dermatología funcional",
       bio: null,
       sortOrder: 11,
     },
@@ -295,7 +295,7 @@ async function main() {
       name: "Sunekos",
       description: "Biorrevitalización y soporte de la estructura dérmica según indicación médica.",
       durationMinutes: 45,
-      category: "Medicina estética",
+      category: "Dermatología estética",
       sortOrder: 11,
       requiresPriorEval: true,
     },
@@ -315,7 +315,7 @@ async function main() {
       description:
         "Línea de hidratación inyectable y remodelación (nombres comerciales según plan).",
       durationMinutes: 40,
-      category: "Medicina estética",
+      category: "Dermatología estética",
       sortOrder: 13,
       requiresPriorEval: true,
     },

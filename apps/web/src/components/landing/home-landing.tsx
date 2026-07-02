@@ -39,7 +39,7 @@ const SOCIO_SUBTITLE_OVERRIDES: Record<string, string> = {};
 
 const SOCIO_BIO_OVERRIDES: Record<string, string> = {
   "seed-tod-tezanos": [
-    "Posgrado en medicina estética y reparadora.",
+    "Posgrado en dermatología estética y reparadora.",
     "International speaker.",
     "Faculty AMWC.",
     "",
@@ -47,7 +47,7 @@ const SOCIO_BIO_OVERRIDES: Record<string, string> = {
     "Miembro Sociedad AAD – SAD.",
   ].join("\n"),
   "seed-tod-olguin": [
-    "Especialista en medicina estética y dermatoscopia.",
+    "Especialista en dermatología estética y dermatoscopia.",
     "Speaker trainer Merz.",
     "",
     "Miembro Sociedad AAD – SAD.",
@@ -66,7 +66,7 @@ const EXTRA_TEAM_MEMBERS: PublicProfessional[] = [
   {
     id: "seed-tod-caride",
     name: "Manuela Caride",
-    specialty: "Medicina funcional",
+    specialty: "Dermatología funcional",
     bio: null,
     imageUrl: null,
   },
@@ -299,7 +299,7 @@ export function HomeLanding({
             {
               n: "01.",
               t: "Profesionales de la salud",
-              p: "Médicos especialistas dedicados a dermatología clínica, estética responsable y medicina funcional.",
+              p: "Médicos especialistas dedicados a dermatología clínica, estética responsable y dermatología funcional.",
             },
             {
               n: "02.",

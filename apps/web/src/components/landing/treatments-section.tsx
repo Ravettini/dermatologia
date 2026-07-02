@@ -15,7 +15,7 @@ const POPULAR_TREATMENTS: TreatmentItem[] = [
   {
     id: "botox-full-face",
     name: "Botox full face",
-    category: "Medicina estética",
+    category: "Dermatología estética",
     icon: "face",
     short: "Para suavizar líneas de expresión y lograr un rostro más descansado y natural.",
     description:
@@ -24,7 +24,7 @@ const POPULAR_TREATMENTS: TreatmentItem[] = [
   {
     id: "ultherapy-prime",
     name: "Ultherapy PRIME",
-    category: "Medicina estética",
+    category: "Dermatología estética",
     icon: "spa",
     short: "Para tensar y reposicionar la piel sin cirugía, estimulando el colágeno desde adentro.",
     description:
@@ -41,7 +41,7 @@ const POPULAR_TREATMENTS: TreatmentItem[] = [
   },
   {
     id: "medicina-regenerativa",
-    name: "Medicina regenerativa",
+    name: "Dermatología regenerativa",
     category: "Regenerativo",
     icon: "biotech",
     short: "Para estimular la renovación celular y recuperar vitalidad, luminosidad y calidad de la piel.",
@@ -51,7 +51,7 @@ const POPULAR_TREATMENTS: TreatmentItem[] = [
   {
     id: "estructuracion-facial",
     name: "Estructuración facial con inyectables",
-    category: "Medicina estética",
+    category: "Dermatología estética",
     icon: "format_shapes",
     short: "Para restaurar volúmenes perdidos y armonizar los rasgos de forma sutil y personalizada.",
     description:
@@ -157,7 +157,7 @@ const MORE_TREATMENTS: TreatmentItem[] = [
   {
     id: "sunekos",
     name: "Sunekos",
-    category: "Medicina estética",
+    category: "Dermatología estética",
     icon: "water_full",
     short: "Biorrevitalización y soporte dérmico.",
     description: "Biorrevitalización y soporte de la estructura dérmica según indicación médica.",
@@ -174,7 +174,7 @@ const MORE_TREATMENTS: TreatmentItem[] = [
   {
     id: "hidratacion-inyectable",
     name: "Profhilo / Volite / Skinvive / Cellbooster / Skinbooster / Hydrodeluxe",
-    category: "Medicina estética",
+    category: "Dermatología estética",
     icon: "opacity",
     short: "Hidratación inyectable y remodelación.",
     description:

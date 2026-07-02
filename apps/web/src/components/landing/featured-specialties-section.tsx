@@ -14,7 +14,7 @@ type Highlight = {
 const FEATURED_SPECIALTIES_STATIC: Highlight[] = [
   {
     id: "feat-medicina-clinica",
-    name: "Medicina Clínica",
+    name: "Dermatología clínica",
     description:
       "Evaluación y tratamiento de las enfermedades de la piel, el pelo y las uñas. Cuando el caso lo requiere, se indican estudios complementarios o biopsias dentro del plan médico correspondiente.",
     durationMinutes: 45,

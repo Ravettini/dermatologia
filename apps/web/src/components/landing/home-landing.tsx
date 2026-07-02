@@ -54,10 +54,10 @@ const SOCIO_BIO_OVERRIDES: Record<string, string> = {
     "Universidad de Buenos Aires.",
   ].join("\n"),
   "seed-tod-deane": [
-    "Posgrado en Medicina Estética.",
-    "Diplomado en Medicina Funcional y Longevidad.",
-    "Speaker & Trainer | Merz · Allergan.",
+    "Especialista en Dermatología estética y funcional.",
+    "Speaker & Trainer Merz Allergan.",
     "Miembro AAD – SAD.",
+    "U. Austral.",
   ].join("\n"),
 };
 
@@ -80,7 +80,7 @@ const TEAM_IMAGE_OVERRIDES: Record<string, string> = {
   "seed-tod-reggiani": "/fotos/equipo/valentina-reggiani.jpeg",
   "seed-tod-lamberti": "/fotos/equipo/antonela-lamberti.jpeg",
   "seed-tod-kraft": "/fotos/equipo/ana-kraft.jpeg",
-  "seed-tod-ortiz": "/fotos/equipo/cintia-ortiz.jpeg",
+  "seed-tod-ortiz": "/fotos/equipo/cintia-ortiz.png",
 };
 
 const TEAM_SPECIALTY_OVERRIDES: Record<string, string> = {

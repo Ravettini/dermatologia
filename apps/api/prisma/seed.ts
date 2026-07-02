@@ -27,7 +27,7 @@ async function main() {
     "/fotos/equipo/valentina-reggiani.jpeg",
     "/fotos/equipo/antonela-lamberti.jpeg",
     "/fotos/equipo/ana-kraft.jpeg",
-    "/fotos/equipo/cintia-ortiz.jpeg",
+    "/fotos/equipo/cintia-ortiz.png",
     null,
   ];
 
@@ -64,10 +64,10 @@ async function main() {
       name: "Dra. Deane Lucía",
       specialty: "Médica dermatóloga",
       bio: [
-        "Posgrado en Medicina Estética.",
-        "Diplomado en Medicina Funcional y Longevidad.",
-        "Speaker & Trainer | Merz · Allergan.",
+        "Especialista en Dermatología estética y funcional.",
+        "Speaker & Trainer Merz Allergan.",
         "Miembro AAD – SAD.",
+        "U. Austral.",
       ].join("\n"),
       sortOrder: 3,
     },

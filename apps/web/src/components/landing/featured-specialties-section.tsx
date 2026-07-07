@@ -2,288 +2,318 @@
 
 import { useEffect, useId, useMemo, useState } from "react";
 
-type Highlight = {
-  id: string;
-  name: string;
-  description: string;
-  durationMinutes: number;
-  category: string;
-  requiresPriorEval: boolean;
-  items?: string[];
+type ServiceGroup = {
+  heading: string;
+  items: string[];
 };
 
-const FEATURED_SPECIALTIES_STATIC: Highlight[] = [
+type Service = {
+  id: string;
+  title: string;
+  shortDescription: string;
+  highlights: string[];
+  cta: string;
+  intro: string;
+  groups: ServiceGroup[];
+};
+
+const BOOKING_HREF = "/#reservar";
+
+const SERVICES: Service[] = [
   {
-    id: "feat-medicina-clinica",
-    name: "Dermatología clínica",
-    description:
-      "Evaluación y tratamiento de las enfermedades de la piel, el pelo y las uñas. Cuando el caso lo requiere, se indican estudios complementarios o biopsias dentro del plan médico correspondiente.",
-    durationMinutes: 45,
-    category: "Dermatología clínica",
-    requiresPriorEval: false,
-    items: [
-      "Mapeo digital",
-      "Control de nevos",
-      "Biopsia",
-      "Patologías de la piel (rosácea, melasma, acné, verrugas)",
-      "Alopecia",
-      "Criocirugía",
+    id: "clinical",
+    title: "Dermatología clínica",
+    shortDescription:
+      "Evaluación, diagnóstico y tratamiento de enfermedades de la piel, el pelo y las uñas.",
+    highlights: ["Mapeo digital", "Control de nevos", "Biopsias", "Alopecia"],
+    cta: "Ver consultas clínicas",
+    intro:
+      "Evaluación y tratamiento médico de enfermedades de la piel, el pelo y las uñas. Cuando el caso lo requiere, se indican estudios complementarios o biopsias dentro del plan médico correspondiente.",
+    groups: [
+      {
+        heading: "Consultas y diagnóstico",
+        items: ["Mapeo digital", "Control de nevos", "Biopsia"],
+      },
+      {
+        heading: "Patologías frecuentes",
+        items: ["Alopecia", "Rosácea", "Melasma", "Acné", "Verrugas"],
+      },
+      {
+        heading: "Tratamientos",
+        items: ["Criocirugía"],
+      },
     ],
   },
   {
-    id: "feat-medicina-estetica",
-    name: "Dermatología estética",
-    description:
-      "Procedimientos para mejorar y mantener la calidad de la piel con criterio médico, buscando resultados naturales y armónicos.",
-    durationMinutes: 45,
-    category: "Dermatología estética",
-    requiresPriorEval: false,
-    items: [
-      "Bótox",
-      "Radiesse",
-      "Sculptra",
-      "HarmonyCa",
-      "Ultherapy",
-      "Ácido hialurónico",
-      "Profhilo",
-      "Enzimas biológicas",
-      "Peeling",
-      "Mesoterapia facial",
-      "Mesoterapia capilar",
-      "Mesoterapia corporal",
-      "Plasma rico en plaquetas",
-      "Luz pulsada",
-      "Exosomas",
-      "Light and Bright",
-      "Microneedling",
-      "Hydrodeluxe",
-      "Hidratación de labios",
-      "Cellbooster",
-      "Armonización facial",
+    id: "aesthetic",
+    title: "Dermatología estética",
+    shortDescription:
+      "Procedimientos médicos para mejorar la calidad de la piel con resultados naturales y armónicos.",
+    highlights: ["Bótox", "Ácido hialurónico", "Peeling", "Bioestimuladores"],
+    cta: "Ver tratamientos",
+    intro:
+      "Procedimientos médicos orientados a mejorar la calidad de la piel, acompañando el envejecimiento de forma natural y armónica.",
+    groups: [
+      {
+        heading: "Facial",
+        items: [
+          "Bótox",
+          "Ácido hialurónico",
+          "Radiesse",
+          "Sculptra",
+          "HarmonyCa",
+          "Armonización facial",
+        ],
+      },
+      {
+        heading: "Calidad de piel",
+        items: [
+          "Ultherapy",
+          "Profhilo",
+          "Peeling",
+          "Microneedling",
+          "Luz pulsada",
+          "Light and Bright",
+          "Hydroluxe",
+          "Cellbooster",
+        ],
+      },
+      {
+        heading: "Capilar y corporal",
+        items: [
+          "Mesoterapia capilar",
+          "Mesoterapia corporal",
+          "Plasma rico en plaquetas",
+          "Exosomas",
+          "Enzimas biológicas",
+        ],
+      },
     ],
   },
   {
-    id: "feat-medicina-pediatrica",
-    name: "Dermatología pediátrica",
-    description:
+    id: "pediatric",
+    title: "Dermatología pediátrica",
+    shortDescription:
+      "Atención dermatológica para bebés, niños y adolescentes, con enfoque en la piel en crecimiento.",
+    highlights: ["Control de nevos", "Curetaje de moluscos", "Criocirugía", "Biopsias"],
+    cta: "Ver detalle",
+    intro:
       "Atención dermatológica para bebés, niños y adolescentes, con un enfoque cuidadoso y especializado en la piel en crecimiento.",
-    durationMinutes: 45,
-    category: "Dermatología pediátrica",
-    requiresPriorEval: false,
-    items: [
-      "Biopsias",
-      "Curetaje de moluscos",
-      "Criocirugía",
-      "Control de acné",
-      "Control de nevos",
+    groups: [
+      {
+        heading: "Procedimientos",
+        items: [
+          "Biopsias",
+          "Curetaje de moluscos",
+          "Criocirugía",
+          "Control de acné",
+          "Control de nevos",
+        ],
+      },
     ],
   },
   {
-    id: "feat-medicina-funcional",
-    name: "Dermatología funcional",
-    description:
+    id: "functional",
+    title: "Dermatología funcional",
+    shortDescription:
       "Abordaje integral que relaciona la salud de la piel con hábitos, metabolismo y bienestar general.",
-    durationMinutes: 45,
-    category: "Dermatología funcional",
-    requiresPriorEval: false,
+    highlights: [],
+    cta: "Ver detalle",
+    intro:
+      "Abordaje integral que relaciona la salud de la piel con los hábitos, el metabolismo y el bienestar general, complementando el tratamiento dermatológico con una mirada global de cada persona.",
+    groups: [],
   },
   {
-    id: "feat-mapeo-digital",
-    name: "Mapeo digital",
-    description:
-      "Control digital de lunares para la detección temprana y el seguimiento de lesiones de la piel a lo largo del tiempo.",
-    durationMinutes: 30,
-    category: "Diagnóstico",
-    requiresPriorEval: false,
+    id: "digital-mapping",
+    title: "Mapeo digital",
+    shortDescription:
+      "Control digital de lunares para la detección temprana y el seguimiento de lesiones de la piel.",
+    highlights: [],
+    cta: "Ver detalle",
+    intro:
+      "Control digital de lunares para la detección temprana y el seguimiento de lesiones de la piel a lo largo del tiempo, comparando imágenes en cada consulta.",
+    groups: [],
   },
 ];
 
-const INITIAL_COUNT = FEATURED_SPECIALTIES_STATIC.length;
-
-function SpecialtyCard({
-  t,
-  onOpenDetail,
-}: {
-  t: Highlight;
-  onOpenDetail: () => void;
-}) {
+function ServiceCard({ service, onOpen }: { service: Service; onOpen: () => void }) {
   return (
-    <article className="group flex items-start justify-between border border-outline-variant/40 bg-surface-container-lowest p-5 transition-colors duration-500 hover:bg-surface-container-low sm:p-8 md:p-10">
-      <div className="min-w-0 pr-3">
-        <h5 className="mb-2 font-headline text-2xl leading-snug">{t.name}</h5>
-        <p className="max-w-lg text-sm text-on-surface-variant">{t.description}</p>
-        {t.items && t.items.length > 0 && (
-          <ul className="mt-4 grid max-w-lg grid-cols-1 gap-x-6 gap-y-1.5 text-sm text-on-surface-variant sm:grid-cols-2">
-            {t.items.map((item) => (
-              <li key={item} className="flex items-start gap-2">
-                <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-secondary/70" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+    <article
+      role="button"
+      tabIndex={0}
+      onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
+      aria-label={`${service.title}. ${service.cta}`}
+      className="group relative flex cursor-pointer flex-col rounded-[18px] border border-[rgba(120,95,75,0.12)] bg-[#fffdf9] p-8 shadow-[0_10px_30px_-24px_rgba(80,60,40,0.28)] outline-none transition-all duration-300 hover:-translate-y-1 hover:border-[rgba(120,95,75,0.28)] hover:shadow-[0_20px_44px_-26px_rgba(80,60,40,0.4)] focus-visible:ring-2 focus-visible:ring-[#8a6f57]/40 sm:p-10"
+    >
+      <span
+        aria-hidden
+        className="material-symbols-outlined absolute right-6 top-6 text-[#8a6f57]/70 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#8a6f57]"
+      >
+        arrow_outward
+      </span>
+
+      <h3 className="mb-3 max-w-[85%] font-headline text-[28px] leading-tight text-[#2c2420] sm:text-[32px]">
+        {service.title}
+      </h3>
+      <p className="max-w-md text-[15px] leading-[1.6] text-[#6b615a]">
+        {service.shortDescription}
+      </p>
+
+      {service.highlights.length > 0 && (
+        <ul className="mt-6 flex flex-wrap gap-2">
+          {service.highlights.map((item) => (
+            <li
+              key={item}
+              className="rounded-full border border-[rgba(120,95,75,0.16)] bg-[#fbf7f0] px-3 py-1 text-xs text-[#6b615a]"
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <span className="mt-8 inline-flex items-center gap-1.5 font-label text-sm font-medium text-[#8a6f57]">
+        {service.cta}
+        <span
+          aria-hidden
+          className="material-symbols-outlined text-base leading-none transition-transform duration-300 group-hover:translate-x-1"
+        >
+          arrow_forward
+        </span>
+      </span>
+    </article>
+  );
+}
+
+function ServiceDetailDrawer({
+  service,
+  onClose,
+}: {
+  service: Service;
+  onClose: () => void;
+}) {
+  const titleId = useId();
+
+  return (
+    <div
+      className="fixed inset-0 z-[110] flex items-end justify-center sm:items-stretch sm:justify-end"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+    >
       <button
         type="button"
-        onClick={onOpenDetail}
-        className="shrink-0 rounded-full p-1 text-secondary transition hover:bg-secondary/10"
-        aria-label={`Ver detalle de ${t.name}`}
-      >
-        <span className="material-symbols-outlined text-secondary opacity-80 transition-opacity group-hover:opacity-100">
-          arrow_outward
-        </span>
-      </button>
-    </article>
+        aria-label="Cerrar detalle"
+        onClick={onClose}
+        className="absolute inset-0 bg-[rgba(20,15,10,0.28)] backdrop-blur-[2px]"
+      />
+      <div className="relative flex max-h-[92dvh] w-full flex-col rounded-t-2xl bg-[#fffdf9] shadow-[0_30px_80px_-40px_rgba(40,30,20,0.6)] sm:h-full sm:max-h-none sm:w-[600px] sm:max-w-[92vw] sm:rounded-l-2xl sm:rounded-tr-none">
+        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-[rgba(120,95,75,0.12)] px-6 pb-5 pt-6 sm:px-12 sm:pt-10">
+          <h3 id={titleId} className="font-headline text-2xl text-[#2c2420] sm:text-3xl">
+            {service.title}
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Cerrar"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#6b615a] transition-colors hover:bg-[#f2ebe1]"
+          >
+            <span className="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-6 sm:px-12 sm:py-8">
+          <p className="text-[15px] leading-[1.7] text-[#6b615a]">{service.intro}</p>
+
+          {service.groups.length > 0 && (
+            <div className="mt-8 divide-y divide-[rgba(120,95,75,0.12)]">
+              {service.groups.map((group) => (
+                <div key={group.heading} className="py-6 first:pt-0">
+                  <h4 className="mb-3 font-label text-xs uppercase tracking-[0.18em] text-[#8a6f57]">
+                    {group.heading}
+                  </h4>
+                  <ul className="grid grid-cols-1 gap-x-8 gap-y-2 text-[15px] text-[#4a423c] sm:grid-cols-2">
+                    {group.items.map((item) => (
+                      <li key={item} className="flex items-start gap-2.5">
+                        <span
+                          aria-hidden
+                          className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#8a6f57]/70"
+                        />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="shrink-0 border-t border-[rgba(120,95,75,0.12)] px-6 py-5 sm:px-12 sm:py-6">
+          <a
+            href={BOOKING_HREF}
+            onClick={onClose}
+            className="flex w-full items-center justify-center rounded-full bg-[#8a6f57] px-8 py-3.5 font-label text-sm font-medium text-white transition-colors hover:bg-[#755c47]"
+          >
+            Solicitar turno
+          </a>
+        </div>
+      </div>
+    </div>
   );
 }
 
 export function FeaturedSpecialtiesSection({ treatments: _treatments }: { treatments: unknown[] }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [moreOpen, setMoreOpen] = useState(false);
-  const modalTitleId = useId();
 
-  const all = useMemo(() => FEATURED_SPECIALTIES_STATIC, []);
-  const visible = useMemo(() => all.slice(0, INITIAL_COUNT), [all]);
-  const rest = useMemo(() => all.slice(INITIAL_COUNT), [all]);
-  const hasMore = rest.length > 0;
-
-  const selected = useMemo(() => all.find((item) => item.id === selectedId) ?? null, [all, selectedId]);
+  const selected = useMemo(
+    () => SERVICES.find((service) => service.id === selectedId) ?? null,
+    [selectedId],
+  );
 
   useEffect(() => {
-    if (!moreOpen) return;
+    if (!selected) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [moreOpen]);
-
-  useEffect(() => {
-    if (!moreOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMoreOpen(false);
+      if (e.key === "Escape") setSelectedId(null);
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [moreOpen]);
-
-  function openDetail(id: string, options?: { closeListModal?: boolean }) {
-    if (options?.closeListModal) setMoreOpen(false);
-    setSelectedId(id);
-  }
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [selected]);
 
   return (
-    <section className="bg-surface px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32">
-      <div className="mx-auto mb-14 max-w-[1600px] text-center sm:mb-16 md:mb-20">
-        <span className="mb-4 block font-label text-xs uppercase tracking-[0.3em] text-secondary">
+    <section className="bg-[#f7f2ea] px-4 py-16 sm:px-6 sm:py-20 md:px-10 md:py-28 lg:px-12 lg:py-32">
+      <div className="mx-auto mb-14 max-w-[1200px] text-center sm:mb-16 md:mb-20">
+        <span className="mb-4 block font-label text-xs uppercase tracking-[0.3em] text-[#8a6f57]">
           Nuestra experiencia
         </span>
-        <h2 className="font-headline text-4xl md:text-5xl">Especialidades destacadas</h2>
+        <h2 className="font-headline text-4xl text-[#2c2420] md:text-5xl">
+          Especialidades destacadas
+        </h2>
       </div>
-      <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-8 md:grid-cols-2 md:gap-12">
-        {visible.map((t) => (
-          <SpecialtyCard key={t.id} t={t} onOpenDetail={() => openDetail(t.id)} />
+
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
+        {SERVICES.map((service) => (
+          <ServiceCard
+            key={service.id}
+            service={service}
+            onOpen={() => setSelectedId(service.id)}
+          />
         ))}
       </div>
 
-      {hasMore && (
-        <div className="mt-10 flex justify-center">
-          <button
-            type="button"
-            onClick={() => setMoreOpen(true)}
-            className="inline-flex items-center gap-2 border border-outline-variant bg-surface-container-low px-6 py-3 font-label text-xs uppercase tracking-widest text-on-surface transition-colors hover:bg-surface-container-high"
-          >
-            <span className="material-symbols-outlined text-lg leading-none">add</span>+ Especialidades
-          </button>
-        </div>
-      )}
-
-      {moreOpen && (
-        <div
-          className="fixed inset-0 z-[100] flex items-end justify-center p-0 sm:items-center sm:p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={modalTitleId}
-        >
-          <button
-            type="button"
-            className="absolute inset-0 bg-on-primary-container/40 backdrop-blur-[2px]"
-            aria-label="Cerrar lista de especialidades"
-            onClick={() => setMoreOpen(false)}
-          />
-          <div className="relative flex max-h-[min(92dvh,900px)] w-full max-w-5xl flex-col rounded-t-2xl bg-surface shadow-soft sm:rounded-2xl">
-            <div className="flex shrink-0 items-center justify-between gap-4 border-b border-outline-variant/40 px-5 py-4 sm:px-6">
-              <h3 id={modalTitleId} className="font-headline text-xl text-on-surface sm:text-2xl">
-                Más especialidades
-              </h3>
-              <button
-                type="button"
-                onClick={() => setMoreOpen(false)}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-outline-variant text-on-surface transition-colors hover:bg-surface-container-high"
-                aria-label="Cerrar"
-              >
-                <span className="material-symbols-outlined">close</span>
-              </button>
-            </div>
-            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-8 pt-4 sm:px-6 sm:pt-6">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 lg:gap-10">
-                {rest.map((t) => (
-                  <SpecialtyCard
-                    key={t.id}
-                    t={t}
-                    onOpenDetail={() => openDetail(t.id, { closeListModal: true })}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {selected && (
-        <div
-          className="fixed inset-0 z-[110] flex items-center justify-center bg-black/45 p-4"
-          role="dialog"
-          aria-modal="true"
-        >
-          <button
-            type="button"
-            className="absolute inset-0"
-            aria-label="Cerrar detalle de especialidad"
-            onClick={() => setSelectedId(null)}
-          />
-          <div className="relative z-[111] w-full max-w-xl rounded-xl bg-surface-container-lowest p-6 shadow-soft sm:p-8">
-            <button
-              type="button"
-              onClick={() => setSelectedId(null)}
-              className="absolute right-3 top-3 rounded-md p-1 text-on-surface-variant hover:bg-surface-container-low"
-              aria-label="Cerrar"
-            >
-              <span className="material-symbols-outlined text-xl">close</span>
-            </button>
-            <p className="mb-2 text-xs uppercase tracking-[0.18em] text-secondary">{selected.category}</p>
-            <h4 className="mb-3 pr-8 font-headline text-3xl leading-tight text-on-surface">{selected.name}</h4>
-            <p className="mb-4 text-sm text-on-surface-variant">
-              Duración orientativa: <strong>{selected.durationMinutes} minutos</strong>
-            </p>
-            <p className="text-base leading-relaxed text-on-surface-variant">{selected.description}</p>
-            {selected.items && selected.items.length > 0 && (
-              <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-1.5 text-sm text-on-surface-variant sm:grid-cols-2">
-                {selected.items.map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-secondary/70" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {selected.requiresPriorEval && (
-              <p className="mt-4 rounded-lg bg-secondary/10 px-3 py-2 text-sm text-on-surface">
-                Requiere evaluación médica previa.
-              </p>
-            )}
-          </div>
-        </div>
+        <ServiceDetailDrawer service={selected} onClose={() => setSelectedId(null)} />
       )}
     </section>
   );

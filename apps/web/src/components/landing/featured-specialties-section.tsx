@@ -9,6 +9,7 @@ type Highlight = {
   durationMinutes: number;
   category: string;
   requiresPriorEval: boolean;
+  items?: string[];
 };
 
 const FEATURED_SPECIALTIES_STATIC: Highlight[] = [
@@ -20,6 +21,14 @@ const FEATURED_SPECIALTIES_STATIC: Highlight[] = [
     durationMinutes: 45,
     category: "Dermatología clínica",
     requiresPriorEval: false,
+    items: [
+      "Mapeo digital",
+      "Control de nevos",
+      "Biopsia",
+      "Patologías de la piel (rosácea, melasma, acné, verrugas)",
+      "Alopecia",
+      "Criocirugía",
+    ],
   },
   {
     id: "feat-medicina-estetica",
@@ -29,6 +38,29 @@ const FEATURED_SPECIALTIES_STATIC: Highlight[] = [
     durationMinutes: 45,
     category: "Dermatología estética",
     requiresPriorEval: false,
+    items: [
+      "Bótox",
+      "Radiesse",
+      "Sculptra",
+      "HarmonyCa",
+      "Ultherapy",
+      "Ácido hialurónico",
+      "Profhilo",
+      "Enzimas biológicas",
+      "Peeling",
+      "Mesoterapia facial",
+      "Mesoterapia capilar",
+      "Mesoterapia corporal",
+      "Plasma rico en plaquetas",
+      "Luz pulsada",
+      "Exosomas",
+      "Light and Bright",
+      "Microneedling",
+      "Hydrodeluxe",
+      "Hidratación de labios",
+      "Cellbooster",
+      "Armonización facial",
+    ],
   },
   {
     id: "feat-medicina-pediatrica",
@@ -38,6 +70,13 @@ const FEATURED_SPECIALTIES_STATIC: Highlight[] = [
     durationMinutes: 45,
     category: "Dermatología pediátrica",
     requiresPriorEval: false,
+    items: [
+      "Biopsias",
+      "Curetaje de moluscos",
+      "Criocirugía",
+      "Control de acné",
+      "Control de nevos",
+    ],
   },
   {
     id: "feat-medicina-funcional",
@@ -73,6 +112,16 @@ function SpecialtyCard({
       <div className="min-w-0 pr-3">
         <h5 className="mb-2 font-headline text-2xl leading-snug">{t.name}</h5>
         <p className="max-w-lg text-sm text-on-surface-variant">{t.description}</p>
+        {t.items && t.items.length > 0 && (
+          <ul className="mt-4 grid max-w-lg grid-cols-1 gap-x-6 gap-y-1.5 text-sm text-on-surface-variant sm:grid-cols-2">
+            {t.items.map((item) => (
+              <li key={item} className="flex items-start gap-2">
+                <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-secondary/70" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
       <button
         type="button"
@@ -218,6 +267,16 @@ export function FeaturedSpecialtiesSection({ treatments: _treatments }: { treatm
               Duración orientativa: <strong>{selected.durationMinutes} minutos</strong>
             </p>
             <p className="text-base leading-relaxed text-on-surface-variant">{selected.description}</p>
+            {selected.items && selected.items.length > 0 && (
+              <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-1.5 text-sm text-on-surface-variant sm:grid-cols-2">
+                {selected.items.map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-secondary/70" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
             {selected.requiresPriorEval && (
               <p className="mt-4 rounded-lg bg-secondary/10 px-3 py-2 text-sm text-on-surface">
                 Requiere evaluación médica previa.

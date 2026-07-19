@@ -27,9 +27,9 @@ export const metadata: Metadata = {
   description:
     "Centro de dermatología premium: consultas, tratamientos y acompañamiento profesional para la salud de tu piel.",
   icons: {
-    icon: [{ url: "/branding/logo-tod.png", type: "image/png", sizes: "any" }],
-    shortcut: "/branding/logo-tod.png",
-    apple: "/branding/logo-tod.png",
+    icon: [{ url: "/branding/favicon.png", type: "image/png", sizes: "512x512" }],
+    shortcut: "/branding/favicon.png",
+    apple: [{ url: "/branding/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
   },
 };
 

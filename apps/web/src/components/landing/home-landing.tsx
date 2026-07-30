@@ -68,7 +68,7 @@ const EXTRA_TEAM_MEMBERS: PublicProfessional[] = [
     name: "Manuela Caride",
     specialty: "Dermatología funcional",
     bio: null,
-    imageUrl: null,
+    imageUrl: "/fotos/equipo/manuela-caride.png",
   },
 ];
 
@@ -81,6 +81,7 @@ const TEAM_IMAGE_OVERRIDES: Record<string, string> = {
   "seed-tod-lamberti": "/fotos/equipo/antonela-lamberti.jpeg",
   "seed-tod-kraft": "/fotos/equipo/ana-kraft.jpeg",
   "seed-tod-ortiz": "/fotos/equipo/cintia-ortiz.png",
+  "seed-tod-caride": "/fotos/equipo/manuela-caride.png",
 };
 
 const TEAM_SPECIALTY_OVERRIDES: Record<string, string> = {
